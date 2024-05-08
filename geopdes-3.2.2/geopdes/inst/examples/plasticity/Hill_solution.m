@@ -17,35 +17,43 @@ P_0 = Y/2*(1-(a^2/b^2));
 P = linspace(0, P_lim*.9, 100);
 ub = zeros(size(P));
 
+% initial branch
 for i =1:length(P)
 
         if P(i) < P_0
             ub(i) = 2*P(i)*b/(E*(b^2/a^2 -1))* (1-v^2);
+
         else
             fun_front = @(x) -P(i)/Y + log(x/a) + .5* (1- x.^2/b^2);
             c = fsolve(fun_front, 100);
             ub(i) = Y*c^2/(E*b) * (1-v^2);
 
         end
-
-
 end
 
-uc = linspace(ub(end), .6, 100);
-F = zeros(size(uc));
-
-for i =1:length(uc)
+% draw plateau
+if P(end) >= P_0
+    uc = linspace(ub(end), ub(end)*5, 100);
+    F = zeros(size(uc));
     
-    c = sqrt(uc(i) * E*b/(Y* (1-v^2)));
-    if c > b
-        c = b;
+    for i =1:length(uc)
+        
+        c = sqrt(uc(i) * E*b/(Y* (1-v^2)));
+        if c > b
+            c = b;
+        end
+        F(i) = Y * (log(c/a) + .5* (1- c^2/b^2));
+    
     end
-    F(i) = Y * (log(c/a) + .5* (1- c^2/b^2));
-
+    
+    u = [ub(1:end-1), uc];
+    pressure = [P(1:end-1), F];
+else
+    u = ub;
+    pressure = P;
 end
 
-u = [ub(1:end-1), uc];
-pressure = [P(1:end-1), F];
+% 
 % figure(100)
 % plot(u, pressure)
 
