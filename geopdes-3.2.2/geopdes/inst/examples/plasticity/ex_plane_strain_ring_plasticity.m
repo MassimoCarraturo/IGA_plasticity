@@ -41,10 +41,10 @@ grid on
 drawnow
 
 % 2) CHOICE OF THE DISCRETIZATION PARAMETERS
-for p =1:4 % loop for p-refinemet study
+for p =2:4 % loop for p-refinemet study
     clear method_data
     method_data.degree     = [p p];                      % Degree of the basis functions
-    method_data.regularity = method_data.degree - 1;     % Regularity of the basis functions
+    method_data.regularity = [p-1 p-1];     % Regularity of the basis functions
     method_data.nsub       = [10 10];                    % Number of subdivisions
     method_data.nquad      = [p+1 p+1];                  % Points for the Gaussian quadrature rule
     method_data.nload      = 10;                         % Number of load steps
@@ -73,7 +73,7 @@ for p =1:4 % loop for p-refinemet study
     drawnow
 
 end % loop p refinement study
-legend ('Exact solution', 'p=1', 'p=2', 'p=3', 'p=4');
+legend ('Exact solution',  'p=2', 'p=3', 'p=4');
 
 %error_l2 = sp_l2_error (space, msh, u(:,i), problem_data.uex)
 
