@@ -91,17 +91,16 @@ class sphere_eighth:
     
         volume = self._create_sphere()
         volume = self._refinement(volume, 2)
-        print('degree: ')
-        print(volume.degree)
-        print('knots: ')
-        print(volume.knots)
-    
-        control_points= volume.control
-
         
-
+        # print('degree: ')
+        # print(volume.degree)
+        # print('knots: ')
+        # print(volume.knots)        
+        # plt.plot(volume, color='r')
+        # plt.show()
+    
+        control_points= volume.control   
         control_points = control_points.transpose().reshape((4,27), order='F')
-
         
         self._write_file(control_points)
         
@@ -112,7 +111,7 @@ class sphere_eighth:
 # ------------------------------------------------------------------------    
     
 if __name__ == '__main__':
-    geometry = sphere_eighth()
+    geometry = sphere_eighth(R1=100, R2=200)
     geometry.output_data()
 
     
