@@ -28,7 +28,7 @@ class sphere_eighth:
     
     def _create_surface(self, R):    
     
-        c1 = circle(radius=R, angle=(0,np.pi/2.))
+        c1 = circle(radius=R, angle=(0,np.pi/4.))
         c1.rotate(np.pi/2, axis=0)
         surf = revolve(c1, point=0, axis=2, angle=[0,np.pi/2.])
         
@@ -96,8 +96,8 @@ class sphere_eighth:
         # print(volume.degree)
         # print('knots: ')
         # print(volume.knots)        
-        # plt.plot(volume, color='r')
-        # plt.show()
+        plt.plot(volume, color='r')
+        plt.show()
     
         control_points= volume.control   
         control_points = control_points.transpose().reshape((4,27), order='F')

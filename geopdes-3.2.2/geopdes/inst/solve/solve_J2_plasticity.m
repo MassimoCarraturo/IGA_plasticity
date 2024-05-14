@@ -127,6 +127,24 @@ for iside = press_sides
     rhs_shape(sp_side.dofs) = rhs_shape(sp_side.dofs) - op_pn_v (sp_side, msh_side, pval);
 end
 
+
+% slider
+if numel(slider_sides)>0
+    matrix_BC= spalloc (sp.ndof, sp.ndof, 5*sp.ndof); 
+end
+for iside = slider_sides
+     msh_side = msh_eval_boundary_side (msh, iside);
+     sp_side  = sp_eval_boundary_side (sp, msh_side);
+
+     x = cell (msh_side.rdim, 1);
+    for idim = 1:msh_side.rdim
+        x{idim} = reshape (msh_side.geo_map(idim,:,:), msh_side.nqn, msh_side.nel);
+    end
+
+    matrix_BC(sp_side.dofs, sp_side.dofs) = matrix_BC(sp_side.dofs, sp_side.dofs) +op_udotn_vdotn (sp_side, sp_side,msh_side, penalty_slider);
+end
+
+
 % Apply symmetry conditions
 symm_dofs = [];
 for iside = symm_sides
@@ -156,7 +174,7 @@ end
 [u_drchlt, drchlt_dofs] = sp_drchlt_l2_proj (sp, msh, h, drchlt_sides);
 int_dofs = setdiff (1:sp.ndof, [drchlt_dofs, symm_dofs]);
 
-%% Solve linear system incrementally
+%% Solve non-linear system incrementally
 for i=1:nload % Load increment for loop
 
     rhs = rhs_shape./nload .* i;
@@ -165,22 +183,33 @@ for i=1:nload % Load increment for loop
 
     % Assemble tangent matrix
     [K, internal_energy, eps_pl_new] = op_plsu_ev_tp (sp, sp, msh, u(:,i), eps_pl, mu_lame, kappa_lame, yield_stress);
-    external_energy = rhs(int_dofs) - K(int_dofs, drchlt_dofs) * u_drchlt;
-    res = internal_energy(int_dofs) - external_energy;
+    external_energy = rhs(int_dofs) ;%- K(int_dofs, drchlt_dofs) * u_drchlt;
+    res = internal_energy(int_dofs) - external_energy ;
+    if numel(slider_sides)>0
+        res = res + matrix_BC(int_dofs, :)*u(:,i);
+    end
+
     res_norm_0 = norm(res);
     res_norm =res_norm_0;
     while res_norm/res_norm_0 > method_data.newton_tol && iter < method_data.newton_iter_max % Newton-Raphson while loop
 
         % Solve the nonlinear system
-        u_inc = - K(int_dofs, int_dofs) \ res;
+        if numel(slider_sides)>0
+            u_inc = - (K(int_dofs, int_dofs)+ matrix_BC(int_dofs, int_dofs)) \ res;
+        else
+            u_inc = - K(int_dofs, int_dofs) \ res;
+        end
 
         % Update solution vector
         u(int_dofs,i) = u(int_dofs,i) + u_inc;
 
         % Evaluate residuum
         [K, internal_energy, eps_pl_new] = op_plsu_ev_tp (sp, sp, msh, u(:,i), eps_pl, mu_lame, kappa_lame, yield_stress);
-        external_energy = rhs(int_dofs) - K(int_dofs, drchlt_dofs) * u_drchlt;
-        res = internal_energy(int_dofs) - external_energy;
+        external_energy = rhs(int_dofs) ;%- K(int_dofs, drchlt_dofs) * u_drchlt;
+        res = internal_energy(int_dofs) - external_energy ;
+        if numel(slider_sides)>0
+            res = res + matrix_BC(int_dofs, :)*u(:,i);
+        end
         res_norm = norm(res)
         iter = iter+1
 

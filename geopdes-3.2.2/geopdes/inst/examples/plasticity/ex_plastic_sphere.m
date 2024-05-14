@@ -14,6 +14,8 @@ problem_data.nmnn_sides   = [];
 problem_data.drchlt_sides = [];
 problem_data.press_sides  = [1];
 problem_data.symm_sides   = [3 4 5];
+problem_data.slider_sides = [6]; % zero displacement
+problem_data.penalty_slider = 1e6;
 
 % Physical parameters
 E  =  210000;                                  % MPa
@@ -23,7 +25,7 @@ problem_data.kappa_lame = @(x, y, z) E/(3*(1-2*nu)) * ones (size (x));
 problem_data.mu_lame = @(x, y, z) (E/(2*(1+nu)) * ones (size (x)));
 
 % Source and boundary terms
-P = 332*.98;                                        % Limit internal pressure [MPa]
+P = 332*.99;                                        % Limit internal pressure [MPa]
 problem_data.f = @(x, y, z) zeros (3, size (x, 1), size (x, 2), size (x, 3)   );
 problem_data.g = @(x, y, z, ind) test_plane_strain_ring_plasticity_g_nmnn (x, y, P, nu, ind);
 problem_data.h = @(x, y, z, ind) test_plane_strain_ring_plasticity_uex (x, y, E, nu, P);
@@ -47,7 +49,7 @@ for p =2:2 % loop for p-refinemet study
     method_data.regularity = [p-1 p-1 p-1];     % Regularity of the basis functions
     method_data.nsub       = [5 5 5];                    % Number of subdivisions
     method_data.nquad      = [p+1 p+1 p+1];                  % Points for the Gaussian quadrature rule
-    method_data.nload      = 7;                         % Number of load steps
+    method_data.nload      = 5;                         % Number of load steps
     method_data.newton_tol = 1e-8;                       % Newton tolerance
     method_data.newton_iter_max = 20;                   % Newton max number of iterations
 
