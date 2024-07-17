@@ -65,8 +65,7 @@
 %    You should have received a copy of the GNU General Public License
 %    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [geometry, hmsh, hspace, u] = ...
-    solve_J2_plasticity_hier (problem_data, method_data, adaptivity_data)
+function [u, eps_pl] = solve_J2_plasticity_hier (problem_data, method_data, adaptivity_data, hspace, hmsh, load_multiplier, u, eps_pl)
 
 % Extract the fields from the data structures into local variables
 data_names = fieldnames (problem_data);
@@ -80,24 +79,6 @@ end
 data_names = fieldnames (adaptivity_data);
 for iopt  = 1:numel (data_names)
     eval ([data_names{iopt} '= adaptivity_data.(data_names{iopt});']);
-end
-
-% Initialization of the hierarchical mesh and space
-[hmsh, hspace, geometry] = adaptivity_initialize_vector (problem_data, method_data);
-
-for i=1:adaptivity_data.max_level-1
-    % MARK
-    est = zeros(hspace.ndof, 1);
-    [marked, ~] = adaptivity_mark (est, hmsh, hspace, adaptivity_data);
-    % REFINE
-    [hmsh, hspace] = adaptivity_refine (hmsh, hspace, marked, adaptivity_data);
-end
-
-%% Initialize linear system and apply BCs
-u = zeros (hspace.ndof, nload);
-eps_pl = cell(hmsh.nlevels,1);
-for ilev = 1:hmsh.nlevels
-    eps_pl{ilev} = zeros(hmsh.nel_per_level(ilev),hmsh.mesh_of_level(ilev).nqn,6);
 end
 
 % Assemble the matrices
@@ -145,34 +126,33 @@ end
 [u_drchlt, drchlt_dofs] = sp_drchlt_l2_proj (hspace, hmsh, h, drchlt_sides);
 int_dofs = setdiff (1:hspace.ndof, union (drchlt_dofs, symm_dofs));
 
-%% Solve linear system incrementally
-for i=1:nload % Load increment for loop
+%% Solve linear system
+rhs = rhs_shape./nload .* load_multiplier;
+iter = 0;
+u(drchlt_dofs) = u_drchlt;
 
-    rhs = rhs_shape./nload .* i;
-    iter = 0;
-    u(drchlt_dofs,i) = u_drchlt;
+% Assemble tangent matrix
+[K, internal_energy, eps_pl_new] = op_plsu_ev_hier (hspace, hspace, hmsh, u, eps_pl, mu_lame, kappa_lame, yield_stress);
+external_energy = rhs(int_dofs) - K(int_dofs, drchlt_dofs) * u_drchlt;
+res = internal_energy(int_dofs) - external_energy;
+res_norm_0 = norm(res);
+res_norm =res_norm_0;
 
-    % Assemble tangent matrix
-    [K, internal_energy, eps_pl_new] = op_plsu_ev_hier (hspace, hspace, hmsh, u(:,i), eps_pl, mu_lame, kappa_lame, yield_stress);
+% Newton-Raphson while loop
+while res_norm/res_norm_0 > method_data.newton_tol && iter < method_data.newton_iter_max 
+
+    % Solve the nonlinear system
+    u_inc = - K(int_dofs, int_dofs) \ res;
+
+    % Update solution vector
+    u(int_dofs) = u(int_dofs) + u_inc;
+
+    % Evaluate residuum
+    [K, internal_energy, eps_pl_new] = op_plsu_ev_hier (hspace, hspace, hmsh, u, eps_pl, mu_lame, kappa_lame, yield_stress);
     external_energy = rhs(int_dofs) - K(int_dofs, drchlt_dofs) * u_drchlt;
     res = internal_energy(int_dofs) - external_energy;
-    res_norm_0 = norm(res);
-    res_norm =res_norm_0;
-    while res_norm/res_norm_0 > method_data.newton_tol && iter < method_data.newton_iter_max % Newton-Raphson while loop
+    res_norm = norm(res)
+    iter = iter+1
 
-        % Solve the nonlinear system
-        u_inc = - K(int_dofs, int_dofs) \ res;
-
-        % Update solution vector
-        u(int_dofs,i) = u(int_dofs,i) + u_inc;
-
-        % Evaluate residuum
-        [K, internal_energy, eps_pl_new] = op_plsu_ev_hier (hspace, hspace, hmsh, u(:,i), eps_pl, mu_lame, kappa_lame, yield_stress);
-        external_energy = rhs(int_dofs) - K(int_dofs, drchlt_dofs) * u_drchlt;
-        res = internal_energy(int_dofs) - external_energy;
-        res_norm = norm(res)
-        iter = iter+1
-
-    end % end N-R while loop
-    eps_pl = eps_pl_new;
-end % end load for-loop
+end % end N-R while loop
+eps_pl = eps_pl_new;

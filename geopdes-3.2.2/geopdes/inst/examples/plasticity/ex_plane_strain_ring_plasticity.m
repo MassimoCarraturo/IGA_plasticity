@@ -13,6 +13,7 @@ problem_data.geo_name = 'geo_ring_SouzaNeto.txt';
 problem_data.nmnn_sides   = [1];
 problem_data.drchlt_sides = [];
 problem_data.press_sides  = [];
+problem_data.slider_sides  = [];
 problem_data.symm_sides   = [3 4];
 
 % Physical parameters
@@ -41,7 +42,7 @@ grid on
 drawnow
 
 % 2) CHOICE OF THE DISCRETIZATION PARAMETERS
-for p =2:4 % loop for p-refinemet study
+for p =2%:4 % loop for p-refinemet study
     clear method_data
     method_data.degree     = [p p];                      % Degree of the basis functions
     method_data.regularity = [p-1 p-1];     % Regularity of the basis functions
