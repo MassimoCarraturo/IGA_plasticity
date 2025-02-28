@@ -54,7 +54,7 @@ for p =2:2 % loop for p-refinemet study
     method_data.newton_iter_max = 20;                   % Newton max number of iterations
 
     % 3) CALL TO THE SOLVER
-    [geometry, msh, space, u] = solve_J2_plasticity (problem_data, method_data);
+    [geometry, msh, space, u, eps_pl] = solve_J2_plasticity (problem_data, method_data);
 
     %% 4) POST-PROCESSING.
     u_r=zeros(1,method_data.nload+1);
@@ -85,3 +85,8 @@ vtk_pts = {linspace(0, 1, 21), linspace(0, 1, 21), linspace(0, 1, 21)};
 
 fprintf ('results being saved in: %s \n \n', output_file)
 sp_to_vtk (u_plot(:,i), space, geometry, vtk_pts, output_file, {'displacement'}, {'value'})
+
+
+sp_to_vtk ( reshape(eps_pl(:,1:3,end), space.ndof,1) , space, geometry, vtk_pts, output_file, {'plastic_strain'}, {'value'})
+
+

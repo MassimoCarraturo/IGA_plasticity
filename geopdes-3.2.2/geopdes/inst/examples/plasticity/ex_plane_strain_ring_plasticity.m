@@ -24,7 +24,7 @@ problem_data.kappa_lame = @(x, y) E/(3*(1-2*nu)) * ones (size (x));
 problem_data.mu_lame = @(x, y) (E/(2*(1+nu)) * ones (size (x)));
 
 % Source and boundary terms
-P = 192.09*.98;                                        % Limit internal pressure [MPa]
+P = 192.09*.99;                                        % Limit internal pressure [MPa]
 problem_data.f = @(x, y) zeros (2, size (x, 1), size (x, 2));
 problem_data.g = @(x, y, ind) test_plane_strain_ring_plasticity_g_nmnn (x, y, P, nu, ind);
 problem_data.h = @(x, y, ind) test_plane_strain_ring_plasticity_uex (x, y, E, nu, P);
@@ -42,18 +42,19 @@ grid on
 drawnow
 
 % 2) CHOICE OF THE DISCRETIZATION PARAMETERS
-for p =2%:4 % loop for p-refinemet study
+for p =2 % loop for p-refinemet study
     clear method_data
     method_data.degree     = [p p];                      % Degree of the basis functions
     method_data.regularity = [p-1 p-1];     % Regularity of the basis functions
     method_data.nsub       = [10 10];                    % Number of subdivisions
     method_data.nquad      = [p+1 p+1];                  % Points for the Gaussian quadrature rule
-    method_data.nload      = 10;                         % Number of load steps
+    method_data.nload      = 15;                         % Number of load steps
     method_data.newton_tol = 1e-8;                       % Newton tolerance
     method_data.newton_iter_max = 100;                   % Newton max number of iterations
+    method_data.type_projection = 'QI';                     % 'QI' / 'L2'
 
     % 3) CALL TO THE SOLVER
-    [geometry, msh, space, u] = solve_J2_plasticity (problem_data, method_data);
+    [geometry, msh, space, u, eps_pl] = solve_J2_plasticity (problem_data, method_data);
 
     %% 4) POST-PROCESSING.
     u_r=zeros(1,method_data.nload+1);
@@ -65,7 +66,7 @@ for p =2%:4 % loop for p-refinemet study
         % Exact solution (optional)
         P_i(i) = P/method_data.nload*(i-1);
         % problem_data.uex =  test_plane_strain_ring_plasticity_uex (x, y, E, nu, problem_data.yield_stress(1), P_i(i));
-        [eu, F] = sp_eval (u_plot(:,i), space, geometry, {100,50});
+        [eu, F] = sp_eval (u_plot(:,i), space, geometry, {1,0.5});
         u_r(i) = norm(eu);
     end
 
@@ -80,7 +81,12 @@ legend ('Exact solution',  'p=2', 'p=3', 'p=4');
 
 % 4.2) Export to Paraview
 output_file = strcat('plane_strain_ring_Deg3_Reg2_Sub9_',num2str(i-1));
-vtk_pts = {linspace(0, 100, 21), linspace(0, 100, 21)};
+vtk_pts = {linspace(0, 1, 21), linspace(0, 1, 21)};
 
 fprintf ('results being saved in: %s \n \n', output_file)
 sp_to_vtk (u_plot(:,i), space, geometry, vtk_pts, output_file, {'displacement'}, {'value'})
+sp_to_vtk ( reshape(eps_pl(:,1:2,end), space.ndof,1) , space, geometry, vtk_pts, output_file, {'plastic_strain'}, {'value'})
+
+
+
+

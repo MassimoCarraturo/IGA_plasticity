@@ -65,7 +65,7 @@
 %    You should have received a copy of the GNU General Public License
 %    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [geometry, msh, sp, u] = ...
+function [geometry, msh, sp, u, eps_pl_store] = ...
     solve_J2_plasticity (problem_data, method_data)
 
 % Extract the fields from the data structures into local variables
@@ -101,6 +101,7 @@ clear space_scalar scalar_spaces
 %% Initialize linear system and apply BCs
 u = zeros (sp.ndof, nload);
 eps_pl = zeros(msh.nel,msh.nqn,6);
+eps_pl_store = zeros(sp.ndof/sp.ncomp, 6, nload);
 
 % Assemble the matrices
 
@@ -215,4 +216,11 @@ for i=1:nload % Load increment for loop
 
     end % end N-R while loop
     eps_pl = eps_pl_new;
+
+    % QI or L2 for eps_pl projection
+    sp_scalar = sp.scalar_spaces{1};
+    eps_pl_store(:,:,i) = history_variable_projection(sp_scalar, msh, eps_pl,  type_projection);
+
+
+
 end % end load for-loop
