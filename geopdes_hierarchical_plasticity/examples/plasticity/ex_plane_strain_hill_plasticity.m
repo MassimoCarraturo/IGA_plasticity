@@ -51,6 +51,7 @@ method_data.truncated   = 1;                              % 0: False, 1: True
 method_data.nload      = 10;                              % Number of load steps
 method_data.newton_tol = 1e-8;                            % Newton tolerance
 method_data.newton_iter_max = 100;                        % Newton max number of iterations
+method_data.type_projection = 'QI';                         % 'QI' / 'L2'
 
 adaptivity_data.flag = 'elements';
 % adaptivity_data.flag = 'functions';
@@ -78,7 +79,7 @@ for i=1:method_data.nload+1
     % Exact solution (optional)
     P_i(i) = P/method_data.nload*(i-1);
     if i > 1
-        [eu, F] = sp_eval (cell_u{i-1}, cell_hspace{i-1}, geometry, {100,50});
+        [eu, F] = sp_eval (cell_u{i-1}, cell_hspace{i-1}, geometry, {1,.5});
         u_r(i) = norm(eu);
     else
         u_r(i) = 0;
@@ -92,7 +93,12 @@ drawnow
 
 % 4.2) Export to Paraview
 output_file = strcat('plane_strain_ring_hier_',num2str(method_data.nload));
-vtk_pts = {linspace(0, 100, 21), linspace(0, 100, 21)};
+vtk_pts = {linspace(0, 1, 21), linspace(0, 1, 21)};
 
 fprintf ('results being saved in: %s \n \n', output_file)
 sp_to_vtk (cell_u{method_data.nload}, cell_hspace{method_data.nload}, geometry, vtk_pts, output_file, {'displacement'}, {'value'})
+
+
+
+
+

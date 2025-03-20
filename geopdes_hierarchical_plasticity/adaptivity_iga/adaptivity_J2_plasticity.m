@@ -48,10 +48,19 @@ nel = zeros (1, adaptivity_data.num_max_iter); ndof = nel; gest = nel+1;
 cell_hmsh = cell(method_data.nload,1);
 cell_hspace = cell(method_data.nload,1);
 cell_u = cell(method_data.nload,1);
+cell_eps_pl = cell(method_data.nload,1); 
 
 % Initialization of the hierarchical mesh and space
 [hmsh, hspace, geometry] = adaptivity_initialize_vector (problem_data, method_data);
 
+% store initial scalar space
+[knots, zeta] = kntrefine (geometry.nurbs.knots, method_data.nsub_coarse-1, method_data.degree, method_data.regularity);
+rule     = msh_gauss_nodes (method_data.nquad);
+[qn, qw] = msh_set_quad_nodes (zeta, rule);
+msh   = msh_cartesian (zeta, qn, qw, geometry);
+space_scalar =sp_bspline (knots, method_data.degree, msh);
+clear knots zeta rule qn  qw msh
+hspace_scalar   = hierarchical_space (hmsh, space_scalar, method_data.space_type, method_data.truncated, method_data.regularity);
 % Initialization of problem variables
 u = zeros (hspace.ndof,1);
 eps_pl = cell(hmsh.nlevels,1);
@@ -59,8 +68,14 @@ for ilev = 1:hmsh.nlevels
     eps_pl{ilev} = zeros(hmsh.nel_per_level(ilev),hmsh.mesh_of_level(ilev).nqn,6);
 end
 
+
+
+
+%% Analysis
+
 % LOAD INCREMENT LOOP
 for iLoad = 1: method_data.nload
+
     % ADAPTIVE LOOP
     iter = 0;
     while (1)
@@ -74,25 +89,24 @@ for iLoad = 1: method_data.nload
             solution_data.flag = -1; break
         end
 
-        % SOLVE AND PLOT
+        % SOLVE 
         if (plot_data.print_info)
             disp('SOLVE:')
             fprintf('Number of elements: %d. Total DOFs: %d \n', hmsh.nel, hspace.ndof);
         end
         [u, eps_pl] = solve_J2_plasticity_hier (problem_data, method_data, adaptivity_data, hspace, hmsh, iLoad, u, eps_pl);
+
+        % QI or L2 for eps_pl projection
+        
+        
+        eps_pl_store = zeros(hspace_scalar.ndof, 6); % control variables
+        eps_pl_store(:,:) = history_variable_projection_hier(hspace_scalar, hmsh, eps_pl,  method_data.type_projection);
+
+
+
         nel(iter) = hmsh.nel; ndof(iter) = hspace.ndof;
 
-        if (plot_data.plot_hmesh)
-            fig_mesh = hmsh_plot_cells (hmsh, 10, fig_mesh);
-        end
-        if (plot_data.plot_discrete_sol)
-            npts = 51 * ones (1, hmsh.ndim);
-            fig_sol = plot_numerical_and_exact_solution (u, hspace, geometry, npts, problem_data.uex, fig_sol);
-        end
-        if (plot_data.plot_hmesh || plot_data.plot_discrete_sol)
-            disp('Paused. Type "dbcont" to continue')
-            keyboard
-        end
+       
 
         % ESTIMATE
         if (plot_data.print_info); disp('ESTIMATE:'); end
@@ -137,14 +151,20 @@ for iLoad = 1: method_data.nload
         % REFINE
         hmsh_coarse = hmsh;
         hspace_coarse = hspace;
+        hspace_scalar_coarse  = hspace_scalar;
         [hmsh, hspace, Cref] = adaptivity_refine (hmsh_coarse, hspace_coarse, marked, adaptivity_data);
+        [~, hspace_scalar, ~] = adaptivity_refine (hmsh_coarse, hspace_scalar_coarse, marked, adaptivity_data);
 
         % refine variables
         u = Cref * u;
+        eps_pl_store = Cref(1:2:end,1:2:end)*eps_pl_store; % control variables
+        eps_pl = evaluate_at_quad_points(hmsh, hspace, eps_pl_store);
+
+
         % L2-projection
-        %eps_pl = eps_pl_project_l2(hmsh_coarse, hspace_coarse, eps_pl, hmsh, hspace, Cref);
+        % eps_pl = eps_pl_project_l2(hmsh_coarse, hspace_coarse, eps_pl, hmsh, hspace, Cref);
         % quasi-interpolant
-        eps_pl = eps_pl_quasi_interpolant(hmsh_coarse, hmsh, hspace, eps_pl);
+        % eps_pl = eps_pl_quasi_interpolant(hmsh_coarse, hmsh, hspace, eps_pl);
 
         fprintf('\n');
     end % end adaptivity step
@@ -165,6 +185,7 @@ for iLoad = 1: method_data.nload
     cell_hmsh{iLoad} = hmsh;
     cell_hspace{iLoad} = hspace;
     cell_u{iLoad} = u;
+    cell_eps_pl{iLoad} = eps_pl_store;
 
 
 end % end load step
@@ -176,12 +197,47 @@ end
 
 
 
+%--------------------------------------------------------------------------
+% subroutines   
+%--------------------------------------------------------------------------
+
+function eps_pl = evaluate_at_quad_points(hmsh, hspace, eps_pl_control_var)
+    eps_pl = cell(hmsh.nlevels,1);
+    
+    ndofs_u = 0;
+    for ilev = 1:hmsh.nlevels
+        ndofs_u = ndofs_u + hspace.ndof_per_level(ilev);
+        if (hmsh.nel_per_level(ilev) > 0)
+            spu_lev = sp_evaluate_element_list (hspace.space_of_level(ilev), hmsh.msh_lev{ilev});
+            nsh_scalar = spu_lev.nsh_max/spu_lev.ncomp;
+            sh_fun_u = reshape (spu_lev.shape_functions(1,:,1:nsh_scalar,:),  [hmsh.msh_lev{ilev}.nqn,  nsh_scalar, hmsh.msh_lev{ilev}.nel]);
+    
+            %dofs_u = 1:ndofs_u;
+            %scalar_comp = 1:(hspace.ndof/hspace.ncomp);
+    
+            eps_pl_lev = zeros(hmsh.nel_per_level(ilev),hmsh.mesh_of_level(ilev).nqn,6);
+            for iel=1:hmsh.msh_lev{ilev}.nel
+                dofs_elem = spu_lev.connectivity(1:nsh_scalar,iel);
+                eps_pl_lev(iel,:,:) = sh_fun_u(:,:,iel) * eps_pl_control_var(dofs_elem,:);
+            end
+    
+            eps_pl{ilev} = eps_pl_lev;
+    
+        end
+    end
+
+end
+
+
 
 
 
 %--------------------------------------------------------------------------
-% subroutines
+% subroutines   old
 %--------------------------------------------------------------------------
+
+
+
 
 function eps_pl = eps_pl_quasi_interpolant(hmsh_c, hmsh, hspace, eps_pl)
 

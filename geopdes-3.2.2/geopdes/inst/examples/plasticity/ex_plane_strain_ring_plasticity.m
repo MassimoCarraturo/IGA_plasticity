@@ -79,13 +79,20 @@ legend ('Exact solution',  'p=2', 'p=3', 'p=4');
 
 %error_l2 = sp_l2_error (space, msh, u(:,i), problem_data.uex)
 
-% 4.2) Export to Paraview
-output_file = strcat('plane_strain_ring_Deg3_Reg2_Sub9_',num2str(i-1));
+%% 4.2) Export to Paraview
+output_file = strcat('plane_strain_ring_',num2str(i-1));
 vtk_pts = {linspace(0, 1, 21), linspace(0, 1, 21)};
 
 fprintf ('results being saved in: %s \n \n', output_file)
+output_file = strcat('plane_strain_ring_',num2str(i-1));
 sp_to_vtk (u_plot(:,i), space, geometry, vtk_pts, output_file, {'displacement'}, {'value'})
-sp_to_vtk ( reshape(eps_pl(:,1:2,end), space.ndof,1) , space, geometry, vtk_pts, output_file, {'plastic_strain'}, {'value'})
+
+for comp =1:6
+    output_file = strcat('plane_strain_ring_',num2str(i-1),'_eps_pl_',num2str(comp) );
+    scalar_space = space.scalar_spaces{1};
+    name_field = strcat('plastic_strain_',num2str(comp));
+    sp_to_vtk ( reshape(eps_pl(:,comp,end), scalar_space.ndof,1) , scalar_space, geometry, vtk_pts, output_file, {name_field}, {'value'})
+end
 
 
 
