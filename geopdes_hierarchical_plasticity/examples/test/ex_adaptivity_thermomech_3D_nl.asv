@@ -1,0 +1,140 @@
+% PHYSICAL DATA OF THE PROBLEM
+close all
+clear problem_data_th
+clear problem_data_mec
+clc
+
+%% =============== THERMAL PROBLEM ========================================
+% Physical domain, defined as NURBS map given in a text file
+problem_data_th.geo_name = 'squared_beam.txt';
+% Generate Output folder
+problem_output.folder = '/home/blackmamba/workspace/GeoPDEs/output_test_3';
+mkdir(problem_output.folder);
+
+% Set non-linear flag
+% if true the non-linear solver is used
+problem_data_th.flag_nl = true;
+% Set lumped matrix
+problem_data_th.lumped = false;
+
+% Non-linear analysis
+problem_data_th.Newton_tol = 1.0e-05;
+problem_data_th.num_Newton_iter = 20;
+problem_data_th.non_linear_convergence_flag = 1;
+
+% Type of boundary conditions for each side of the domain
+problem_data_th.nmnn_sides   = [];
+problem_data_th.drchlt_sides = 5;
+problem_data_th.convection_sides = [];
+problem_data_th.radiation_sides = [];
+
+% Physical parameters
+problem_data_th.c_diff  = @conductivity; %@(x,y,z) ones(size(x))*29;         %
+problem_data_th.grad_c_diff =   @conductivity_der_3D; % @(x,y,z) cat (1, ...
+           % reshape (zeros(size(x)), [1, size(x)]), ...
+           % reshape (zeros(size(x)), [1, size(x)]), ...
+           % reshape (zeros(size(x)), [1, size(x)]));
+                                                            %
+problem_data_th.c_cap = @capacity; %  @(x,y,z) ones(size(x))*7820*600;     % 
+problem_data_th.coeff_th_exp = 2.0E-5; %mm/(mm°C)
+problem_data_th.initial_temperature = 22.0;                      %[°C]
+
+% Time discretization
+n_time_steps = 10;
+time_end = 10; %[s]
+problem_data_th.time_discretization = linspace(1, time_end, n_time_steps);
+problem_data_th.alpha = 1;  % alpha = 0 explicit Euler; alpha=1/2 Crank-Nicholson; aplha=1 backward Euler
+
+path = linspace(0, 0, n_time_steps);
+problem_data_th.path = [path', path', path'];
+
+% Source and boundary terms
+problem_data_th.f = @(x,y,z,path_x,path_y,path_z) 0 * exp(- 3*(x-path_x).^2 - 3*(y-path_y).^2 - 3*(z-path_z).^2);         % Body Load
+problem_data_th.h = @(x, y, z, ind) ones(size(x))*1375;                                                  % Dirichlet Boundaries
+
+%% =============== MECHANICAL PROBLEM =====================================
+% Physical domain, defined as NURBS map given in a text file
+problem_data_mec.geo_name = 'squared_beam.txt';
+problem_data_mec.flag_nl = false;
+problem_data_mec.non_linear_convergence_flag = 0;
+
+% Type of boundary conditions for each side of the domain
+problem_data_mec.nmnn_sides   = [];
+problem_data_mec.press_sides  = [];
+problem_data_mec.drchlt_sides = problem_data_th.drchlt_sides;
+problem_data_mec.symm_sides   = [];
+
+% Physical parameters
+E  =  195E+3; nu = 0.25; 
+problem_data_mec.lambda_lame = @(x, y, z) ((nu*E)/((1+nu)*(1-2*nu)) * ones (size (x))); 
+problem_data_mec.mu_lame = @(x, y, z) (E/(2*(1+nu)) * ones (size (x)));
+
+% Time discretization
+n_time_steps = 10;
+time_end = 10; %[s]
+problem_data_mec.time_discretization = linspace(0.0, time_end, n_time_steps+1);
+
+
+% Source and boundary terms
+fx = @(x, y, z) zeros(size(x));
+fy = @(x, y, z) zeros(size(y));
+fz = @(x, y, z) zeros(size(z));
+problem_data_mec.f = @(x, y, z) cat(1, ...
+                    reshape (fx (x,y,z), [1, size(x)]), ...
+                    reshape (fy (x,y,z), [1, size(x)]), ...
+                    reshape (fz (x,y,z), [1, size(x)]));
+problem_data_mec.h = @(x, y, z, ind) zeros (3, size (x, 1), size (x, 2));
+
+%% ================= ADAPTIVITY PARAMETERS =============
+% CHOICE OF THE DISCRETIZATION PARAMETERS (Coarse mesh)
+clear method_data
+method_data.degree      = [2 2 2];        % Degree of the splines
+method_data.regularity  = [1 1 1];        % Regularity of the splines
+method_data.nsub_coarse = [1 1 1];        % Number of subdivisions of the coarsest mesh, with respect to the mesh in geometry
+method_data.nsub_refine = [2 2 2];        % Number of subdivisions for each refinement
+method_data.nquad       = method_data.degree+1;        % Points for the Gaussian quadrature rule
+method_data.space_type  = 'standard';     % 'simplified' (only children functions) or 'standard' (full basis)
+method_data.truncated   = 1;              % 0: False, 1: True
+
+% ADAPTIVITY PARAMETERS 
+clear adaptivity_data
+adaptivity_data.flag = 'elements';
+adaptivity_data.doCoarsening = false;
+adaptivity_data.C0_est = 1.0;
+adaptivity_data.mark_neighbours = true;
+adaptivity_data.mark_param = 0.75;
+adaptivity_data.mark_param_coarsening = 0.05;
+adaptivity_data.crp = 2.0;                     %coarsening relaxation parameter
+%adaptivity_data.radius = [laser_radius, laser_radius, laser_penetration_depth / 2]*2.0;
+adaptivity_data.strategy = 'adapt'; % adapt = error-based adaptivity or 'geom' = geometric based adaptivity
+adaptivity_data.adm_strategy = 'admissible'; % 'admissible' or 'balancing'
+adaptivity_data.adm = 1 + method_data.truncated;
+adaptivity_data.coarsening_flag = 'all'; %'any', 'all'
+adaptivity_data.coarse_flag = 'L2_global'; % 'bezier', 'MS_all', 'MS_old', 'L2_global'
+adaptivity_data.mark_strategy = 'GR';
+adaptivity_data.max_level = 5;%4;
+adaptivity_data.max_ndof = 100000;
+adaptivity_data.num_max_iter = 4;%3;
+adaptivity_data.max_nel = 10000;
+adaptivity_data.tol = 1.0e-04;
+adaptivity_data.timeToRefine = [1];%linspace(1,n_time_steps,n_time_steps);
+
+% GRAPHICS
+plot_data.plot_hmesh = false;
+plot_data.adaptivity = false;
+plot_data.print_info = false;
+plot_data.plot_matlab = false;
+plot_data.time_steps_to_post_process = linspace(0,n_time_steps,n_time_steps+1);
+plot_data.file_name_mesh = strcat(problem_output.folder, '/thermomech_suqared_bar_mesh__lev_',num2str(adaptivity_data.max_level),'_%d');
+plot_data.file_name_dofs = strcat(problem_output.folder, '/thermomech_suqared_bar_dofs_lev_',num2str(adaptivity_data.max_level));
+plot_data.file_name_temp_plot = strcat(problem_output.folder, '/thermomech_squared_bar_temperature_lev_',num2str(adaptivity_data.max_level),'_%d');
+plot_data.file_name_disp_plot = strcat(problem_output.folder, '/thermomech_squared_bar_displ__lev_',num2str(adaptivity_data.max_level),'_%d');
+plot_data.file_name_var = strcat(problem_output.folder, '/test_moving_heat_source_thermomech_3D_variables_%d.mat');
+
+plot_data.npoints_x = 21;        %number of points x-direction in post-processing
+plot_data.npoints_y = 21;        %number of points y-direction in post-processing
+plot_data.npoints_z = 201;       %number of points z-direction in post-processing
+
+tic
+[geometry, hmsh, hspace, u, solution_data] = adaptivity_thermomech_transient(problem_data_th, problem_data_mec, method_data, method_data, adaptivity_data, adaptivity_data, plot_data);
+toc

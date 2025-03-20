@@ -1,0 +1,28 @@
+function [C] = bzrextr_tp(hmsh, hspace, lev)
+
+space = hspace.space_of_level(lev);
+
+knots = space.knots;
+degree = space.degree;
+C = ones(1,1,hmsh.nel);
+
+for el=1:hmsh.nel
+    C_el = 1;
+    [I,J,K] = ind2sub(msh.nel_dir, el);
+    sub = [I; J; K];
+    for iDir = 1:hmsh.ndim
+        C_e = bzrextr(knots{iDir},degree(iDir));
+        p = degree(iDir);
+        n = length(knots{iDir})-p-1;
+        e = n - p;
+        nb= e*(p+1);
+        Ce = bzrextr(knots{iDir},p);
+        C_el = kron(C,Ce(:,:,sub(iDir)));
+        
+    end
+    C(:,:,el) = C_el;
+    
+end
+
+end
+
