@@ -20,7 +20,7 @@
 %    You should have received a copy of the GNU General Public License
 %    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [geometry, cell_hmsh, cell_hspace, cell_u, solution_data] = adaptivity_J2_plasticity (problem_data, method_data, adaptivity_data, plot_data)
+function [geometry, cell_hmsh, cell_hspace,  cell_hspace_scalar,  cell_u, cell_eps_pl, solution_data] = adaptivity_J2_plasticity (problem_data, method_data, adaptivity_data, plot_data)
 
 if (nargin == 3)
     plot_data = struct ('print_info', true, 'plot_hmesh', false, 'plot_discrete_sol', false);
@@ -47,6 +47,7 @@ nel = zeros (1, adaptivity_data.num_max_iter); ndof = nel; gest = nel+1;
 % initialize space for solution
 cell_hmsh = cell(method_data.nload,1);
 cell_hspace = cell(method_data.nload,1);
+cell_hspace_scalar = cell(method_data.nload,1);
 cell_u = cell(method_data.nload,1);
 cell_eps_pl = cell(method_data.nload,1); 
 
@@ -184,6 +185,7 @@ for iLoad = 1: method_data.nload
 
     cell_hmsh{iLoad} = hmsh;
     cell_hspace{iLoad} = hspace;
+    cell_hspace_scalar{iLoad} = hspace_scalar;
     cell_u{iLoad} = u;
     cell_eps_pl{iLoad} = eps_pl_store;
 

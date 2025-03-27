@@ -38,8 +38,9 @@ elseif  strcmpi(type_proj, 'QI')
 
     
   
-    msh_val = msh_precompute(msh);
-    data(:,1:msh.ndim ) = reshape(msh_val.quad_nodes, msh.ndim, n_quad_nodes)';
+    % msh_val = msh_precompute(msh);
+    quad_nodes = my_msh_evaluate_qn (msh, 1:msh.nel);
+    data(:,1:msh.ndim ) = reshape(quad_nodes, msh.ndim, n_quad_nodes)';
     data(:, msh.ndim+1:end) = reshape(permute(eps_pl, [3,2,1]),  n_hist_var , n_quad_nodes)';
 
 

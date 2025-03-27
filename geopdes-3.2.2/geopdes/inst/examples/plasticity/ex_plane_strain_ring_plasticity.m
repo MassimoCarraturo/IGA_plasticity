@@ -25,6 +25,7 @@ problem_data.mu_lame = @(x, y) (E/(2*(1+nu)) * ones (size (x)));
 
 % Source and boundary terms
 P = 192.09*.99;                                        % Limit internal pressure [MPa]
+nload =15;
 problem_data.f = @(x, y) zeros (2, size (x, 1), size (x, 2));
 problem_data.g = @(x, y, ind) test_plane_strain_ring_plasticity_g_nmnn (x, y, P, nu, ind);
 problem_data.h = @(x, y, ind) test_plane_strain_ring_plasticity_uex (x, y, E, nu, P);
@@ -32,7 +33,7 @@ problem_data.p = @(x, y, ind) P * ones (size (x));
 
 % Plot in Matlab Hill solution
 figure(1)
-[u_ex,P_ex] = Hill_solution (E, nu, problem_data.yield_stress(1), 100, 200);
+[u_ex,P_ex] = Hill_solution (E, nu, problem_data.yield_stress(1), 100, 200, P, nload);
 plot (u_ex,P_ex,'-k');
 
 xlabel('u');
@@ -48,7 +49,7 @@ for p =2 % loop for p-refinemet study
     method_data.regularity = [p-1 p-1];     % Regularity of the basis functions
     method_data.nsub       = [10 10];                    % Number of subdivisions
     method_data.nquad      = [p+1 p+1];                  % Points for the Gaussian quadrature rule
-    method_data.nload      = 15;                         % Number of load steps
+    method_data.nload      = nload;                         % Number of load steps
     method_data.newton_tol = 1e-8;                       % Newton tolerance
     method_data.newton_iter_max = 100;                   % Newton max number of iterations
     method_data.type_projection = 'QI';                     % 'QI' / 'L2'
