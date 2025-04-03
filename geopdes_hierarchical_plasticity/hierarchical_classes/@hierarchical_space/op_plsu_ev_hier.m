@@ -37,13 +37,15 @@
 %    You should have received a copy of the GNU General Public License
 %    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [K, internal_energy, eps_pl] = op_plsu_ev_hier (hspu, hspv, hmsh,  uhat, eps_pl, mu, kappa, sigma_y)
+function [K, internal_energy, eps_pl, sigma] = op_plsu_ev_hier (hspu, hspv, hmsh,  uhat, eps_pl, sigma, mu, kappa, sigma_y)
 
   K = spalloc (hspv.ndof, hspu.ndof, 3*hspu.ndof);  % tangent matrix
   internal_energy = zeros (hspv.ndof, 1);           % internal energy
 
   ndofs_u = 0;
   ndofs_v = 0;
+  last_dof = cumsum (hspu.ndof_per_level);
+  
   for ilev = 1:hmsh.nlevels
     ndofs_u = ndofs_u + hspu.ndof_per_level(ilev);
     ndofs_v = ndofs_v + hspv.ndof_per_level(ilev);
@@ -54,13 +56,18 @@ function [K, internal_energy, eps_pl] = op_plsu_ev_hier (hspu, hspv, hmsh,  uhat
       end
       spu_lev = sp_evaluate_element_list (hspu.space_of_level(ilev), hmsh.msh_lev{ilev}, 'value', false, 'gradient', true, 'divergence', true);
       spv_lev = sp_evaluate_element_list (hspv.space_of_level(ilev), hmsh.msh_lev{ilev}, 'value', false, 'gradient', true, 'divergence', true);
-      [K_lev, internal_energy_lev, eps_pl_lev] = op_plsu_ev (spu_lev, spv_lev, hmsh.msh_lev{ilev}, uhat, eps_pl{ilev}(:,:,:), mu(x{:}), kappa(x{:}), sigma_y(x{:}));
+      % 
+      % spu_lev = change_connectivity_localized_Csub (spu_lev, hspu, ilev);  
+      % spv_lev = change_connectivity_localized_Csub (spv_lev, hspv, ilev);
+      uhat_lev = hspu.Csub{ilev} * uhat(1:last_dof(ilev),:);
+      [K_lev, internal_energy_lev, eps_pl_lev, sigma_lev] = op_plsu_ev (spu_lev, spv_lev, hmsh.msh_lev{ilev}, uhat_lev, eps_pl{ilev}(:,:,:), sigma{ilev}(:,:,:), mu(x{:}), kappa(x{:}), sigma_y(x{:}));
 
       dofs_u = 1:ndofs_u;
       dofs_v = 1:ndofs_v;
       K(dofs_v,dofs_u) = K(dofs_v,dofs_u) + hspv.Csub{ilev}'*K_lev*hspu.Csub{ilev};
       internal_energy(dofs_v) = internal_energy(dofs_v) + hspv.Csub{ilev}'*internal_energy_lev;
       eps_pl{ilev}(:,:,:) = eps_pl_lev;
+      sigma{ilev}(:,:,:) = sigma_lev;
     end
   end
 end

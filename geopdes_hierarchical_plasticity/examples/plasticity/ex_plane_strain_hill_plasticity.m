@@ -86,7 +86,7 @@ adaptivity_data.flag = 'elements';
 % adaptivity_data.flag = 'functions';
 adaptivity_data.C0_est = 1.0;
 adaptivity_data.mark_param = .5;
-adaptivity_data.mark_strategy = 'GR';
+adaptivity_data.mark_strategy = 'MS';
 adaptivity_data.max_level = 5;
 adaptivity_data.max_ndof = 15000;
 adaptivity_data.num_max_iter = 8;
@@ -94,7 +94,7 @@ adaptivity_data.max_nel = 5000;
 adaptivity_data.tol = 1e-5;
 
 % 3) CALL TO THE SOLVER
-[geometry, cell_hmsh, cell_hspace,  cell_hspace_scalar,  cell_u, cell_eps_pl, solution_data] = adaptivity_J2_plasticity (problem_data, method_data, adaptivity_data);
+[geometry, cell_hmsh, cell_hspace,  cell_hspace_scalar,  cell_u, cell_eps_pl, cell_sigma, solution_data] = adaptivity_J2_plasticity (problem_data, method_data, adaptivity_data);
 
 
 

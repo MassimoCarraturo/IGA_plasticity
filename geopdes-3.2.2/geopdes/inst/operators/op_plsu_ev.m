@@ -33,7 +33,7 @@
 %    You should have received a copy of the GNU General Public License
 %    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [K, internal_energy, eps_pl] = op_plsu_ev (spu, spv, msh, uhat, eps_pl, mu, kappa, sigma_y)
+function [K, internal_energy, eps_pl, sigma] = op_plsu_ev (spu, spv, msh, uhat, eps_pl, sigma, mu, kappa, sigma_y)
 
   gradu = reshape (spu.shape_function_gradients, spu.ncomp, [], msh.nqn, spu.nsh_max, msh.nel);
   gradv = reshape (spv.shape_function_gradients, spv.ncomp, [], msh.nqn, spv.nsh_max, msh.nel);
@@ -72,14 +72,16 @@ function [K, internal_energy, eps_pl] = op_plsu_ev (spu, spv, msh, uhat, eps_pl,
 
       eps_pl_iel = reshape(eps_pl(iel,:,:), [msh.nqn,6])';
       eps_tot_iel = tensorprod(epsu_iel, uhat(spu.connectivity(:,iel)), 4, 1);
+
+      sigma_iel = reshape(sigma(iel,:,:), [msh.nqn,6])';
       
       %sigma_iel = zeros(msh.nqn, spu.ncomp*ndir);
       internal_energy_iel = zeros(spv.nsh(iel), 1);
       K_iel = zeros(spv.nsh(iel), spu.nsh(iel));
 
       for igp =1: msh.nqn          
-          [internal_energy_igp, K_igp, eps_pl_igp] =...
-              eval_stress_elastoplastic(eps_tot_iel(:,igp), eps_pl_iel(:,igp),...
+          [internal_energy_igp, K_igp, eps_pl_igp, sigma_igp] =...
+              eval_stress_elastoplastic(eps_tot_iel(:,igp), eps_pl_iel(:,igp), ...
               mu(igp,iel), kappa(igp,iel), sigma_y(igp,iel),...
               epsu_iel(:,igp,1,:), epsv_iel(:,igp,:,1),...
               jacdet_weights(igp,iel), spu.ncomp);
@@ -87,6 +89,7 @@ function [K, internal_energy, eps_pl] = op_plsu_ev (spu, spv, msh, uhat, eps_pl,
           internal_energy_iel = internal_energy_iel + internal_energy_igp;
           K_iel = K_iel + K_igp;
           eps_pl_iel(:, igp) = eps_pl_igp;
+          sigma_iel(:,igp) =  sigma_igp;
       end
 
       % jacdet_epsu = bsxfun (@times, jacdet_mu_iel, epsu_iel);
@@ -109,6 +112,7 @@ function [K, internal_energy, eps_pl] = op_plsu_ev (spu, spv, msh, uhat, eps_pl,
       
       % assembly matrix
       eps_pl(iel, :, :) = eps_pl_iel';
+      sigma(iel,:,:) = sigma_iel';
     else
       warning ('geopdes:jacdet_zero_at_quad_node', 'op_su_ev: singular map in element number %d', iel)
     end
@@ -118,42 +122,3 @@ K= sparse (rows(1:ncounter), cols(1:ncounter), ...
                            values(1:ncounter), spv.ndof, spu.ndof);
 end
 
-%% COPY OF THE FIRST VERSION OF THE FUNCTION (MORE UNDERSTANDABLE)
-% 
-% function mat = op_su_ev (spu, spv, msh, lambda, mu)
-%   
-%   mat = spalloc (spv.ndof, spu.ndof, 1);
-%   
-%   gradu = reshape (spu.shape_function_gradients, spu.ncomp, [], msh.nqn, spu.nsh_max, msh.nel);
-%   gradv = reshape (spv.shape_function_gradients, spv.ncomp, [], msh.nqn, spv.nsh_max, msh.nel);
-% 
-%   ndir = size (gradu, 2);
-% 
-%   for iel = 1:msh.nel
-%     if (all (msh.jacdet(:,iel)))
-%       mat_loc = zeros (spv.nsh(iel), spu.nsh(iel));
-%       for idof = 1:spv.nsh(iel)
-%         ishg  = gradv(:,:,:,idof,iel);
-%         ishgt = permute (ishg, [2, 1, 3]);
-%         ieps  = reshape(ishg + ishgt, spv.ncomp * ndir, [])/2;
-%         idiv  = spv.shape_function_divs(:, idof, iel);
-%         for jdof = 1:spu.nsh(iel) 
-%           jshg  = gradu(:,:,:,jdof,iel);
-%           jshgt = permute (jshg, [2, 1, 3]);
-%           jeps  = reshape(jshg + jshgt, spu.ncomp * ndir, [])/2;
-%           jdiv  = spu.shape_function_divs(:, jdof, iel);
-%  % The cycle on the quadrature points is vectorized         
-%           mat_loc(idof, jdof) = mat_loc(idof, jdof) + ...
-%               sum (msh.jacdet(:,iel) .* msh.quad_weights(:, iel) .* ...
-%                    (2 * sum (ieps .* jeps, 1).' .* mu(:,iel)  + ...
-%                     (idiv .* jdiv) .* lambda(:,iel)));
-%         end
-%       end
-%       mat(spv.connectivity(:, iel), spu.connectivity(:, iel)) = ...
-%         mat(spv.connectivity(:, iel), spu.connectivity(:, iel)) + mat_loc;
-%     else
-%       warning ('geopdes:jacdet_zero_at_quad_node', 'op_su_ev: singular map in element number %d', iel)
-%     end
-%   end
-% 
-% end

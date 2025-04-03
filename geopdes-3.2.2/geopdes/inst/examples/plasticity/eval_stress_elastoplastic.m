@@ -1,4 +1,4 @@
-function [internal_energy, K_tg, eps_pl] = eval_stress_elastoplastic(eps_tot, eps_pl, mu, kappa, sigma_y, epsu, epsv, jacw, ncomp)
+function [internal_energy, K_tg, eps_pl, sigma_tot] = eval_stress_elastoplastic(eps_tot, eps_pl, mu, kappa, sigma_y, epsu, epsv, jacw, ncomp)
 %EVAL_STRESS_ELASTOPLASTIC 
 % perfect plasticity Neto, pages 221-222
 
@@ -9,7 +9,7 @@ elseif ncomp == 3
 end
 
 
-[sigma, C_tg, eps_pl] = perfect_plasticity_model(eps_tot, eps_pl, mu, kappa, sigma_y);
+[sigma_tot, C_tg, eps_pl] = perfect_plasticity_model(eps_tot, eps_pl, mu, kappa, sigma_y);
 
 
 if ncomp == 2
@@ -18,9 +18,10 @@ if ncomp == 2
     epsv = [epsv(1,:); epsv(4,:); 2*epsv(2,:)];
     epsu = [epsu(1,:); epsu(4,:); 2*epsu(2,:)];
 
-    sigma = [sigma(1) sigma(2) sigma(4)]';
+    sigma = [sigma_tot(1) sigma_tot(2) sigma_tot(4)]';
     C_tg = [C_tg(1,1) C_tg(1,2) C_tg(1,4); C_tg(2,1) C_tg(2,2) C_tg(2,4); C_tg(4,1) C_tg(4,2) C_tg(4,4) ];
 elseif ncomp == 3
+    sigma = sigma_tot;
     epsv = reshape(epsv, [size(epsv,1),size(epsv,3)]);
     epsu = reshape(epsu, [size(epsu,1),size(epsu,4)]);
     epsv = [epsv(1,:); epsv(5,:); epsv(9,:); 2*epsv(2,:); 2*epsv(3,:); 2*epsv(6,:)];

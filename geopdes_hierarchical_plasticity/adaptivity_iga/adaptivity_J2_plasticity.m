@@ -20,7 +20,7 @@
 %    You should have received a copy of the GNU General Public License
 %    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [geometry, cell_hmsh, cell_hspace,  cell_hspace_scalar,  cell_u, cell_eps_pl, solution_data] = adaptivity_J2_plasticity (problem_data, method_data, adaptivity_data, plot_data)
+function [geometry, cell_hmsh, cell_hspace,  cell_hspace_scalar,  cell_u, cell_eps_pl, cell_sigma, solution_data] = adaptivity_J2_plasticity (problem_data, method_data, adaptivity_data, plot_data)
 
 if (nargin == 3)
     plot_data = struct ('print_info', true, 'plot_hmesh', false, 'plot_discrete_sol', false);
@@ -50,6 +50,7 @@ cell_hspace = cell(method_data.nload,1);
 cell_hspace_scalar = cell(method_data.nload,1);
 cell_u = cell(method_data.nload,1);
 cell_eps_pl = cell(method_data.nload,1); 
+cell_sigma = cell(method_data.nload,1); 
 
 % Initialization of the hierarchical mesh and space
 [hmsh, hspace, geometry] = adaptivity_initialize_vector (problem_data, method_data);
@@ -68,6 +69,8 @@ eps_pl = cell(hmsh.nlevels,1);
 for ilev = 1:hmsh.nlevels
     eps_pl{ilev} = zeros(hmsh.nel_per_level(ilev),hmsh.mesh_of_level(ilev).nqn,6);
 end
+
+
 
 
 
@@ -95,11 +98,21 @@ for iLoad = 1: method_data.nload
             disp('SOLVE:')
             fprintf('Number of elements: %d. Total DOFs: %d \n', hmsh.nel, hspace.ndof);
         end
-        [u, eps_pl] = solve_J2_plasticity_hier (problem_data, method_data, adaptivity_data, hspace, hmsh, iLoad, u, eps_pl);
 
-        % QI or L2 for eps_pl projection
-        
-        
+        sigma = cell(hmsh.nlevels,1);
+        for ilev = 1:hmsh.nlevels
+            sigma{ilev} = zeros(hmsh.nel_per_level(ilev),hmsh.mesh_of_level(ilev).nqn,6);
+        end
+
+        [u, eps_pl, sigma] = solve_J2_plasticity_hier (problem_data, method_data, adaptivity_data, hspace, hmsh, iLoad, u, eps_pl, sigma);
+
+
+
+        % interpolate sigma
+        sigma_store = zeros(hspace_scalar.ndof, 6); % control variables
+        sigma_store(:,:) = history_variable_projection_hier(hspace_scalar, hmsh, sigma,  method_data.type_projection);
+
+        % QI or L2 for eps_pl projection      
         eps_pl_store = zeros(hspace_scalar.ndof, 6); % control variables
         eps_pl_store(:,:) = history_variable_projection_hier(hspace_scalar, hmsh, eps_pl,  method_data.type_projection);
 
@@ -111,17 +124,11 @@ for iLoad = 1: method_data.nload
 
         % ESTIMATE
         if (plot_data.print_info); disp('ESTIMATE:'); end
-        est = ones(hmsh.nel,1);% adaptivity_estimate_linear_el (u, hmsh, hspace, problem_data, adaptivity_data);
+        %est = ones(hmsh.nel,1);% adaptivity_estimate_linear_el (u, hmsh, hspace, problem_data, adaptivity_data);
+        est =  adaptivity_estimate_div_sigma_el (sigma_store, hmsh, hspace, hspace_scalar, problem_data, adaptivity_data);
         est_elem{iter} = est.';
         gest(iter) = norm (est);
         if (plot_data.print_info); fprintf('Computed error estimate: %e \n', gest(iter)); end
-        if (isfield (problem_data, 'graduex'))
-            [err_h1(iter), err_l2(iter), err_h1s(iter),~,~,err_h1s_elem{iter}] = sp_h1_error (hspace, hmsh, u, problem_data.uex, problem_data.graduex);
-            if (plot_data.print_info); fprintf('Error in H1 seminorm = %e\n', err_h1s(iter)); end
-        elseif (isfield (problem_data, 'uex'))
-            err_l2(iter) = sp_l2_error (hspace, hmsh, u, problem_data.uex);
-            if (plot_data.print_info); fprintf('Error in L2 norm = %e\n', err_l2(iter)); end
-        end
 
         % STOPPING CRITERIA
         if (gest(iter) < adaptivity_data.tol)
@@ -154,12 +161,13 @@ for iLoad = 1: method_data.nload
         hspace_coarse = hspace;
         hspace_scalar_coarse  = hspace_scalar;
         [hmsh, hspace, Cref] = adaptivity_refine (hmsh_coarse, hspace_coarse, marked, adaptivity_data);
-        [~, hspace_scalar, ~] = adaptivity_refine (hmsh_coarse, hspace_scalar_coarse, marked, adaptivity_data);
+        [~, hspace_scalar, Cref_scalar] = adaptivity_refine (hmsh_coarse, hspace_scalar_coarse, marked, adaptivity_data);
 
         % refine variables
         u = Cref * u;
-        eps_pl_store = Cref(1:2:end,1:2:end)*eps_pl_store; % control variables
-        eps_pl = evaluate_at_quad_points(hmsh, hspace, eps_pl_store);
+        eps_pl_store = Cref_scalar*eps_pl_store; % control variables
+        sigma_store = Cref_scalar*sigma_store; % control variables
+        eps_pl = evaluate_at_quad_points(hmsh, hspace_scalar, eps_pl_store);
 
 
         % L2-projection
@@ -188,12 +196,17 @@ for iLoad = 1: method_data.nload
     cell_hspace_scalar{iLoad} = hspace_scalar;
     cell_u{iLoad} = u;
     cell_eps_pl{iLoad} = eps_pl_store;
+    cell_sigma{iLoad} = sigma_store;
+
+    % plot hierarchical mesh
+    figure(1000)
+    hmsh_plot_cells (hmsh)
+    view(0,90)
 
 
 end % end load step
 
 end
-
 
 
 
@@ -207,20 +220,22 @@ function eps_pl = evaluate_at_quad_points(hmsh, hspace, eps_pl_control_var)
     eps_pl = cell(hmsh.nlevels,1);
     
     ndofs_u = 0;
+    last_dof = cumsum (hspace.ndof_per_level);
+
     for ilev = 1:hmsh.nlevels
         ndofs_u = ndofs_u + hspace.ndof_per_level(ilev);
         if (hmsh.nel_per_level(ilev) > 0)
             spu_lev = sp_evaluate_element_list (hspace.space_of_level(ilev), hmsh.msh_lev{ilev});
-            nsh_scalar = spu_lev.nsh_max/spu_lev.ncomp;
-            sh_fun_u = reshape (spu_lev.shape_functions(1,:,1:nsh_scalar,:),  [hmsh.msh_lev{ilev}.nqn,  nsh_scalar, hmsh.msh_lev{ilev}.nel]);
-    
+            % spu_lev = change_connectivity_localized_Csub (spu_lev, hspace, ilev);
+            % nsh_scalar = spu_lev.nsh_max;
+            sh_fun_u = spu_lev.shape_functions;
             %dofs_u = 1:ndofs_u;
-            %scalar_comp = 1:(hspace.ndof/hspace.ncomp);
-    
+            %scalar_comp = 1:(hspace.ndof/hspace.ncomp);    
             eps_pl_lev = zeros(hmsh.nel_per_level(ilev),hmsh.mesh_of_level(ilev).nqn,6);
-            for iel=1:hmsh.msh_lev{ilev}.nel
-                dofs_elem = spu_lev.connectivity(1:nsh_scalar,iel);
-                eps_pl_lev(iel,:,:) = sh_fun_u(:,:,iel) * eps_pl_control_var(dofs_elem,:);
+            eps_pl_control_lev = hspace.Csub{ilev} * eps_pl_control_var(1:last_dof(ilev),:);
+            for iel=1:hmsh.msh_lev{ilev}.nel               
+                dofs_elem = spu_lev.connectivity(:,iel);
+                eps_pl_lev(iel,:,:) = sh_fun_u(:,:,iel) * eps_pl_control_lev(dofs_elem,:);
             end
     
             eps_pl{ilev} = eps_pl_lev;

@@ -65,7 +65,7 @@
 %    You should have received a copy of the GNU General Public License
 %    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [u, eps_pl] = solve_J2_plasticity_hier (problem_data, method_data, adaptivity_data, hspace, hmsh, load_multiplier, u, eps_pl)
+function [u, eps_pl, sigma] = solve_J2_plasticity_hier (problem_data, method_data, adaptivity_data, hspace, hmsh, load_multiplier, u, eps_pl, sigma)
 
 % Extract the fields from the data structures into local variables
 data_names = fieldnames (problem_data);
@@ -132,7 +132,7 @@ iter = 0;
 u(drchlt_dofs) = u_drchlt;
 
 % Assemble tangent matrix
-[K, internal_energy, eps_pl_new] = op_plsu_ev_hier (hspace, hspace, hmsh, u, eps_pl, mu_lame, kappa_lame, yield_stress);
+[K, internal_energy, eps_pl_new, sigma_new] = op_plsu_ev_hier (hspace, hspace, hmsh, u, eps_pl, sigma, mu_lame, kappa_lame, yield_stress);
 external_energy = rhs(int_dofs) - K(int_dofs, drchlt_dofs) * u_drchlt;
 res = internal_energy(int_dofs) - external_energy;
 res_norm_0 = norm(res);
@@ -148,7 +148,7 @@ while res_norm/res_norm_0 > method_data.newton_tol && iter < method_data.newton_
     u(int_dofs) = u(int_dofs) + u_inc;
 
     % Evaluate residuum
-    [K, internal_energy, eps_pl_new] = op_plsu_ev_hier (hspace, hspace, hmsh, u, eps_pl, mu_lame, kappa_lame, yield_stress);
+    [K, internal_energy, eps_pl_new, sigma_new] = op_plsu_ev_hier (hspace, hspace, hmsh, u, eps_pl, sigma, mu_lame, kappa_lame, yield_stress);
     external_energy = rhs(int_dofs) - K(int_dofs, drchlt_dofs) * u_drchlt;
     res = internal_energy(int_dofs) - external_energy;
     res_norm = norm(res)
@@ -156,5 +156,6 @@ while res_norm/res_norm_0 > method_data.newton_tol && iter < method_data.newton_
 
 end % end N-R while loop
 eps_pl = eps_pl_new;
+sigma = sigma_new;
 
 
