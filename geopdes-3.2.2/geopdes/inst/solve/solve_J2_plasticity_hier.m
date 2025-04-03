@@ -139,7 +139,7 @@ res_norm_0 = norm(res);
 res_norm =res_norm_0;
 
 % Newton-Raphson while loop
-while res_norm/res_norm_0 > method_data.newton_tol && iter < method_data.newton_iter_max 
+while res_norm/res_norm_0 > method_data.newton_tol && res_norm > method_data.newton_tol_abs && iter < method_data.newton_iter_max 
 
     % Solve the nonlinear system
     u_inc = - K(int_dofs, int_dofs) \ res;

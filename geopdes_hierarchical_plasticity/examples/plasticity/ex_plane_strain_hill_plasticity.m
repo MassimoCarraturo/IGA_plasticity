@@ -79,17 +79,18 @@ method_data.space_type  = 'standard';                     % 'simplified' (only c
 method_data.truncated   = 1;                              % 0: False, 1: True
 method_data.nload      = nload;                              % Number of load steps
 method_data.newton_tol = 1e-8;                            % Newton tolerance
+method_data.newton_tol_abs = 1e-10;                            % Newton tolerance
 method_data.newton_iter_max = 100;                        % Newton max number of iterations
 method_data.type_projection = 'QI';                         % 'QI' / 'L2'
 
 adaptivity_data.flag = 'elements';
 % adaptivity_data.flag = 'functions';
 adaptivity_data.C0_est = 1.0;
-adaptivity_data.mark_param = .5;
-adaptivity_data.mark_strategy = 'MS';
+adaptivity_data.mark_param = .99;
+adaptivity_data.mark_strategy = 'MS'; % GR/MS/GERS
 adaptivity_data.max_level = 5;
 adaptivity_data.max_ndof = 15000;
-adaptivity_data.num_max_iter = 8;
+adaptivity_data.num_max_iter = 10;
 adaptivity_data.max_nel = 5000;
 adaptivity_data.tol = 1e-5;
 
@@ -116,7 +117,6 @@ end
 
 
 % stress
-% [sigma, C_tg, eps_pl] = perfect_plasticity_model(eps_tot, eps_pl, mu, kappa, sigma_y)
 n_points_radial = 100;
 pt_eval ={linspace(0,1,n_points_radial),0.5};
 sigma_r = zeros(length(load_step_eval_stress), n_points_radial);
@@ -186,6 +186,10 @@ for comp =1:6
     output_file = strcat('plane_strain_ring_hier_',method_data.type_projection,'_',num2str(method_data.nload),'_eps_pl_',num2str(comp) );    
     name_field = strcat('plastic_strain_',num2str(comp));
     sp_to_vtk ( cell_eps_pl{method_data.nload}(:,comp), hspace_scalar, geometry, vtk_pts, output_file, {name_field}, {'value'})
+
+    output_file = strcat('plane_strain_ring_hier_',method_data.type_projection,'_',num2str(method_data.nload),'_sigma_',num2str(comp) );    
+    name_field = strcat('sigma_',num2str(comp));
+    sp_to_vtk ( cell_sigma{method_data.nload}(:,comp), hspace_scalar, geometry, vtk_pts, output_file, {name_field}, {'value'})
 end
 
 
