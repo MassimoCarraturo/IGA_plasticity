@@ -13,10 +13,7 @@ function eps_pl_control_var = history_variable_projection_hier(hspace, hmsh, eps
         end
     
     elseif  strcmpi(type_proj, 'QI')
-        if hspace.ncomp == 3
-            print('QI for 2D only!!!!!!!')
-            return
-        end
+        
         
         % compute number of quadrature points
         n_quad_nodes = 0;
@@ -26,8 +23,31 @@ function eps_pl_control_var = history_variable_projection_hier(hspace, hmsh, eps
              end
         end
         
-        % organize plastic variables in data(i,:) = (coord_x, coord_y, platic_var_1, platic_var2, ...)
-        data = zeros(n_quad_nodes, n_hist_var+ hmsh.ndim);
+        % organize plastic variables in data(i,:) = (coord_x, coord_y, plastic_var_1, plastic_var2, ...)
+        % data = zeros(n_quad_nodes, n_hist_var+ hmsh.ndim);
+        % counter = 0;
+        % for ilev = 1:n_levels
+        %      if (hmsh.nel_per_level(ilev) > 0)
+        %         tot_nqn_lev =  hmsh.mesh_of_level(ilev).nqn * hmsh.nel_per_level(ilev);
+        % 
+        %         % msh_lev = msh_evaluate_element_list (hmsh.mesh_of_level(ilev), hmsh.active{ilev});
+        %         quad_nodes = my_msh_evaluate_qn (hmsh.mesh_of_level(ilev), hmsh.active{ilev});
+        %         for idim = 1:hmsh.rdim                
+        %             % data(counter+1: counter+tot_nqn_lev, idim) = reshape (hmsh.msh_lev{ilev}.geo_map(idim,:,:), [tot_nqn_lev,1]);                  
+        %             data(counter+1: counter+tot_nqn_lev, idim) =  reshape (quad_nodes(idim,:,:), [tot_nqn_lev,1]);
+        %         end
+        %         data(counter+1: counter+tot_nqn_lev,idim+1:end) =  reshape (permute(eps_pl{ilev},[3,2,1]), [n_hist_var, tot_nqn_lev])';
+        %         counter = counter+tot_nqn_lev;
+        %      end         
+        % end
+
+        % compute spline coefficients
+        % QI_coeff = get_QI_coeffs(hspace,hmsh,data);
+        
+        % organize point coordinates in data(i,:) = (coord_x, coord_y, ...)
+        % organize plastic variables in f(i,:) = (plastic_var_1, plastic_var2, ...)
+        data = zeros(n_quad_nodes, hmsh.ndim);
+        f = zeros(n_quad_nodes, n_hist_var);
         counter = 0;
         for ilev = 1:n_levels
              if (hmsh.nel_per_level(ilev) > 0)
@@ -39,13 +59,14 @@ function eps_pl_control_var = history_variable_projection_hier(hspace, hmsh, eps
                     % data(counter+1: counter+tot_nqn_lev, idim) = reshape (hmsh.msh_lev{ilev}.geo_map(idim,:,:), [tot_nqn_lev,1]);                  
                     data(counter+1: counter+tot_nqn_lev, idim) =  reshape (quad_nodes(idim,:,:), [tot_nqn_lev,1]);
                 end
-                data(counter+1: counter+tot_nqn_lev,idim+1:end) =  reshape (permute(eps_pl{ilev},[3,2,1]), [n_hist_var, tot_nqn_lev])';
+                f(counter+1: counter+tot_nqn_lev,:) =  reshape (permute(eps_pl{ilev},[3,2,1]), [n_hist_var, tot_nqn_lev])';
                 counter = counter+tot_nqn_lev;
              end         
         end
     
         % compute spline coefficients
-        QI_coeff = get_QI_coeffs(hspace,hmsh,data);
+        QI_coeff = getcoeff_localLS_Bspl(hspace,hmsh,data,f,1e-6);
+
         % store in output
         eps_pl_control_var(:,:) = QI_coeff;
     

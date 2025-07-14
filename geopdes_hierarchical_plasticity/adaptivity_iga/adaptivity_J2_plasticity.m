@@ -79,14 +79,14 @@ end
 
 % LOAD INCREMENT LOOP
 for iLoad = 1: method_data.nload
-
+    fprintf('----------------------------------------------------- Load step %d -----------------------------------------------------\n',iLoad);
     % ADAPTIVE LOOP
     iter = 0;
     while (1)
         iter = iter + 1;
 
         if (plot_data.print_info)
-            fprintf('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Iteration %d %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n',iter);
+            fprintf('%%%%%%%%%%%%%%%%%%%% Iteration %d %%%%%%%%%%%%%%%%%%%%\n',iter);
         end
         if (~hspace_check_partition_of_unity (hspace, hmsh))
             disp('ERROR: The partition-of-the-unity property does not hold.')
@@ -151,11 +151,24 @@ for iLoad = 1: method_data.nload
         % MARK
         if (plot_data.print_info); disp('MARK:'); end
         [marked, num_marked] = adaptivity_mark (est, hmsh, hspace, adaptivity_data);
+        
+
+        if numel(marked) >= adaptivity_data.max_level -1            
+            marked{adaptivity_data.max_level-1} = double.empty(0,1);
+            num_marked =0;
+            for ilev_mark =1:numel(marked)
+                num_marked = num_marked + numel(marked{ilev_mark});
+            end            
+        end
+        if num_marked == 0
+            disp('Warning: no element refined')
+        end
+        
         if (plot_data.print_info)
             fprintf('%d %s marked for refinement \n', num_marked, adaptivity_data.flag);
             disp('REFINE:')
         end
-
+        
         % REFINE
         hmsh_coarse = hmsh;
         hspace_coarse = hspace;
@@ -170,14 +183,20 @@ for iLoad = 1: method_data.nload
         eps_pl = evaluate_at_quad_points(hmsh, hspace_scalar, eps_pl_store);
 
 
-        % L2-projection
-        % eps_pl = eps_pl_project_l2(hmsh_coarse, hspace_coarse, eps_pl, hmsh, hspace, Cref);
-        % quasi-interpolant
-        % eps_pl = eps_pl_quasi_interpolant(hmsh_coarse, hmsh, hspace, eps_pl);
 
         fprintf('\n');
     end % end adaptivity step
 
+    % coarsening step
+    hmsh_fine = hmsh;
+    [hmsh, hspace, u] =coarsening( hspace, hmsh_fine, u, est, adaptivity_data);
+    [hmsh, hspace_scalar, tmp] =coarsening( hspace_scalar, hmsh_fine, [eps_pl_store, sigma_store] , est, adaptivity_data);
+    eps_pl_store = tmp(:,1:size(eps_pl_store,2));
+    eps_pl = evaluate_at_quad_points(hmsh, hspace_scalar, eps_pl_store);
+    sigma_store = tmp(:,size(eps_pl_store,2)+1:end);
+
+
+    % store data
     solution_data.iter = iter;
     solution_data.gest = gest(1:iter);
     solution_data.ndof = ndof(1:iter);
@@ -199,9 +218,11 @@ for iLoad = 1: method_data.nload
     cell_sigma{iLoad} = sigma_store;
 
     % plot hierarchical mesh
-    figure(1000)
-    hmsh_plot_cells (hmsh)
-    view(0,90)
+    % figure(1000)
+    % hmsh_plot_cells (hmsh)
+    % view(0,90)
+    % 
+    % drawnow
 
 
 end % end load step
@@ -246,147 +267,33 @@ function eps_pl = evaluate_at_quad_points(hmsh, hspace, eps_pl_control_var)
 end
 
 
+function [hmsh, hspace, u] =coarsening( hspace, hmsh, u, est, adaptivity_data)
 
+ %% COARSENING =============================================================
+        % MARK COARSENING
+        disp('MARK COARSENING:')
+        [marked_coarse, num_marked_coarse] = adaptivity_mark_coarsening (est, hmsh, hspace, adaptivity_data);
 
+        % coarse only after the first time step if it also refines
+        % COARSE
+        if ~isempty(marked_coarse)
+            
+            fprintf('%d %s marked for coarsening \n', num_marked_coarse, adaptivity_data.flag);
 
-%--------------------------------------------------------------------------
-% subroutines   old
-%--------------------------------------------------------------------------
-
-
-
-
-function eps_pl = eps_pl_quasi_interpolant(hmsh_c, hmsh, hspace, eps_pl)
-
-data = zeros(hmsh_c.mesh_of_level(1).nqn*hmsh_c.nel, 8); % 2D only!!!
-id_lev =1;
-for ilev = 1:hmsh_c.nlevels
-    if (hmsh_c.nel_per_level(ilev) > 0)
-    ngp_lev = hmsh_c.mesh_of_level(ilev).nqn * hmsh_c.nel_per_level(ilev);
-    for idim = 1:hmsh_c.rdim        
-        elements = hmsh_c.active{ilev};
-        msh_lev = msh_evaluate_element_list( hmsh_c.mesh_of_level(ilev), elements );
-        tmp =reshape (msh_lev.quad_nodes(idim,:,:), [ngp_lev,1]);
-        data(id_lev:id_lev+ngp_lev-1,idim) = tmp;
-    end
-
-    data(id_lev:id_lev+ngp_lev-1,hmsh_c.rdim+1:end) = reshape(eps_pl{ilev}, [ngp_lev, 6]);
-    id_lev = id_lev + ngp_lev;
-    end
-end
-
-
-% Computing the coefficients of the quasi-interpolant in the space
-% hspace based on the mesh hmsh, approximating the data
-eps_pl_control_var = get_QI_coeffs(hspace,hmsh,data);
-
-eps_pl = cell(hmsh.nlevels,1);
-
-ndofs_u = 0;
-for ilev = 1:hmsh.nlevels
-    ndofs_u = ndofs_u + hspace.ndof_per_level(ilev);
-    if (hmsh.nel_per_level(ilev) > 0)
-        spu_lev = sp_evaluate_element_list (hspace.space_of_level(ilev), hmsh.msh_lev{ilev});
-        nsh_scalar = spu_lev.nsh_max/spu_lev.ncomp;
-        sh_fun_u = reshape (spu_lev.shape_functions(1,:,1:nsh_scalar,:),  [hmsh.msh_lev{ilev}.nqn,  nsh_scalar, hmsh.msh_lev{ilev}.nel]);
-
-        %dofs_u = 1:ndofs_u;
-        %scalar_comp = 1:(hspace.ndof/hspace.ncomp);
-
-        eps_pl_lev = zeros(hmsh.nel_per_level(ilev),hmsh.mesh_of_level(ilev).nqn,6);
-        for iel=1:hmsh.msh_lev{ilev}.nel
-            dofs_elem = spu_lev.connectivity(1:nsh_scalar,iel);
-            eps_pl_lev(iel,:,:) = sh_fun_u(:,:,iel) * eps_pl_control_var(dofs_elem,:);
+            % Project the previous solution mesh onto the next refined mesh
+            [hmsh_coarse, hspace_coarse, C_coar] = adaptivity_coarsen(hmsh, hspace, marked_coarse, adaptivity_data);
+            u = C_coar * u;
+            hmsh = hmsh_coarse;
+            hspace = hspace_coarse;
         end
-
-        eps_pl{ilev} = eps_pl_lev;
-
-    end
+       
 end
 
+  
 
-end
 
-function eps_pl = eps_pl_project_l2( hmsh_c, hspace_c, eps_pl_c, hmsh, hspace, Cref)
 
-M = op_u_v_hier( hspace_c, hspace_c, hmsh_c);
-rhs = eval_rhs_l2 (hspace_c, hmsh_c, eps_pl_c);
 
-eps_pl_control_var=zeros(hspace.ndof/hspace.ncomp,6);
-scalar_comp = 1:(hspace.ndof/hspace.ncomp);
-scalar_comp_c = 1:(hspace_c.ndof/hspace_c.ncomp);
-for i=1:6
-    eps_pl_control_var_c = M(scalar_comp_c, scalar_comp_c)\rhs(:,i);
-    eps_pl_control_var(:,i) = Cref(scalar_comp,scalar_comp_c) * eps_pl_control_var_c;
-end
 
-eps_pl = cell(hmsh.nlevels,1);
 
-ndofs_u = 0;
-for ilev = 1:hmsh.nlevels
-    ndofs_u = ndofs_u + hspace.ndof_per_level(ilev);
-    if (hmsh.nel_per_level(ilev) > 0)
-        spu_lev = sp_evaluate_element_list (hspace.space_of_level(ilev), hmsh.msh_lev{ilev});
-        nsh_scalar = spu_lev.nsh_max/spu_lev.ncomp;
-        sh_fun_u = reshape (spu_lev.shape_functions(1,:,1:nsh_scalar,:),  [hmsh.msh_lev{ilev}.nqn,  nsh_scalar, hmsh.msh_lev{ilev}.nel]);
 
-        %dofs_u = 1:ndofs_u;
-        %scalar_comp = 1:(hspace.ndof/hspace.ncomp);
-
-        eps_pl_lev = zeros(hmsh.nel_per_level(ilev),hmsh.mesh_of_level(ilev).nqn,6);
-        for iel=1:hmsh.msh_lev{ilev}.nel
-            dofs_elem = spu_lev.connectivity(1:nsh_scalar,iel);
-            eps_pl_lev(iel,:,:) = sh_fun_u(:,:,iel) * eps_pl_control_var(dofs_elem,:);
-        end
-
-        eps_pl{ilev} = eps_pl_lev;
-
-    end
-end
-
-end
-
-function rhs = eval_rhs_l2 (hspv, hmsh, eps_pl)
-
-rhs = zeros (hspv.ndof/hspv.ncomp, 6);
-ndofs_v = 0;
-for ilev = 1:hmsh.nlevels
-    ndofs_v = ndofs_v + hspv.ndof_per_level(ilev);
-    if (hmsh.nel_per_level(ilev) > 0)
-
-        spv_lev = sp_evaluate_element_list (hspv.space_of_level(ilev), hmsh.msh_lev{ilev});
-        rhs_lev = eval_rhs_lev (spv_lev, hmsh.msh_lev{ilev}, eps_pl{ilev}(:,:,:));
-
-        dofs_v = 1:ndofs_v;
-        scalar_comp = 1:(hspv.ndof/hspv.ncomp);
-        rhs(dofs_v(scalar_comp),:) = rhs(dofs_v(scalar_comp),:) + hspv.Csub{ilev}(scalar_comp,scalar_comp)'*rhs_lev;
-    end
-end
-end
-
-function rhs = eval_rhs_lev (spv, msh, eps_pl)
-nsh_scalar = spv.nsh_max/spv.ncomp;
-v = reshape (spv.shape_functions(1,:,1:nsh_scalar,:),  [msh.nqn,  nsh_scalar, msh.nel]);
-rhs = zeros(spv.ndof/spv.ncomp,6);
-jacdet_weights = msh.jacdet .* msh.quad_weights;
-
-for iel = 1:msh.nel
-    if (all (msh.jacdet(:, iel)))
-
-        eps_pl_iel = reshape(eps_pl(iel,:,:), [msh.nqn,6])';
-        rhs_iel = zeros(spv.nsh(iel)/spv.ncomp, 6);
-
-        for igp =1: msh.nqn
-            eps_pl_igp = eps_pl_iel(:,igp);
-            rhs_iel = rhs_iel + (v(igp,:,iel).* jacdet_weights(igp,iel))' * eps_pl_igp';
-        end
-
-        % assembly vector
-        rhs(spv.connectivity(1:nsh_scalar,iel),:)= rhs(spv.connectivity(1:nsh_scalar,iel),:) + rhs_iel;
-
-    else
-        warning ('geopdes:jacdet_zero_at_quad_node', 'op_su_ev: singular map in element number %d', iel)
-    end
-end
-
-end

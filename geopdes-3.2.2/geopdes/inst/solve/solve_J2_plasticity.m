@@ -102,6 +102,8 @@ clear space_scalar scalar_spaces
 u = zeros (sp.ndof, nload);
 eps_pl = zeros(msh.nel,msh.nqn,6);
 eps_pl_store = zeros(sp.ndof/sp.ncomp, 6, nload);
+sigma = zeros(msh.nel,msh.nqn,6);
+sigma_store = zeros(sp.ndof/sp.ncomp, 6, nload);
 
 % Assemble the matrices
 
@@ -183,7 +185,7 @@ for i=1:nload % Load increment for loop
     u(drchlt_dofs,i) = u_drchlt;
 
     % Assemble tangent matrix
-    [K, internal_energy, eps_pl_new] = op_plsu_ev_tp (sp, sp, msh, u(:,i), eps_pl, mu_lame, kappa_lame, yield_stress);
+    [K, internal_energy, eps_pl_new, sigma_new] = op_plsu_ev_tp (sp, sp, msh, u(:,i), eps_pl, sigma, mu_lame, kappa_lame, yield_stress);
     external_energy = rhs(int_dofs) ;%- K(int_dofs, drchlt_dofs) * u_drchlt;
     res = internal_energy(int_dofs) - external_energy ;
     if numel(slider_sides)>0
@@ -205,7 +207,7 @@ for i=1:nload % Load increment for loop
         u(int_dofs,i) = u(int_dofs,i) + u_inc;
 
         % Evaluate residuum
-        [K, internal_energy, eps_pl_new] = op_plsu_ev_tp (sp, sp, msh, u(:,i), eps_pl, mu_lame, kappa_lame, yield_stress);
+        [K, internal_energy, eps_pl_new, sigma_new] = op_plsu_ev_tp (sp, sp, msh, u(:,i), eps_pl, sigma, mu_lame, kappa_lame, yield_stress);
         external_energy = rhs(int_dofs) ;%- K(int_dofs, drchlt_dofs) * u_drchlt;
         res = internal_energy(int_dofs) - external_energy ;
         if numel(slider_sides)>0
@@ -216,11 +218,12 @@ for i=1:nload % Load increment for loop
 
     end % end N-R while loop
     eps_pl = eps_pl_new;
+    sigma = sigma_new;
 
     % QI or L2 for eps_pl projection
     sp_scalar = sp.scalar_spaces{1};
     eps_pl_store(:,:,i) = history_variable_projection(sp_scalar, msh, eps_pl,  type_projection);
-
+    sigma_store(:,:,i) = history_variable_projection(sp_scalar, msh, sigma,  type_projection);
 
 
 end % end load for-loop

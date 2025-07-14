@@ -32,7 +32,7 @@
 %    You should have received a copy of the GNU General Public License
 %    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [K, internal_energy, eps_pl] = op_plsu_ev_tp (space1, space2, msh, uhat, eps_pl, mu, kappa, sigma_y)
+function [K, internal_energy, eps_pl, sigma] = op_plsu_ev_tp (space1, space2, msh, uhat, eps_pl, sigma, mu, kappa, sigma_y)
 
   for icomp = 1:space1.ncomp_param
     for idim = 1:msh.ndim
@@ -59,9 +59,10 @@ function [K, internal_energy, eps_pl] = op_plsu_ev_tp (space1, space2, msh, uhat
       x{idim} = reshape (msh_col.geo_map(idim,:,:), msh_col.nqn, msh_col.nel);
     end
 
-    [A_temp, b_temp, eps_pl_temp] = op_plsu_ev (sp1_col, sp2_col, msh_col, uhat, eps_pl(msh_col.elem_list,:,:), mu(x{:}), kappa(x{:}), sigma_y(x{:}));
+    [A_temp, b_temp, eps_pl_temp, sigma_temp] = op_plsu_ev (sp1_col, sp2_col, msh_col, uhat, eps_pl(msh_col.elem_list,:,:), sigma(msh_col.elem_list,:,:), mu(x{:}), kappa(x{:}), sigma_y(x{:}));
     K = K + A_temp;
     internal_energy = internal_energy + b_temp;
     eps_pl(msh_col.elem_list,:,:) = eps_pl_temp;
+    sigma(msh_col.elem_list,:,:) = sigma_temp;
   end
 end

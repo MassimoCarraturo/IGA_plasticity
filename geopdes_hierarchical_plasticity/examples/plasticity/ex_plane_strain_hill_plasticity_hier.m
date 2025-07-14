@@ -69,10 +69,10 @@ drawnow
 
 % 2) CHOICE OF THE DISCRETIZATION PARAMETERS
 clear method_data
-p = 2;
+p = 3;
 method_data.degree      = [p p];                          % Degree of the splines
 method_data.regularity  = method_data.degree - 1;         % Regularity of the splines
-method_data.nsub_coarse = [2 2];                          % Number of subdivisions of the coarsest mesh, with respect to the mesh in geometry
+method_data.nsub_coarse = [4 4];                          % Number of subdivisions of the coarsest mesh, with respect to the mesh in geometry
 method_data.nsub_refine = [2 2];                          % Number of subdivisions for each refinement
 method_data.nquad       = [p+1 p+1];                      % Points for the Gaussian quadrature rule
 method_data.space_type  = 'standard';                     % 'simplified' (only children functions) or 'standard' (full basis)
@@ -86,14 +86,19 @@ method_data.type_projection = 'QI';                         % 'QI' / 'L2'
 adaptivity_data.flag = 'elements';
 % adaptivity_data.flag = 'functions';
 adaptivity_data.C0_est = 1.0;
-adaptivity_data.mark_param = .99;
+adaptivity_data.mark_param = .8;
+adaptivity_data.mark_param_coarsening = .05;
 adaptivity_data.mark_strategy = 'MS'; % GR/MS/GERS
-adaptivity_data.max_level = 5;
+adaptivity_data.max_level = 4;
 adaptivity_data.max_ndof = 15000;
-adaptivity_data.num_max_iter = 10;
+adaptivity_data.num_max_iter = 5;
 adaptivity_data.max_nel = 5000;
-adaptivity_data.tol = 1e-5;
+adaptivity_data.tol = 1e-5 *3.14 *30000;
 
+adaptivity_data.adm_strategy = 'admissible';
+adaptivity_data.coarsening_flag = 'any'; %'any', 'all'
+adaptivity_data.adm = p ; %1 + method_data.truncated;
+% adaptivity_data.coarse_flag = 'bezier'; % 'bezier', 'MS_all', 'MS_old', 'L2_global'
 % 3) CALL TO THE SOLVER
 [geometry, cell_hmsh, cell_hspace,  cell_hspace_scalar,  cell_u, cell_eps_pl, cell_sigma, solution_data] = adaptivity_J2_plasticity (problem_data, method_data, adaptivity_data);
 

@@ -27,27 +27,25 @@ if  strcmpi(type_proj, 'L2')
     end
 
 elseif  strcmpi(type_proj, 'QI')
-    if space.ncomp == 3
-        print('QI for 2D only!!!!!!!')
-        return
-    end
+
     
     
     n_quad_nodes = size(eps_pl,1) *  size(eps_pl,2);
-    data = zeros(n_quad_nodes, n_hist_var+ msh.ndim);
+    data = zeros(n_quad_nodes, msh.ndim);
+    f = zeros(n_quad_nodes, n_hist_var);
 
     
   
     % msh_val = msh_precompute(msh);
     quad_nodes = my_msh_evaluate_qn (msh, 1:msh.nel);
     data(:,1:msh.ndim ) = reshape(quad_nodes, msh.ndim, n_quad_nodes)';
-    data(:, msh.ndim+1:end) = reshape(permute(eps_pl, [3,2,1]),  n_hist_var , n_quad_nodes)';
+    f(:, :) = reshape(permute(eps_pl, [3,2,1]),  n_hist_var , n_quad_nodes)';
 
 
-    hmsh     = hierarchical_mesh (msh, [2,2]);
-    hspace   = hierarchical_space (hmsh, space,  'standard', 1, [space.degree-1, space.degree-1]);
+    hmsh     = hierarchical_mesh (msh);
+    hspace   = hierarchical_space (hmsh, space,  'standard', 1, space.degree-1);
     
-    QI_coeff = get_QI_coeffs(hspace,hmsh,data);
+    QI_coeff = getcoeff_localLS_Bspl(hspace,hmsh,data, f, 0.);
     eps_pl_control_var(:,:) = QI_coeff;
 
 

@@ -94,10 +94,23 @@ end
 
 % Apply pressure conditions
 for iside = problem_data.press_sides
-    pside = @(varargin) problem_data.p(varargin{:},iside);
-    dofs = hspace.boundary(iside).dofs;
-    rhs_shape(dofs) = rhs_shape(dofs) - op_pn_v_hier (hspace.boundary(iside), hmsh.boundary(iside), pside);
+    % pside = @(varargin) problem_data.p(varargin{:},iside);
+    % dofs = hspace.boundary(iside).dofs;
+    tmp = op_pn_v_hier (hspace, hmsh,  problem_data.p, iside);
+    rhs_shape = rhs_shape - tmp;
 end
+
+% slider
+if numel(slider_sides)>0
+    matrix_BC= spalloc (hspace.ndof, hspace.ndof, 5*hspace.ndof); 
+end
+for iside = problem_data.slider_sides
+    tmp = op_udotn_vdotn_hier (hspace, hmsh, penalty_slider,iside);
+    matrix_BC = matrix_BC + tmp;
+end
+
+
+
 
 % Apply symmetry conditions
 symm_dofs = [];
@@ -135,6 +148,9 @@ u(drchlt_dofs) = u_drchlt;
 [K, internal_energy, eps_pl_new, sigma_new] = op_plsu_ev_hier (hspace, hspace, hmsh, u, eps_pl, sigma, mu_lame, kappa_lame, yield_stress);
 external_energy = rhs(int_dofs) - K(int_dofs, drchlt_dofs) * u_drchlt;
 res = internal_energy(int_dofs) - external_energy;
+if numel(slider_sides)>0
+    res = res + matrix_BC(int_dofs, :)*u;
+end
 res_norm_0 = norm(res);
 res_norm =res_norm_0;
 
@@ -142,7 +158,11 @@ res_norm =res_norm_0;
 while res_norm/res_norm_0 > method_data.newton_tol && res_norm > method_data.newton_tol_abs && iter < method_data.newton_iter_max 
 
     % Solve the nonlinear system
-    u_inc = - K(int_dofs, int_dofs) \ res;
+    if numel(slider_sides)>0
+        u_inc = - (K(int_dofs, int_dofs)+ matrix_BC(int_dofs, int_dofs)) \ res;
+    else
+        u_inc = - K(int_dofs, int_dofs) \ res;
+    end
 
     % Update solution vector
     u(int_dofs) = u(int_dofs) + u_inc;
@@ -151,11 +171,15 @@ while res_norm/res_norm_0 > method_data.newton_tol && res_norm > method_data.new
     [K, internal_energy, eps_pl_new, sigma_new] = op_plsu_ev_hier (hspace, hspace, hmsh, u, eps_pl, sigma, mu_lame, kappa_lame, yield_stress);
     external_energy = rhs(int_dofs) - K(int_dofs, drchlt_dofs) * u_drchlt;
     res = internal_energy(int_dofs) - external_energy;
-    res_norm = norm(res)
-    iter = iter+1
+    if numel(slider_sides)>0
+        res = res + matrix_BC(int_dofs, :)*u;
+    end
+    res_norm = norm(res);
+    iter = iter+1;
 
 end % end N-R while loop
 eps_pl = eps_pl_new;
 sigma = sigma_new;
 
 
+fprintf('Solved in %d  iteration, residual= %d  \n',  iter , res_norm);
