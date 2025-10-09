@@ -12,6 +12,7 @@ problem_data.nmnn_sides   = [1];
 problem_data.drchlt_sides = [];
 problem_data.press_sides  = [];
 problem_data.symm_sides   = [3 4];
+problem_data.slider_sides = [];
 
 % Physical parameters
 E  =  210000;                                  % MPa

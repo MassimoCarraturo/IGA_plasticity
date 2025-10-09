@@ -25,7 +25,7 @@ problem_data.kappa_lame = @(x, y, z) E/(3*(1-2*nu)) * ones (size (x));
 problem_data.mu_lame = @(x, y, z) (E/(2*(1+nu)) * ones (size (x)));
 
 % Source and boundary terms
-nload = 10;
+nload = 5;
 P = 332*.99;                                        % Limit internal pressure [MPa]
 problem_data.f = @(x, y, z) zeros (3, size (x, 1), size (x, 2), size (x, 3)   );
 problem_data.g = @(x, y, z, ind) zeros (3, size (x, 1), size (x, 2), size (x, 3)   );
@@ -34,7 +34,7 @@ problem_data.p = @(x, y, z) P*ones (size (x));
 
 % Plot in Matlab Hill solution
 [u_ex,P_ex, sigma_r_ex, sigma_t_ex, radius] = sphere_solution (E, nu, problem_data.yield_stress(1), 100, 200,P,nload);
-load_step_eval_stress = [5,10]; %[nload, int64(nload/2)]*int64(100/nload);
+load_step_eval_stress = [2, 5];%[5,10]; %[nload, int64(nload/2)]*int64(100/nload);
 
 figure(1)
 plot (u_ex,P_ex,'-k');
@@ -70,7 +70,7 @@ for p =2:2 % loop for p-refinemet study
     clear method_data
     method_data.degree     = [p p p];                      % Degree of the basis functions
     method_data.regularity = [p-1 p-1 p-1];     % Regularity of the basis functions
-    method_data.nsub_coarse = [5 5 5];            % Number of subdivisions of the coarsest mesh, with respect to the mesh in geometry
+    method_data.nsub_coarse = [15,5,5];            % Number of subdivisions of the coarsest mesh, with respect to the mesh in geometry
     method_data.nsub_refine = [2 2 2];                          % Number of subdivisions for each refinement
     method_data.nquad      = [p+1 p+1 p+1];                  % Points for the Gaussian quadrature rule
     method_data.space_type  = 'standard';                     % 'simplified' (only children functions) or 'standard' (full basis)
@@ -84,10 +84,10 @@ for p =2:2 % loop for p-refinemet study
     adaptivity_data.flag = 'elements';
     % adaptivity_data.flag = 'functions';
     adaptivity_data.C0_est = 1.0;
-    adaptivity_data.mark_param = 1.;
-    adaptivity_data.mark_param_coarsening = .0;
+    adaptivity_data.mark_param = 0.9;
+    adaptivity_data.mark_param_coarsening = .05;
     adaptivity_data.mark_strategy = 'MS'; % GR/MS/GERS
-    adaptivity_data.max_level = 2;
+    adaptivity_data.max_level = 1;
     adaptivity_data.max_ndof = 15000;
     adaptivity_data.num_max_iter = 1;
     adaptivity_data.max_nel = 5000;
@@ -116,8 +116,47 @@ for p =2:2 % loop for p-refinemet study
     end
 
     % 4.1) Plot in Matlab numerical results
+    figure(1)
     plot (u_r,P_i,'-x');
     drawnow
+
+    % compute radial and tangential stresses
+    rad_dir = [.5;.5;sqrt(2)/2];
+    tan_dir =  [.5;.5;-sqrt(2)/2];
+    voigt = [1,1;2,2; 3,3; 1,2; 2,3;1,3];
+    rad_pos = linspace(0,1,length(radius));
+
+    sigma_rad = zeros(length(radius),length(load_step_eval_stress) );
+    sigma_tan = zeros(length(radius),length(load_step_eval_stress) );
+
+    for jload =1:length(load_step_eval_stress)
+    for jpoint =1:length(rad_pos)
+        position = {rad_pos(jpoint), 0.5, 0.75};        
+        sigma_matrix = zeros(3,3);
+        for icomp =1:6
+            [eu, F] = sp_eval (cell_sigma{load_step_eval_stress(jload)}(:,icomp), cell_hspace_scalar{load_step_eval_stress(jload)}, geometry, position);
+            sigma_matrix(voigt(icomp,1), voigt(icomp,2)) = eu; 
+            if icomp > 3
+                sigma_matrix(voigt(icomp,2), voigt(icomp,1)) = eu;   
+            end
+        end
+        sigma_rad(jpoint, jload) = rad_dir' * sigma_matrix * rad_dir;
+        sigma_tan(jpoint, jload) = tan_dir' * sigma_matrix * tan_dir;
+
+    end
+    end
+    % plot stress
+    figure(2)
+    for jload =1:length(load_step_eval_stress)
+        plot (radius,sigma_rad(:, jload),'--');    
+    end
+
+    figure(3)
+    for jload =1:length(load_step_eval_stress)
+        plot (radius,sigma_tan(:, jload),'--');    
+    end
+
+
 % 
 % end % loop p refinement study
 % legend ('Exact solution',  'p=2', 'p=3', 'p=4');

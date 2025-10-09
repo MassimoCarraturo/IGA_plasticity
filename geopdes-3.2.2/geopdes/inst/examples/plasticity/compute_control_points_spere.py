@@ -28,7 +28,7 @@ class sphere_eighth:
     
     def _create_surface(self, R):    
     
-        c1 = circle(radius=R, angle=(0,np.pi/4.))
+        c1 = circle(radius=R, angle=(0,np.pi/3.))
         c1.rotate(np.pi/2, axis=0)
         surf = revolve(c1, point=0, axis=2, angle=[0,np.pi/2.])
         

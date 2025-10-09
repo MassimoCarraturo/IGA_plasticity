@@ -12,7 +12,7 @@ function [u, pressure, sigma_r, sigma_t, radius] = sphere_solution(E,v, s_y, a, 
 P_lim = 2 *s_y * log(b/a);
 P_0 = 2*s_y/3*(1-(a^3/b^3));
 
-radius = linspace(a,b,1000);
+radius = linspace(a,b,100);
 P =  linspace(P_max/nload, P_max, nload);
 ub = zeros(size(P));
 sigma_r =  zeros(size(P,2), size(radius,2));
