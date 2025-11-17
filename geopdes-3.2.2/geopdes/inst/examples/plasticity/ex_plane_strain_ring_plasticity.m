@@ -33,7 +33,7 @@ problem_data.p = @(x, y, ind) P * ones (size (x));
 
 % Plot in Matlab Hill solution
 figure(1)
-[u_ex,P_ex] = Hill_solution (E, nu, problem_data.yield_stress(1), 100, 200, P, nload);
+[u_ex,P_ex, sigma_r, sigma_t, radius] = Hill_solution (E, nu, problem_data.yield_stress(1), 100, 200, P, nload, 1000);
 plot (u_ex,P_ex,'-k');
 
 xlabel('u');

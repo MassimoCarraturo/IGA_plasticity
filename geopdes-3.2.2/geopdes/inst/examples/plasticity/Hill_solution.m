@@ -2,7 +2,7 @@
 % clear all
 % clc
 
-function [u, pressure, sigma_r, sigma_t, radius] = Hill_solution(E,v, s_y, a, b, P_max, nload)
+function [u, pressure, sigma_r, sigma_t, radius] = Hill_solution(E,v, s_y, a, b, P_max, nload, n_points)
 % E =210000;
 % v = 0.3;
 % s_y = 0.24;
@@ -16,7 +16,7 @@ P_0 = Y/2*(1-(a^2/b^2));
 
 P = linspace(P_max/nload, P_max, nload);
 
-radius = linspace(a,b,1000);
+radius = linspace(a,b,n_points);
 ub = zeros(size(P));
 sigma_r =  zeros(size(P,2), size(radius,2));
 sigma_t =  zeros(size(P,2), size(radius,2));

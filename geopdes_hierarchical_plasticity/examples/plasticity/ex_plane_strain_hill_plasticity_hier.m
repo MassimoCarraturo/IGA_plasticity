@@ -25,7 +25,7 @@ problem_data.kappa_lame = @(x, y) kappa_lame * ones (size (x));
 problem_data.mu_lame = @(x, y) mu_lame * ones (size (x));
 
 % Source and boundary terms
-P = 192.09*.98;                                        % Limit internal pressure [MPa]
+P = 192.09*.95;                                        % Limit internal pressure [MPa]
 nload = 10;
 problem_data.f = @(x, y) zeros (2, size (x, 1), size (x, 2));
 problem_data.g = @(x, y, ind) test_plane_strain_ring_plasticity_g_nmnn (x, y, P, nu, ind);
@@ -33,38 +33,9 @@ problem_data.h = @(x, y, ind) test_plane_strain_ring_plasticity_uex (x, y, E, nu
 problem_data.p = @(x, y, ind) P * ones (size (x));
 
 % Plot in Matlab Hill solution
-
-[u_ex,P_ex, sigma_r_ex, sigma_t_ex, radius] = Hill_solution (E, nu, problem_data.yield_stress(1), 100, 200,P, nload);
+n_points_eval_stress =1000;
+[u_ex,P_ex, sigma_r_ex, sigma_t_ex, radius] = Hill_solution (E, nu, problem_data.yield_stress(1), 100, 200,P, nload,n_points_eval_stress);
 load_step_eval_stress = [1, 10]; %[nload, int64(nload/2)]*int64(100/nload);
-figure(1)
-plot (u_ex,P_ex,'-k');
-xlabel('u');
-ylabel('P');
-hold on
-grid on
-drawnow
-
-figure(2)
-xlabel('radial coord');
-ylabel('sigma radial');
-hold on
-for jload =1:length(load_step_eval_stress)
-    disp(jload)
-    plot (radius,sigma_r_ex(load_step_eval_stress(jload),:),'-k');    
-end
-grid on
-drawnow
-
-figure(3)
-xlabel('radial coord');
-ylabel('sigma tangential');
-hold on
-for jload =1:length(load_step_eval_stress)
-    plot (radius,sigma_t_ex(load_step_eval_stress(jload),:),'-k');    
-end
-grid on
-drawnow
-
 
 
 
@@ -73,26 +44,26 @@ clear method_data
 p = 3;
 method_data.degree      = [p p];                          % Degree of the splines
 method_data.regularity  = method_data.degree - 1;         % Regularity of the splines
-method_data.nsub_coarse = [4 4];                          % Number of subdivisions of the coarsest mesh, with respect to the mesh in geometry
+method_data.nsub_coarse = [5 5];                          % Number of subdivisions of the coarsest mesh, with respect to the mesh in geometry
 method_data.nsub_refine = [2 2];                          % Number of subdivisions for each refinement
-method_data.nquad       = [p+1 p+1];                      % Points for the Gaussian quadrature rule
+method_data.nquad       = [5 5];                      % Points for the Gaussian quadrature rule
 method_data.space_type  = 'standard';                     % 'simplified' (only children functions) or 'standard' (full basis)
 method_data.truncated   = 1;                              % 0: False, 1: True
 method_data.nload      = nload;                              % Number of load steps
 method_data.newton_tol = 1e-8;                            % Newton tolerance
 method_data.newton_tol_abs = 1e-10;                            % Newton tolerance
 method_data.newton_iter_max = 100;                        % Newton max number of iterations
-method_data.type_projection = 'QI';                         % 'QI' / 'L2'
+method_data.type_projection = 'QI_ref';                         % 'QI' / 'L2' / 'QI_ref'
 
 adaptivity_data.flag = 'elements';
 % adaptivity_data.flag = 'functions';
 adaptivity_data.C0_est = 1.0;
 adaptivity_data.mark_param = .8;
-adaptivity_data.mark_param_coarsening = .05;
+adaptivity_data.mark_param_coarsening = .0;
 adaptivity_data.mark_strategy = 'MS'; % GR/MS/GERS
-adaptivity_data.max_level = 4;
+adaptivity_data.max_level = 1;
 adaptivity_data.max_ndof = 15000;
-adaptivity_data.num_max_iter = 5;
+adaptivity_data.num_max_iter = 1;
 adaptivity_data.max_nel = 5000;
 adaptivity_data.tol = 1e-5 *3.14 *30000;
 
@@ -103,7 +74,13 @@ adaptivity_data.adm = p ; %1 + method_data.truncated;
 % 3) CALL TO THE SOLVER
 [geometry, cell_hmsh, cell_hspace,  cell_hspace_scalar,  cell_u, cell_eps_pl, cell_sigma, solution_data] = adaptivity_J2_plasticity (problem_data, method_data, adaptivity_data);
 
+%%
+% plot hierarchical mesh
+figure(1000)
+hmsh_plot_cells (cell_hmsh{load_step_eval_stress(2)})
+view(0,90)
 
+drawnow
 
 %% 4) POST-PROCESSING.
 
@@ -123,7 +100,7 @@ end
 
 
 % stress
-n_points_radial = 100;
+n_points_radial = n_points_eval_stress;
 pt_eval ={linspace(0,1,n_points_radial),0.5};
 sigma_r = zeros(length(load_step_eval_stress), n_points_radial);
 sigma_t = zeros(length(load_step_eval_stress), n_points_radial);
@@ -161,24 +138,81 @@ for jload =1:length(load_step_eval_stress)
 end
 
 
-% 4.1) Plot in Matlab numerical results
+%% 4.1) Plot in Matlab numerical results
 figure(1)
 plot (u_r,P_i,'-x');
+hold on
 drawnow
 
 figure(2)
+hold on
 for jload =1:length(load_step_eval_stress)
     plot (linspace(100,200,n_points_radial),sigma_r(jload,:),'-x');
 end
 drawnow
 
 figure(3)
+hold on
 for jload =1:length(load_step_eval_stress)
     plot (linspace(100,200,n_points_radial),sigma_t(jload,:),'-x');
 end
 drawnow
 
-% 4.2) Export to Paraview
+figure(1)
+plot (u_ex,P_ex,'-k');
+xlabel('u');
+ylabel('P');
+hold on
+grid on
+drawnow
+
+figure(2)
+xlabel('radial coord');
+ylabel('sigma radial');
+hold on
+for jload =1:length(load_step_eval_stress)
+    disp(jload)
+    plot (radius,sigma_r_ex(load_step_eval_stress(jload),:),'-k');    
+end
+grid on
+drawnow
+
+figure(3)
+xlabel('radial coord');
+ylabel('sigma tangential');
+hold on
+for jload =1:length(load_step_eval_stress)
+    plot (radius,sigma_t_ex(load_step_eval_stress(jload),:),'-k');    
+end
+grid on
+drawnow
+
+
+
+
+%% compute L2 error stresses
+err_L2_rad = zeros(length(load_step_eval_stress),1);
+err_L2_tan = zeros(length(load_step_eval_stress),1);
+norm_rad = zeros(length(load_step_eval_stress),1);
+norm_tan = zeros(length(load_step_eval_stress),1);
+dx = radius(end) - radius(1)/(n_points_radial-1);
+for jload =1:length(load_step_eval_stress)
+    for i =1:n_points_radial-1
+        err_L2_rad(jload) = err_L2_rad(jload)  + (  sigma_r(jload,i)  - sigma_r_ex(load_step_eval_stress(jload),i)   )^2 * dx;
+        err_L2_tan(jload)  = err_L2_tan(jload)  + (  sigma_t(jload,i)  - sigma_t_ex(load_step_eval_stress(jload),i)   )^2 * dx;
+        norm_rad(jload)  = norm_rad(jload)  + (   sigma_r_ex(load_step_eval_stress(jload),i)   )^2 * dx;
+        norm_tan(jload)  = norm_tan(jload)  + (   sigma_t_ex(load_step_eval_stress(jload),i)   )^2 * dx;
+    end
+
+    err_L2_rad(jload)  = sqrt(err_L2_rad(jload) /norm_rad(jload) );
+    err_L2_tan(jload)  = sqrt(err_L2_tan(jload) /norm_tan(jload) );
+end
+
+
+
+
+
+%% 4.2) Export to Paraview
 output_file = strcat('plane_strain_ring_hier_',method_data.type_projection,'_',num2str(method_data.nload));
 vtk_pts = {linspace(0, 1, 41), linspace(0, 1, 41)};
 

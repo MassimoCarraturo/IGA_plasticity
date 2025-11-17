@@ -68,7 +68,7 @@ function [eu, pts_list] = sp_eval_phys (u, hspace, hmsh, geometry, pts, options)
   end
   
   for ipt = 1:npts
-    [pts_param(:,ipt), flag(ipt)] = nrbinverse (nurbs, pts(:,ipt),'MaxIter',100);
+    [pts_param(:,ipt), flag(ipt)] = nrbinverse (nurbs, pts(:,ipt),'MaxIter',100,'Display', false);
   end
   
   if (~all(flag))
@@ -127,8 +127,13 @@ function [eu, pts_list] = sp_eval_phys (u, hspace, hmsh, geometry, pts, options)
       % eu_aux = sp_eval_msh (u_lev, sp_col, msh_col, options);
       
       point = pts_on_lev(ipt);
+      if ndim ==2
+      eu_aux = sp_eval (u_lev, hspace.space_of_level(ilev), hmsh.mesh_of_level(ilev), {[pts_param(1,point)],[pts_param(2,point)]}, options);
+      eu{1}(:,inds_on_F(point)) = eu_aux;
+      else
       eu_aux = sp_eval (u_lev, hspace.space_of_level(ilev), hmsh.mesh_of_level(ilev), {[pts_param(1,point)],[pts_param(2,point)],[pts_param(3,point)]}, options);
       eu{1}(inds_on_F(point)) = eu_aux;
+      end
 
       % for iopt = 1:nopts
       %   eu{iopt}(eunum{iopt}{:},inds_on_F(point)) = eu_aux{iopt};

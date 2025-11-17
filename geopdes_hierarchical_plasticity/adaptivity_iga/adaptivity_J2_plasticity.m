@@ -47,6 +47,7 @@ nel = zeros (1, adaptivity_data.num_max_iter); ndof = nel; gest = nel+1;
 % initialize space for solution
 cell_hmsh = cell(method_data.nload,1);
 cell_hspace = cell(method_data.nload,1);
+cell_hmsh_scalar = cell(method_data.nload,1);
 cell_hspace_scalar = cell(method_data.nload,1);
 cell_u = cell(method_data.nload,1);
 cell_eps_pl = cell(method_data.nload,1); 
@@ -54,15 +55,37 @@ cell_sigma = cell(method_data.nload,1);
 
 % Initialization of the hierarchical mesh and space
 [hmsh, hspace, geometry] = adaptivity_initialize_vector (problem_data, method_data);
+hmsh_scalar = hmsh;
+
 
 % store initial scalar space
-[knots, zeta] = kntrefine (geometry.nurbs.knots, method_data.nsub_coarse-1, method_data.degree, method_data.regularity);
+degree_projection = method_data.degree;
+regularity_projection = method_data.regularity;
+if strcmpi(method_data.type_projection, 'QI_ref')
+    % degree_projection  = ones(size(method_data.degree));
+    regularity_projection = degree_projection-degree_projection;
+end
+
+[knots, zeta] = kntrefine (geometry.nurbs.knots, method_data.nsub_coarse-1, degree_projection, regularity_projection);
 rule     = msh_gauss_nodes (method_data.nquad);
 [qn, qw] = msh_set_quad_nodes (zeta, rule);
 msh   = msh_cartesian (zeta, qn, qw, geometry);
-space_scalar =sp_bspline (knots, method_data.degree, msh);
+space_scalar =sp_bspline (knots, degree_projection, msh);
 clear knots zeta rule qn  qw msh
-hspace_scalar   = hierarchical_space (hmsh, space_scalar, method_data.space_type, method_data.truncated, method_data.regularity);
+hspace_scalar   = hierarchical_space (hmsh_scalar, space_scalar, method_data.space_type, method_data.truncated, regularity_projection);
+hspace_dummy = hspace_scalar; 
+
+% refine the scalar space/mesh
+num_bisections =2;
+if strcmpi(method_data.type_projection, 'QI_ref')
+     [hmsh_scalar, hspace_scalar] = refine_projection_space(hmsh_scalar, hspace_scalar, adaptivity_data, num_bisections);
+end
+
+% plot hierarchical mesh
+% figure(1000)
+% hmsh_plot_cells (hmsh_scalar)
+% view(0,90)
+
 % Initialization of problem variables
 u = zeros (hspace.ndof,1);
 eps_pl = cell(hmsh.nlevels,1);
@@ -110,11 +133,11 @@ for iLoad = 1: method_data.nload
 
         % interpolate sigma
         sigma_store = zeros(hspace_scalar.ndof, 6); % control variables
-        sigma_store(:,:) = history_variable_projection_hier(hspace_scalar, hmsh, sigma,  method_data.type_projection);
+        sigma_store(:,:) = history_variable_projection_hier(hspace_scalar, hmsh_scalar, sigma,  method_data.type_projection, hmsh);
 
         % QI or L2 for eps_pl projection      
         eps_pl_store = zeros(hspace_scalar.ndof, 6); % control variables
-        eps_pl_store(:,:) = history_variable_projection_hier(hspace_scalar, hmsh, eps_pl,  method_data.type_projection);
+        eps_pl_store(:,:) = history_variable_projection_hier(hspace_scalar, hmsh_scalar, eps_pl,  method_data.type_projection, hmsh);
 
 
 
@@ -123,9 +146,15 @@ for iLoad = 1: method_data.nload
        
 
         % ESTIMATE
+        if (iter == adaptivity_data.num_max_iter)
+            disp('skip refinement')
+            solution_data.flag = 2; break
+        end
+
+
         if (plot_data.print_info); disp('ESTIMATE:'); end
         %est = ones(hmsh.nel,1);% adaptivity_estimate_linear_el (u, hmsh, hspace, problem_data, adaptivity_data);
-        est =  adaptivity_estimate_div_sigma_el (sigma_store, hmsh, hspace, hspace_scalar, problem_data, adaptivity_data);
+        est =  adaptivity_estimate_div_sigma_el (sigma_store, geometry, hmsh, hspace, hmsh_scalar, hspace_scalar, problem_data, adaptivity_data);
         est_elem{iter} = est.';
         gest(iter) = norm (est);
         if (plot_data.print_info); fprintf('Computed error estimate: %e \n', gest(iter)); end
@@ -151,7 +180,7 @@ for iLoad = 1: method_data.nload
         % MARK
         if (plot_data.print_info); disp('MARK:'); end
         [marked, num_marked] = adaptivity_mark (est, hmsh, hspace, adaptivity_data);
-        
+
 
         if numel(marked) >= adaptivity_data.max_level -1            
             marked{adaptivity_data.max_level-1} = double.empty(0,1);
@@ -162,38 +191,98 @@ for iLoad = 1: method_data.nload
         end
         if num_marked == 0
             disp('Warning: no element refined')
+            break
         end
-        
+
         if (plot_data.print_info)
             fprintf('%d %s marked for refinement \n', num_marked, adaptivity_data.flag);
             disp('REFINE:')
         end
-        
+
         % REFINE
         hmsh_coarse = hmsh;
+        hmsh_scalar_coarse = hmsh_scalar;
         hspace_coarse = hspace;
         hspace_scalar_coarse  = hspace_scalar;
         [hmsh, hspace, Cref] = adaptivity_refine (hmsh_coarse, hspace_coarse, marked, adaptivity_data);
-        [~, hspace_scalar, Cref_scalar] = adaptivity_refine (hmsh_coarse, hspace_scalar_coarse, marked, adaptivity_data);
+        
+        
+        if strcmpi(method_data.type_projection, 'QI_ref')
+            [~, hspace_dummy] = adaptivity_refine (hmsh_coarse, hspace_dummy, marked, adaptivity_data);
+            % marked = mark_bisect_mesh(hmsh);
+            % [hmsh_scalar, hspace_scalar] = adaptivity_refine (hmsh, hspace_dummy, marked, adaptivity_data);
+             [hmsh_scalar, hspace_scalar] = refine_projection_space(hmsh, hspace_dummy, adaptivity_data, num_bisections);
+
+
+             tmp_M = op_u_v_hier(hspace_scalar,hspace_scalar,hmsh_scalar);
+             hspace_scalar_in_finer_mesh = hspace_in_finer_mesh(hspace_scalar_coarse, hmsh_scalar_coarse, hmsh_scalar);
+             tmp_G = op_u_v_hier(hspace_scalar_in_finer_mesh,hspace_scalar,hmsh_scalar);
+             tmp_lhs_e = zeros(hspace_scalar.ndof,6);
+             tmp_lhs_s = zeros(hspace_scalar.ndof,6);
+             for ivar = 1:6
+                tmp_lhs_e(:,ivar) = tmp_M\ (tmp_G*eps_pl_store(:,ivar));
+                tmp_lhs_s(:,ivar) = tmp_M\(tmp_G*sigma_store(:,ivar));
+             end
+             eps_pl_store = tmp_lhs_e;
+             sigma_store =tmp_lhs_s;
+
+        else
+            [hmsh_scalar, hspace_scalar, Cref_scalar] = adaptivity_refine (hmsh_scalar_coarse, hspace_scalar_coarse, marked, adaptivity_data);
+            eps_pl_store = Cref_scalar*eps_pl_store; % control variables
+            sigma_store = Cref_scalar*sigma_store; % control variables
+            
+        end
+
 
         % refine variables
         u = Cref * u;
-        eps_pl_store = Cref_scalar*eps_pl_store; % control variables
-        sigma_store = Cref_scalar*sigma_store; % control variables
         eps_pl = evaluate_at_quad_points(hmsh, hspace_scalar, eps_pl_store);
 
 
 
         fprintf('\n');
+        
     end % end adaptivity step
+    % 
+    % % coarsening step
+    if (adaptivity_data.mark_param_coarsening==0.)
+            disp('skip coarsening')            
+    else
+        hmsh_fine = hmsh;
+        [hmsh, hspace, u] =coarsening( hspace, hmsh_fine, u, est, adaptivity_data);
+        
+        if strcmpi(method_data.type_projection, 'QI_ref')
+        [~, hspace_dummy] =coarsening( hspace_dummy, hmsh_fine, zeros(hspace_dummy.ndof,1), est, adaptivity_data);
+        
+        hmsh_scalar_fine = hmsh_scalar;
+        hspace_scalar_fine = hspace_scalar;
+        % marked = mark_bisect_mesh(hmsh); 
+        % [hmsh_scalar, hspace_scalar] = adaptivity_refine (hmsh, hspace_dummy, marked, adaptivity_data);
+        [hmsh_scalar, hspace_scalar] = refine_projection_space(hmsh, hspace_dummy, adaptivity_data, num_bisections);
+    
+        tmp_M = op_u_v_hier(hspace_scalar,hspace_scalar,hmsh_scalar);
+        hspace_scalar_in_finer_mesh = hspace_in_finer_mesh(hspace_scalar, hmsh_scalar, hmsh_scalar_fine);
+    
+    
+        tmp_G = op_u_v_hier(hspace_scalar_fine,hspace_scalar_in_finer_mesh,hmsh_scalar_fine);
+        tmp_lhs_e = zeros(hspace_scalar.ndof,6);
+        tmp_lhs_s = zeros(hspace_scalar.ndof,6);
+        for ivar = 1:6
+            tmp_lhs_e(:,ivar) = tmp_M\ (tmp_G*eps_pl_store(:,ivar));
+            tmp_lhs_s(:,ivar) = tmp_M\(tmp_G*sigma_store(:,ivar));
+        end
+        eps_pl_store = tmp_lhs_e;
+        sigma_store =tmp_lhs_s;
+    
+        else
+            [hmsh_scalar, hspace_scalar, tmp] =coarsening( hspace_scalar, hmsh_fine, [eps_pl_store, sigma_store] , est, adaptivity_data);
+            eps_pl_store = tmp(:,1:size(eps_pl_store,2));
+            sigma_store = tmp(:,size(eps_pl_store,2)+1:end);
+        end
+        eps_pl = evaluate_at_quad_points(hmsh, hspace_scalar, eps_pl_store);
+    end
 
-    % coarsening step
-    hmsh_fine = hmsh;
-    [hmsh, hspace, u] =coarsening( hspace, hmsh_fine, u, est, adaptivity_data);
-    [hmsh, hspace_scalar, tmp] =coarsening( hspace_scalar, hmsh_fine, [eps_pl_store, sigma_store] , est, adaptivity_data);
-    eps_pl_store = tmp(:,1:size(eps_pl_store,2));
-    eps_pl = evaluate_at_quad_points(hmsh, hspace_scalar, eps_pl_store);
-    sigma_store = tmp(:,size(eps_pl_store,2)+1:end);
+    
 
 
     % store data
@@ -236,6 +325,51 @@ end
 %--------------------------------------------------------------------------
 % subroutines   
 %--------------------------------------------------------------------------
+
+function  [hmsh_scalar, hspace_scalar] = refine_projection_space(hmsh_scalar, hspace_scalar, adaptivity_data, num_bisections)
+    for i=1: num_bisections
+        marked = mark_bisect_mesh(hmsh_scalar);
+        [hmsh_scalar, hspace_scalar] = adaptivity_refine (hmsh_scalar, hspace_scalar, marked, adaptivity_data);
+    end
+end
+
+%--------------------------------------------------------------------------
+
+function rhs = op_Gu_hier (hspace, hmsh_fine, hspace_fine, uhat_fine)
+
+  rhs = zeros (hspace.ndof, 1);
+
+  ndofs = 0;
+  for ilev = 1:hmsh_fine.nlevels
+    ndofs = ndofs + hspace.ndof_per_level(ilev);
+    if (hmsh_fine.nel_per_level(ilev) > 0)
+      x = cell (hmsh_fine.rdim, 1);
+      for idim = 1:hmsh_fine.rdim
+        x{idim} = reshape (hmsh_fine.msh_lev{ilev}.geo_map(idim,:,:), hmsh_fine.msh_lev{ilev}.nqn, hmsh_fine.nel_per_level(ilev));
+      end
+
+      sp_lev = sp_evaluate_element_list (hspace.space_of_level(ilev), hmsh_fine.msh_lev{ilev}, 'value', true);      
+      sp_lev = change_connectivity_localized_Csub (sp_lev, hspace, ilev);
+
+      % coefficients
+      ndof_until_lev = sum (hspace_fine.ndof_per_level(1:ilev));
+      uhat_lev = hspace_fine.Csub{ilev} * uhat_fine(1:ndof_until_lev);
+      sp_lev_fine = sp_evaluate_element_list (hspace_fine.space_of_level(ilev), hmsh_fine.msh_lev{ilev}, 'value', true); 
+      sp_lev_fine = change_connectivity_localized_Csub (sp_lev_fine, hspace_fine, ilev);
+      utemp = sp_eval_msh (uhat_lev, sp_lev_fine, hmsh_fine.msh_lev{ilev}, {'value'});
+      u_fine = utemp{1};
+
+      b_lev = op_f_v (sp_lev, hmsh_fine.msh_lev{ilev}, u_fine);
+
+      dofs = 1:ndofs;
+      rhs(dofs) = rhs(dofs) + hspace.Csub{ilev}.' * b_lev;
+    end
+  end
+
+end
+
+%-----------------------------------------------------------------------------------------------------
+
 
 function eps_pl = evaluate_at_quad_points(hmsh, hspace, eps_pl_control_var)
     eps_pl = cell(hmsh.nlevels,1);

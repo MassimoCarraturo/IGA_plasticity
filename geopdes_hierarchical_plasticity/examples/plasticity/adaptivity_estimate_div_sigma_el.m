@@ -1,4 +1,4 @@
-function est =  adaptivity_estimate_div_sigma_el (sigma_store, hmsh, hspace, hspace_scalar, problem_data, adaptivity_data);
+function est =  adaptivity_estimate_div_sigma_el (sigma_store, geometry, hmsh, hspace, hmsh_scalar, hspace_scalar, problem_data, adaptivity_data);
 
 if (isfield(adaptivity_data, 'C0_est'))
     C0_est = adaptivity_data.C0_est;
@@ -8,7 +8,21 @@ end
 
 divergence = zeros(hspace.ncomp, hmsh.mesh_of_level.nqn, hmsh.nel);
 for ifield =1:6
-    [hgrad, F] = hspace_eval_hmsh (sigma_store(:,ifield), hspace_scalar, hmsh, 'gradient');
+    % [hgrad, F] = hspace_eval_hmsh (sigma_store(:,ifield), hspace_scalar, hmsh, 'gradient');
+    [~, Ftmp] = hspace_eval_hmsh (zeros(hspace.ndof,1), hspace, hmsh, 'value');    
+    hgrad = zeros(hspace.ncomp, hmsh.mesh_of_level.nqn, hmsh.nel);
+    F = zeros(hspace.ncomp, hmsh.mesh_of_level.nqn, hmsh.nel);
+
+    for iel =1:hmsh.nel
+        for iquad = 1:hmsh.mesh_of_level.nqn
+            F(:,iquad,iel) = Ftmp(:,iquad,iel);
+            % pt_eval = num2cell(Ftmp(:,iquad,iel));            
+            % hgrad(:,iquad,iel) = sp_eval (sigma_store(:,ifield), hspace_scalar, geometry, pt_eval, 'gradient')
+            tmp=  sp_eval_phys (sigma_store(:,ifield), hspace_scalar, hmsh_scalar, geometry, Ftmp(:,iquad,iel), 'gradient');
+            hgrad(:,iquad,iel)  = tmp;
+        end
+    end
+   
 
     if ifield ==1
         divergence(1,:,:) = divergence(1,:,:) + hgrad(1,:,:); %sigma_xx,x
@@ -105,5 +119,20 @@ switch adaptivity_data.flag
         % NOT YET IMPLEMENTED
         est = C0_est * sqrt (est);
 end
+
+
+% debugging plot
+% fig = figure(2000);
+% scatter3(reshape(x{1}, [numel(x{1}),1]),reshape(x{2}, [numel(x{1}),1]), reshape(aux, [numel(x{1}),1]), [],   reshape(aux, [numel(x{1}),1]),   'filled')
+% colorbar
+% hold on
+% hmsh_plot_cells (hmsh)
+% 
+% view(0,90)
+% drawnow
+% close(fig)
+
+
+
 
 end
