@@ -9,7 +9,7 @@ problem_data.geo_name = 'geo_ring_SouzaNeto.txt';
 
 % Type of boundary conditions
 problem_data.nmnn_sides   = [1];
-problem_data.drchlt_sides = [];
+problem_data.drchlt_sides = [2];
 problem_data.press_sides  = [];
 problem_data.symm_sides   = [3 4];
 problem_data.slider_sides = [];
@@ -25,47 +25,58 @@ problem_data.kappa_lame = @(x, y) kappa_lame * ones (size (x));
 problem_data.mu_lame = @(x, y) mu_lame * ones (size (x));
 
 % Source and boundary terms
-P = 192.09*.95;                                        % Limit internal pressure [MPa]
+pos_plastic_front =160;
+P = 2*sigma_y/(sqrt(3)) *( log(pos_plastic_front/100) + .5*(1-(pos_plastic_front^2)/(200^2)) );
+
+% P = 180;%192.09*.95;                                        % Limit internal pressure [MPa]
 nload = 10;
 problem_data.f = @(x, y) zeros (2, size (x, 1), size (x, 2));
 problem_data.g = @(x, y, ind) test_plane_strain_ring_plasticity_g_nmnn (x, y, P, nu, ind);
-problem_data.h = @(x, y, ind) test_plane_strain_ring_plasticity_uex (x, y, E, nu, P);
+problem_data.h = @(x, y, ind, mult) test_plane_strain_ring_plasticity_uex (x, y, E, nu,sigma_y, P,mult, ind);
 problem_data.p = @(x, y, ind) P * ones (size (x));
 
+problem_data.R_i = 100;
+problem_data.R_o = 200;
+problem_data.s_y= sigma_y;
+problem_data.Pmax = P;
+
+
 % Plot in Matlab Hill solution
-n_points_eval_stress =1000;
-[u_ex,P_ex, sigma_r_ex, sigma_t_ex, radius] = Hill_solution (E, nu, problem_data.yield_stress(1), 100, 200,P, nload,n_points_eval_stress);
+n_points_eval_stress =200;
+[u_ex,P_ex, sigma_r_ex, sigma_t_ex, radius] = Hill_solution (E, nu, problem_data.yield_stress(1), problem_data.R_i, problem_data.R_o,problem_data.Pmax, nload,n_points_eval_stress);
 load_step_eval_stress = [1, 10]; %[nload, int64(nload/2)]*int64(100/nload);
 
 
 
 % 2) CHOICE OF THE DISCRETIZATION PARAMETERS
 clear method_data
-p = 3;
+p = 2;
 method_data.degree      = [p p];                          % Degree of the splines
-method_data.regularity  = method_data.degree - 1;         % Regularity of the splines
-method_data.nsub_coarse = [5 5];                          % Number of subdivisions of the coarsest mesh, with respect to the mesh in geometry
+method_data.regularity  = method_data.degree -1;         % Regularity of the splines
+method_data.nsub_coarse = [2 2];                          % Number of subdivisions of the coarsest mesh, with respect to the mesh in geometry
 method_data.nsub_refine = [2 2];                          % Number of subdivisions for each refinement
-method_data.nquad       = [5 5];                      % Points for the Gaussian quadrature rule
+method_data.nquad       = method_data.degree +1;                      % Points for the Gaussian quadrature rule
 method_data.space_type  = 'standard';                     % 'simplified' (only children functions) or 'standard' (full basis)
 method_data.truncated   = 1;                              % 0: False, 1: True
 method_data.nload      = nload;                              % Number of load steps
 method_data.newton_tol = 1e-8;                            % Newton tolerance
 method_data.newton_tol_abs = 1e-10;                            % Newton tolerance
 method_data.newton_iter_max = 100;                        % Newton max number of iterations
-method_data.type_projection = 'QI_ref';                         % 'QI' / 'L2' / 'QI_ref'
+method_data.type_projection = 'L2';                         % 'QI' / 'L2' / 'QI_ref'
+method_data.type_estimate = 'geometrical_annulus'; %  'geometrical_annulus', 'residual'
+
 
 adaptivity_data.flag = 'elements';
 % adaptivity_data.flag = 'functions';
 adaptivity_data.C0_est = 1.0;
-adaptivity_data.mark_param = .8;
-adaptivity_data.mark_param_coarsening = .0;
+adaptivity_data.mark_param = .5;
+adaptivity_data.mark_param_coarsening = .05;
 adaptivity_data.mark_strategy = 'MS'; % GR/MS/GERS
-adaptivity_data.max_level = 1;
+adaptivity_data.max_level = 4;
 adaptivity_data.max_ndof = 15000;
-adaptivity_data.num_max_iter = 1;
+adaptivity_data.num_max_iter =1;
 adaptivity_data.max_nel = 5000;
-adaptivity_data.tol = 1e-5 *3.14 *30000;
+adaptivity_data.tol = 1e-5;
 
 adaptivity_data.adm_strategy = 'admissible';
 adaptivity_data.coarsening_flag = 'any'; %'any', 'all'

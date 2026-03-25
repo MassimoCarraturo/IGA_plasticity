@@ -61,10 +61,10 @@ hmsh_scalar = hmsh;
 % store initial scalar space
 degree_projection = method_data.degree;
 regularity_projection = method_data.regularity;
-if strcmpi(method_data.type_projection, 'QI_ref')
-    % degree_projection  = ones(size(method_data.degree));
-    regularity_projection = degree_projection-degree_projection;
-end
+% if strcmpi(method_data.type_projection, 'QI_ref')
+%     % degree_projection  = ones(size(method_data.degree));
+%     % regularity_projection = degree_projection*0;
+% end
 
 [knots, zeta] = kntrefine (geometry.nurbs.knots, method_data.nsub_coarse-1, degree_projection, regularity_projection);
 rule     = msh_gauss_nodes (method_data.nquad);
@@ -76,7 +76,7 @@ hspace_scalar   = hierarchical_space (hmsh_scalar, space_scalar, method_data.spa
 hspace_dummy = hspace_scalar; 
 
 % refine the scalar space/mesh
-num_bisections =2;
+num_bisections =1;
 if strcmpi(method_data.type_projection, 'QI_ref')
      [hmsh_scalar, hspace_scalar] = refine_projection_space(hmsh_scalar, hspace_scalar, adaptivity_data, num_bisections);
 end
@@ -146,15 +146,33 @@ for iLoad = 1: method_data.nload
        
 
         % ESTIMATE
-        if (iter == adaptivity_data.num_max_iter)
+        if (iter > adaptivity_data.num_max_iter)
             disp('skip refinement')
             solution_data.flag = 2; break
         end
 
 
         if (plot_data.print_info); disp('ESTIMATE:'); end
-        %est = ones(hmsh.nel,1);% adaptivity_estimate_linear_el (u, hmsh, hspace, problem_data, adaptivity_data);
-        est =  adaptivity_estimate_div_sigma_el (sigma_store, geometry, hmsh, hspace, hmsh_scalar, hspace_scalar, problem_data, adaptivity_data);
+
+
+        % compute estimate
+        if strcmpi(method_data.type_estimate, 'residual')
+            %est = ones(hmsh.nel,1);% adaptivity_estimate_linear_el (u, hmsh, hspace, problem_data, adaptivity_data);
+            est =  adaptivity_estimate_div_sigma_el (sigma_store, geometry, hmsh, hspace, hmsh_scalar, hspace_scalar, problem_data, adaptivity_data);
+        elseif strcmpi(method_data.type_estimate, 'geometrical_annulus')
+            est = adaptivity_estimate_distance_plastic_front(hmsh,problem_data,  iLoad/method_data.nload);
+        elseif strcmpi(method_data.type_estimate, 'geometrical_sphere')
+            est = adaptivity_estimate_distance_plastic_front_sphere(hmsh,problem_data,  iLoad/method_data.nload);
+        else
+            disp('specify error estimator')
+        end
+        disp(method_data.type_estimate)
+        
+        
+        
+        
+        
+        
         est_elem{iter} = est.';
         gest(iter) = norm (est);
         if (plot_data.print_info); fprintf('Computed error estimate: %e \n', gest(iter)); end
@@ -245,7 +263,7 @@ for iLoad = 1: method_data.nload
     end % end adaptivity step
     % 
     % % coarsening step
-    if (adaptivity_data.mark_param_coarsening==0.)
+    if (adaptivity_data.mark_param_coarsening==0. && adaptivity_data.num_max_iter == 0)
             disp('skip coarsening')            
     else
         hmsh_fine = hmsh;

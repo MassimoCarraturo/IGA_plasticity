@@ -20,7 +20,8 @@ problem_data.penalty_slider = @(x, y, z) 1e8 * ones (size (x));
 % Physical parameters
 E  =  210000;                                  % MPa
 nu = 0.3;                                      % -
-problem_data.yield_stress = @(x, y, z) 240 * ones (size (x));  % MPa
+sigma_y = 240;
+problem_data.yield_stress = @(x, y, z) sigma_y * ones (size (x));  % MPa
 problem_data.kappa_lame = @(x, y, z) E/(3*(1-2*nu)) * ones (size (x));
 problem_data.mu_lame = @(x, y, z) (E/(2*(1+nu)) * ones (size (x)));
 
@@ -32,8 +33,13 @@ problem_data.g = @(x, y, z, ind) zeros (3, size (x, 1), size (x, 2), size (x, 3)
 problem_data.h = @(x, y, z, ind) zeros (3, size (x, 1), size (x, 2), size (x, 3)   );
 problem_data.p = @(x, y, z) P*ones (size (x));
 
+problem_data.R_i = 100;
+problem_data.R_o = 200;
+problem_data.s_y= sigma_y;
+problem_data.Pmax = P;
+
 % Plot in Matlab Hill solution
-[u_ex,P_ex, sigma_r_ex, sigma_t_ex, radius] = sphere_solution (E, nu, problem_data.yield_stress(1), 100, 200,P,nload);
+[u_ex,P_ex, sigma_r_ex, sigma_t_ex, radius] = sphere_solution (E, nu, problem_data.s_y, problem_data.R_i, problem_data.R_o,problem_data.Pmax,nload);
 load_step_eval_stress = [2, 5];%[5,10]; %[nload, int64(nload/2)]*int64(100/nload);
 
 figure(1)
@@ -70,7 +76,7 @@ for p =2:2 % loop for p-refinemet study
     clear method_data
     method_data.degree     = [p p p];                      % Degree of the basis functions
     method_data.regularity = [p-1 p-1 p-1];     % Regularity of the basis functions
-    method_data.nsub_coarse = [15,5,5];            % Number of subdivisions of the coarsest mesh, with respect to the mesh in geometry
+    method_data.nsub_coarse = [2,2,2];            % Number of subdivisions of the coarsest mesh, with respect to the mesh in geometry
     method_data.nsub_refine = [2 2 2];                          % Number of subdivisions for each refinement
     method_data.nquad      = [p+1 p+1 p+1];                  % Points for the Gaussian quadrature rule
     method_data.space_type  = 'standard';                     % 'simplified' (only children functions) or 'standard' (full basis)
@@ -79,17 +85,19 @@ for p =2:2 % loop for p-refinemet study
     method_data.newton_tol = 1e-8;                            % Newton tolerance
     method_data.newton_tol_abs = 1e-10;                            % Newton tolerance
     method_data.newton_iter_max = 100;                        % Newton max number of iterations
-    method_data.type_projection = 'QI';                         % 'QI' / 'L2'
+    method_data.type_projection = 'QI_ref';                         % 'QI' / 'L2' / 'QI_ref'
+    method_data.type_estimate =  'geometrical_sphere'; 
+
 
     adaptivity_data.flag = 'elements';
     % adaptivity_data.flag = 'functions';
     adaptivity_data.C0_est = 1.0;
     adaptivity_data.mark_param = 0.9;
-    adaptivity_data.mark_param_coarsening = .05;
+    adaptivity_data.mark_param_coarsening = .0;
     adaptivity_data.mark_strategy = 'MS'; % GR/MS/GERS
-    adaptivity_data.max_level = 1;
+    adaptivity_data.max_level = 4;
     adaptivity_data.max_ndof = 15000;
-    adaptivity_data.num_max_iter = 1;
+    adaptivity_data.num_max_iter = 4;
     adaptivity_data.max_nel = 5000;
     adaptivity_data.tol = 1e-5 *3.14 *30000;
     
