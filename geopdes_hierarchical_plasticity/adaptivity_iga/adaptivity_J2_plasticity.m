@@ -76,7 +76,12 @@ hspace_scalar   = hierarchical_space (hmsh_scalar, space_scalar, method_data.spa
 hspace_dummy = hspace_scalar; 
 
 % refine the scalar space/mesh
-num_bisections =2;
+% num_bisections=2 (original) explodes the projection space at full primal-mesh
+% resolution (~30k scalar DOFs in 3D, hours per load step).
+% Use 0 here so QI_ref projects on the primal scalar mesh — keeps the
+% Tikhonov-regularised local-LS character of QI_ref vs the unregularised QI,
+% at a tractable cost.
+num_bisections =0;
 if strcmpi(method_data.type_projection, 'QI_ref')
      [hmsh_scalar, hspace_scalar] = refine_projection_space(hmsh_scalar, hspace_scalar, adaptivity_data, num_bisections);
 end
@@ -105,6 +110,7 @@ for iLoad = 1: method_data.nload
     fprintf('----------------------------------------------------- Load step %d -----------------------------------------------------\n',iLoad);
     % ADAPTIVE LOOP
     iter = 0;
+    est = [];   % may stay empty when num_max_iter == 1 (no estimator computed)
     while (1)
         iter = iter + 1;
 
@@ -245,8 +251,8 @@ for iLoad = 1: method_data.nload
     end % end adaptivity step
     % 
     % % coarsening step
-    if (adaptivity_data.mark_param_coarsening==0.)
-            disp('skip coarsening')            
+    if (adaptivity_data.mark_param_coarsening==0. || isempty(est))
+            disp('skip coarsening')
     else
         hmsh_fine = hmsh;
         [hmsh, hspace, u] =coarsening( hspace, hmsh_fine, u, est, adaptivity_data);

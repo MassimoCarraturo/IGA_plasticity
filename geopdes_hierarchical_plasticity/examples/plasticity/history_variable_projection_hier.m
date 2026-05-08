@@ -1,5 +1,15 @@
 function eps_pl_control_var = history_variable_projection_hier(hspace, hmsh, eps_pl, type_proj, hmsh_displ)
-    
+    % libqi backend (C/OpenMP) for the local-LS B-spline projection.
+    % Falls back to the MATLAB reference if the MEX is unavailable.
+    persistent localLS;
+    if isempty(localLS)
+        if exist('qi_local_ls_mex', 'file') == 3
+            localLS = @getcoeff_localLS_Bspl_c;
+        else
+            localLS = @getcoeff_localLS_Bspl;
+        end
+    end
+
     if  strcmpi(type_proj, 'QI_ref')
         n_hist_var = size(eps_pl{end}, 3);
         eps_pl_control_var= zeros(hspace.ndof, n_hist_var);
@@ -30,7 +40,7 @@ function eps_pl_control_var = history_variable_projection_hier(hspace, hmsh, eps
         end
 
         % compute spline coefficients
-        QI_coeff = getcoeff_localLS_Bspl(hspace,hmsh,data,f,1e-9);
+        QI_coeff = localLS(hspace,hmsh,data,f,1e-9);
 
         % store in output
         eps_pl_control_var(:,:) = QI_coeff;
@@ -78,8 +88,11 @@ function eps_pl_control_var = history_variable_projection_hier(hspace, hmsh, eps
             %      end         
             % end
     
-            % compute spline coefficients
-            % QI_coeff = get_QI_coeffs(hspace,hmsh,data);
+            % compute spline coefficients (libqi backend; old MATLAB impl removed)
+            % QI_coeff = get_QI_coeffs_c(hspace, hmsh, ...
+            %                            struct('x', data(:,1), ...
+            %                                   'y', data(:,2), ...
+            %                                   'f', data(:,3:end)));
             
             % organize point coordinates in data(i,:) = (coord_x, coord_y, ...)
             % organize plastic variables in f(i,:) = (plastic_var_1, plastic_var2, ...)
@@ -102,7 +115,7 @@ function eps_pl_control_var = history_variable_projection_hier(hspace, hmsh, eps
             end
         
             % compute spline coefficients
-            QI_coeff = getcoeff_localLS_Bspl(hspace,hmsh,data,f,0);
+            QI_coeff = localLS(hspace,hmsh,data,f,0);
     
             % store in output
             eps_pl_control_var(:,:) = QI_coeff;
