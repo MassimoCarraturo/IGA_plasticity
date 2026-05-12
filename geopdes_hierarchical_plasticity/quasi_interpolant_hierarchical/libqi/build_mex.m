@@ -18,8 +18,14 @@ function build_mex()
 
     cc = mex.getCompilerConfigurations('C', 'Selected');
     if isempty(cc)
-        error('build_mex:nocompiler', ...
-              'No C compiler is set up. Run "mex -setup C" first.');
+        % No compiler explicitly selected — try to find any available one
+        cc = mex.getCompilerConfigurations('C');
+        if isempty(cc)
+            error('build_mex:nocompiler', ...
+                  'No C compiler found. Run "mex -setup C" first.');
+        end
+        fprintf('build_mex: no compiler selected, using first available: %s\n', cc(1).Name);
+        cc = cc(1);
     end
 
     isMSVC = contains(cc.Manufacturer, 'Microsoft', 'IgnoreCase', true);
