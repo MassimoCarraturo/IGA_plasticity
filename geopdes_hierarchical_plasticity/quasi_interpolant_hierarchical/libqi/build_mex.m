@@ -27,11 +27,11 @@ function build_mex()
     targets = struct();
     targets(1).name    = 'qi_mex';
     targets(1).entry   = 'matlab/qi_mex.c';
-    targets(1).sources = {'src/qi.c', 'src/qi_linalg.c', 'src/qi_bspline.c'};
+    targets(1).sources = {'src/qi.c', 'src/qi_linalg.c', 'src/qi_bspline.c', 'src/qi_spatial.c'};
 
     targets(2).name    = 'qi_local_ls_mex';
     targets(2).entry   = 'matlab/qi_local_ls_mex.c';
-    targets(2).sources = {'src/qi_localls.c', 'src/qi_linalg.c'};
+    targets(2).sources = {'src/qi_localls.c', 'src/qi_linalg.c', 'src/qi_spatial.c'};
 
     for k = 1:numel(targets)
         t = targets(k);

@@ -1,10 +1,12 @@
 /*
  * qi_bspline.c — univariate B-spline routines (NURBS Book Algs 2.1 & 2.2).
+ *
+ * v1.1: restrict qualifiers for auto-vectorisation.
  */
 #include "qi_bspline.h"
 #include <string.h>
 
-int qi_bs_findspan(int n, int p, double u, const double *U)
+int qi_bs_findspan(int n, int p, double u, const double *QI_RESTRICT U)
 {
     /* clamp u to last span if at the right boundary */
     if (u >= U[n + 1]) return n;
@@ -21,7 +23,8 @@ int qi_bs_findspan(int n, int p, double u, const double *U)
     return mid;
 }
 
-void qi_bs_basisfun(int i, double u, int p, const double *U, double *N)
+void qi_bs_basisfun(int i, double u, int p, const double *QI_RESTRICT U,
+                    double *QI_RESTRICT N)
 {
     /* N[0..p] -- standard NURBS Book Alg 2.2.
        Uses local left[1..p], right[1..p].  Bound p <= 8 in this library. */
@@ -43,12 +46,13 @@ void qi_bs_basisfun(int i, double u, int p, const double *U, double *N)
     }
 }
 
-void qi_bs_spcol(const double *U, int nknots, int p,
-                 const double *pts, int npts, double *M)
+void qi_bs_spcol(const double *QI_RESTRICT U, int nknots, int p,
+                 const double *QI_RESTRICT pts, int npts,
+                 double *QI_RESTRICT M)
 {
     int ndof = nknots - p - 1;
     /* zero M */
-    for (int i = 0; i < ndof*npts; ++i) M[i] = 0.0;
+    memset(M, 0, (size_t)ndof * npts * sizeof(double));
 
     double Nbuf[16];
     for (int j = 0; j < npts; ++j) {

@@ -23,7 +23,7 @@ space = sp_bspline(knots, deg, msh);
 hmsh   = hierarchical_mesh(msh, [2 2]);
 hspace = hierarchical_space(hmsh, space, 'standard', false, deg - 1);
 
-% Regularity = 0 (Bezier-like, used by QI_ref) — separate hspace2
+% Regularity = 0 (Bezier-like, used by QI_C0) — separate hspace2
 [knots0, zeta0] = kntrefine(geometry.nurbs.knots, [nelx nely] - 1, deg, [0 0]);
 [qn0, qw0] = msh_set_quad_nodes(zeta0, rule);
 msh0   = msh_cartesian(zeta0, qn0, qw0, geometry);
@@ -52,15 +52,15 @@ for lambda = [0, 1e-9, 1e-3]
     fprintf('--- lambda = %g ---\n', lambda);
 
     tic;
-    QI_ref = getcoeff_localLS_Bspl(hspace, hmsh, data, fv, lambda);
+    QI_C0 = getcoeff_localLS_Bspl(hspace, hmsh, data, fv, lambda);
     t_ref = toc;
 
     tic;
     QI_c = getcoeff_localLS_Bspl_c(hspace, hmsh, data, fv, lambda);
     t_c = toc;
 
-    err = max(abs(QI_ref(:) - QI_c(:)));
-    rel = err / max(abs(QI_ref(:)));
+    err = max(abs(QI_C0(:) - QI_c(:)));
+    rel = err / max(abs(QI_C0(:)));
     fprintf('  ndof=%d  ncomp=%d   max|ref - c| = %.3e  (rel %.3e)\n', ...
             hspace.ndof, ncomp, err, rel);
     fprintf('  reference time = %.3fs   libqi time = %.3fs   speedup x%.2f\n', ...
@@ -73,14 +73,14 @@ for lambda = [0, 1e-9, 1e-3]
     end
 end
 
-% Same comparison on the regularity-0 space (mirrors the QI_ref projection)
-fprintf('\n========= regularity-0 space (QI_ref-like) =========\n');
+% Same comparison on the regularity-0 space (mirrors the QI_C0 projection)
+fprintf('\n========= regularity-0 space (QI_C0-like) =========\n');
 for lambda = [0, 1e-9, 1e-3]
     fprintf('--- lambda = %g ---\n', lambda);
-    QI_ref0 = getcoeff_localLS_Bspl(hspace0, hmsh0, data, fv, lambda);
+    QI_C00 = getcoeff_localLS_Bspl(hspace0, hmsh0, data, fv, lambda);
     QI_c0   = getcoeff_localLS_Bspl_c(hspace0, hmsh0, data, fv, lambda);
-    err = max(abs(QI_ref0(:) - QI_c0(:)));
-    rel = err / max(abs(QI_ref0(:)));
+    err = max(abs(QI_C00(:) - QI_c0(:)));
+    rel = err / max(abs(QI_C00(:)));
     fprintf('  ndof=%d  max|ref - c| = %.3e  (rel %.3e)\n', hspace0.ndof, err, rel);
     if rel < 1e-8, fprintf('  PASS\n'); else, fprintf('  FAIL\n'); end
 end

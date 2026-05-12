@@ -1,0 +1,1746 @@
+
+Equation solved.
+
+fsolve completed because the vector of function values is near zero
+as measured by the value of the function tolerance, and
+the problem appears regular as measured by the gradient.
+
+
+Equation solved.
+
+fsolve completed because the vector of function values is near zero
+as measured by the value of the function tolerance, and
+the problem appears regular as measured by the gradient.
+
+
+Equation solved.
+
+fsolve completed because the vector of function values is near zero
+as measured by the value of the function tolerance, and
+the problem appears regular as measured by the gradient.
+
+
+Equation solved.
+
+fsolve completed because the vector of function values is near zero
+as measured by the value of the function tolerance, and
+the problem appears regular as measured by the gradient.
+
+
+Equation solved.
+
+fsolve completed because the vector of function values is near zero
+as measured by the value of the function tolerance, and
+the problem appears regular as measured by the gradient.
+
+
+========================================================
+  L2       max_level = 1   (sweep 1 / 9)
+========================================================
+----------------------------------------------------- Load step 1 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+  FAILED: Size vector must be a real vector with at least 2 elements.
+
+========================================================
+  L2       max_level = 2   (sweep 2 / 9)
+========================================================
+----------------------------------------------------- Load step 1 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+  FAILED: Size vector must be a real vector with at least 2 elements.
+
+========================================================
+  L2       max_level = 3   (sweep 3 / 9)
+========================================================
+----------------------------------------------------- Load step 1 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+  FAILED: Size vector must be a real vector with at least 2 elements.
+
+========================================================
+  QI       max_level = 1   (sweep 4 / 9)
+========================================================
+----------------------------------------------------- Load step 1 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+  FAILED: Size vector must be a real vector with at least 2 elements.
+
+========================================================
+  QI       max_level = 2   (sweep 5 / 9)
+========================================================
+----------------------------------------------------- Load step 1 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+  FAILED: Size vector must be a real vector with at least 2 elements.
+
+========================================================
+  QI       max_level = 3   (sweep 6 / 9)
+========================================================
+----------------------------------------------------- Load step 1 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+  FAILED: Size vector must be a real vector with at least 2 elements.
+
+========================================================
+  QI_C0    max_level = 1   (sweep 7 / 9)
+========================================================
+----------------------------------------------------- Load step 1 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+  FAILED: Size vector must be a real vector with at least 2 elements.
+
+========================================================
+  QI_C0    max_level = 2   (sweep 8 / 9)
+========================================================
+----------------------------------------------------- Load step 1 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+  FAILED: Size vector must be a real vector with at least 2 elements.
+
+========================================================
+  QI_C0    max_level = 3   (sweep 9 / 9)
+========================================================
+----------------------------------------------------- Load step 1 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+  FAILED: Size vector must be a real vector with at least 2 elements.
+Wrote adaptivity_study_2D.mat and adaptivity_study_2D_summary.csv
+
+All outputs written.  pgfplots master file: pgfplots_2D\adaptivity_study_2D.tex
+SWEEP DONE
+
+Equation solved.
+
+fsolve completed because the vector of function values is near zero
+as measured by the value of the function tolerance, and
+the problem appears regular as measured by the gradient.
+
+
+Equation solved.
+
+fsolve completed because the vector of function values is near zero
+as measured by the value of the function tolerance, and
+the problem appears regular as measured by the gradient.
+
+
+Equation solved.
+
+fsolve completed because the vector of function values is near zero
+as measured by the value of the function tolerance, and
+the problem appears regular as measured by the gradient.
+
+
+Equation solved.
+
+fsolve completed because the vector of function values is near zero
+as measured by the value of the function tolerance, and
+the problem appears regular as measured by the gradient.
+
+
+Equation solved.
+
+fsolve completed because the vector of function values is near zero
+as measured by the value of the function tolerance, and
+the problem appears regular as measured by the gradient.
+
+
+========================================================
+  L2       max_level = 1   (sweep 1 / 9)
+========================================================
+----------------------------------------------------- Load step 1 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 1  iteration, residual= 7.108133e-12  
+ESTIMATE:
+Computed error estimate: 3.412437e+03 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+0 elements marked for coarsening 
+MARK COARSENING:
+0 elements marked for coarsening 
+----------------------------------------------------- Load step 2 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 1  iteration, residual= 7.339001e-12  
+ESTIMATE:
+Computed error estimate: 6.824873e+03 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+0 elements marked for coarsening 
+MARK COARSENING:
+0 elements marked for coarsening 
+----------------------------------------------------- Load step 3 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 1  iteration, residual= 9.145688e-12  
+ESTIMATE:
+Computed error estimate: 1.023731e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+0 elements marked for coarsening 
+MARK COARSENING:
+0 elements marked for coarsening 
+----------------------------------------------------- Load step 4 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 1  iteration, residual= 9.360944e-12  
+ESTIMATE:
+Computed error estimate: 1.364975e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+0 elements marked for coarsening 
+MARK COARSENING:
+0 elements marked for coarsening 
+----------------------------------------------------- Load step 5 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 1  iteration, residual= 1.248602e-11  
+ESTIMATE:
+Computed error estimate: 1.706218e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+0 elements marked for coarsening 
+MARK COARSENING:
+0 elements marked for coarsening 
+----------------------------------------------------- Load step 6 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 3  iteration, residual= 3.525777e-09  
+ESTIMATE:
+Computed error estimate: 2.030969e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+0 elements marked for coarsening 
+MARK COARSENING:
+0 elements marked for coarsening 
+----------------------------------------------------- Load step 7 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 4  iteration, residual= 7.859823e-12  
+ESTIMATE:
+Computed error estimate: 2.297490e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+0 elements marked for coarsening 
+MARK COARSENING:
+0 elements marked for coarsening 
+----------------------------------------------------- Load step 8 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 4  iteration, residual= 3.271829e-06  
+ESTIMATE:
+Computed error estimate: 2.928595e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+0 elements marked for coarsening 
+MARK COARSENING:
+0 elements marked for coarsening 
+----------------------------------------------------- Load step 9 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 4  iteration, residual= 2.507011e-06  
+ESTIMATE:
+Computed error estimate: 3.288831e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+0 elements marked for coarsening 
+MARK COARSENING:
+0 elements marked for coarsening 
+----------------------------------------------------- Load step 10 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 5  iteration, residual= 6.744123e-08  
+ESTIMATE:
+Computed error estimate: 3.609786e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+0 elements marked for coarsening 
+MARK COARSENING:
+0 elements marked for coarsening 
+  ndof_final = 72   nel_final = 9   nlevels = 1
+  wall = 2.35 s   CPU = 4.50 s
+  err_u   max=1.273e-03  avg=1.699e-04   sigma_r max=6.975e+00 avg=8.262e-01   sigma_t max=8.652e+00 avg=1.024e+00
+
+========================================================
+  L2       max_level = 2   (sweep 2 / 9)
+========================================================
+----------------------------------------------------- Load step 1 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 1  iteration, residual= 7.108133e-12  
+ESTIMATE:
+Computed error estimate: 3.412437e+03 
+MARK:
+3 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 2 %%%%%%%%%%
+SOLVE:
+Number of elements: 18. Total DOFs: 96 
+Solved in 1  iteration, residual= 1.881615e-12  
+ESTIMATE:
+Computed error estimate: 2.413543e+03 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+1 elements marked for coarsening 
+MARK COARSENING:
+1 elements marked for coarsening 
+----------------------------------------------------- Load step 2 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 15. Total DOFs: 84 
+Solved in 1  iteration, residual= 8.413833e-12  
+ESTIMATE:
+Computed error estimate: 5.539331e+03 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+1 elements marked for coarsening 
+MARK COARSENING:
+1 elements marked for coarsening 
+----------------------------------------------------- Load step 3 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 12. Total DOFs: 72 
+Solved in 1  iteration, residual= 7.595699e-12  
+ESTIMATE:
+Computed error estimate: 9.250818e+03 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+1 elements marked for coarsening 
+MARK COARSENING:
+1 elements marked for coarsening 
+----------------------------------------------------- Load step 4 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 1  iteration, residual= 8.598396e-12  
+ESTIMATE:
+Computed error estimate: 1.364669e+04 
+MARK:
+3 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 2 %%%%%%%%%%
+SOLVE:
+Number of elements: 18. Total DOFs: 96 
+Solved in 1  iteration, residual= 6.682272e-12  
+ESTIMATE:
+Computed error estimate: 9.653712e+03 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+1 elements marked for coarsening 
+MARK COARSENING:
+1 elements marked for coarsening 
+----------------------------------------------------- Load step 5 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 15. Total DOFs: 84 
+Solved in 1  iteration, residual= 1.161061e-11  
+ESTIMATE:
+Computed error estimate: 1.384584e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+1 elements marked for coarsening 
+MARK COARSENING:
+1 elements marked for coarsening 
+----------------------------------------------------- Load step 6 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 12. Total DOFs: 72 
+Solved in 3  iteration, residual= 2.228944e-08  
+ESTIMATE:
+Computed error estimate: 1.834546e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+1 elements marked for coarsening 
+MARK COARSENING:
+1 elements marked for coarsening 
+----------------------------------------------------- Load step 7 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 4  iteration, residual= 2.926622e-06  
+ESTIMATE:
+Computed error estimate: 2.298552e+04 
+MARK:
+1 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 2 %%%%%%%%%%
+SOLVE:
+Number of elements: 12. Total DOFs: 72 
+Solved in 2  iteration, residual= 2.295888e-08  
+ESTIMATE:
+Computed error estimate: 2.098636e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+1 elements marked for coarsening 
+MARK COARSENING:
+1 elements marked for coarsening 
+----------------------------------------------------- Load step 8 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 4  iteration, residual= 5.339460e-06  
+ESTIMATE:
+Computed error estimate: 2.928733e+04 
+MARK:
+1 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 2 %%%%%%%%%%
+SOLVE:
+Number of elements: 12. Total DOFs: 72 
+Solved in 2  iteration, residual= 5.725748e-08  
+ESTIMATE:
+Computed error estimate: 2.610326e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+1 elements marked for coarsening 
+MARK COARSENING:
+1 elements marked for coarsening 
+----------------------------------------------------- Load step 9 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 4  iteration, residual= 2.701549e-06  
+ESTIMATE:
+Computed error estimate: 3.302796e+04 
+MARK:
+1 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 2 %%%%%%%%%%
+SOLVE:
+Number of elements: 12. Total DOFs: 72 
+Solved in 3  iteration, residual= 1.604874e-07  
+ESTIMATE:
+Computed error estimate: 2.986281e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+1 elements marked for coarsening 
+MARK COARSENING:
+1 elements marked for coarsening 
+----------------------------------------------------- Load step 10 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 5  iteration, residual= 7.678377e-08  
+ESTIMATE:
+Computed error estimate: 3.611159e+04 
+MARK:
+2 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 2 %%%%%%%%%%
+SOLVE:
+Number of elements: 15. Total DOFs: 72 
+Solved in 5  iteration, residual= 1.743250e-11  
+ESTIMATE:
+Computed error estimate: 3.154541e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+1 elements marked for coarsening 
+MARK COARSENING:
+1 elements marked for coarsening 
+  ndof_final = 72   nel_final = 12   nlevels = 2
+  wall = 4.19 s   CPU = 10.12 s
+  err_u   max=1.644e-03  avg=2.945e-04   sigma_r max=6.756e+00 avg=7.984e-01   sigma_t max=8.779e+00 avg=1.046e+00
+
+========================================================
+  L2       max_level = 3   (sweep 3 / 9)
+========================================================
+----------------------------------------------------- Load step 1 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 1  iteration, residual= 7.108133e-12  
+ESTIMATE:
+Computed error estimate: 3.412437e+03 
+MARK:
+3 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 2 %%%%%%%%%%
+SOLVE:
+Number of elements: 18. Total DOFs: 96 
+Solved in 1  iteration, residual= 1.881615e-12  
+ESTIMATE:
+Computed error estimate: 2.413543e+03 
+MARK:
+3 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 3 %%%%%%%%%%
+SOLVE:
+Number of elements: 27. Total DOFs: 120 
+Solved in 1  iteration, residual= 1.974543e-12  
+ESTIMATE:
+Computed error estimate: 1.940521e+03 
+MARK:
+3 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 4 %%%%%%%%%%
+SOLVE:
+Number of elements: 36. Total DOFs: 162 
+Solved in 1  iteration, residual= 2.104264e-12  
+ESTIMATE:
+Computed error estimate: 1.693071e+03 
+MARK:
+4 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 5 %%%%%%%%%%
+SOLVE:
+Number of elements: 48. Total DOFs: 180 
+Solved in 1  iteration, residual= 2.254410e-12  
+skip refinement
+MARK COARSENING:
+2 elements marked for coarsening 
+MARK COARSENING:
+2 elements marked for coarsening 
+----------------------------------------------------- Load step 2 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 42. Total DOFs: 156 
+Solved in 1  iteration, residual= 1.407589e-11  
+ESTIMATE:
+Computed error estimate: 3.264366e+03 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+2 elements marked for coarsening 
+MARK COARSENING:
+2 elements marked for coarsening 
+----------------------------------------------------- Load step 3 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 39. Total DOFs: 148 
+Solved in 1  iteration, residual= 1.452230e-11  
+ESTIMATE:
+Computed error estimate: 5.036932e+03 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+2 elements marked for coarsening 
+MARK COARSENING:
+2 elements marked for coarsening 
+----------------------------------------------------- Load step 4 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 33. Total DOFs: 144 
+Solved in 1  iteration, residual= 1.496682e-11  
+ESTIMATE:
+Computed error estimate: 7.102947e+03 
+MARK:
+1 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 2 %%%%%%%%%%
+SOLVE:
+Number of elements: 36. Total DOFs: 162 
+Solved in 1  iteration, residual= 8.673767e-12  
+ESTIMATE:
+Computed error estimate: 6.772347e+03 
+MARK:
+4 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 3 %%%%%%%%%%
+SOLVE:
+Number of elements: 48. Total DOFs: 180 
+Solved in 1  iteration, residual= 1.327153e-11  
+ESTIMATE:
+Computed error estimate: 5.963153e+03 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+2 elements marked for coarsening 
+MARK COARSENING:
+2 elements marked for coarsening 
+----------------------------------------------------- Load step 5 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 42. Total DOFs: 166 
+Solved in 1  iteration, residual= 1.402350e-11  
+ESTIMATE:
+Computed error estimate: 7.956642e+03 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+2 elements marked for coarsening 
+MARK COARSENING:
+2 elements marked for coarsening 
+----------------------------------------------------- Load step 6 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 36. Total DOFs: 162 
+Solved in 3  iteration, residual= 4.721676e-07  
+ESTIMATE:
+Computed error estimate: 9.924365e+03 
+MARK:
+4 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 2 %%%%%%%%%%
+SOLVE:
+Number of elements: 48. Total DOFs: 180 
+Solved in 2  iteration, residual= 1.051290e-07  
+ESTIMATE:
+Computed error estimate: 8.819503e+03 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+2 elements marked for coarsening 
+MARK COARSENING:
+2 elements marked for coarsening 
+----------------------------------------------------- Load step 7 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 42. Total DOFs: 166 
+Solved in 4  iteration, residual= 4.026457e-09  
+ESTIMATE:
+Computed error estimate: 1.163637e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+2 elements marked for coarsening 
+MARK COARSENING:
+2 elements marked for coarsening 
+----------------------------------------------------- Load step 8 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 36. Total DOFs: 162 
+Solved in 4  iteration, residual= 4.511590e-07  
+ESTIMATE:
+Computed error estimate: 1.386601e+04 
+MARK:
+4 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 2 %%%%%%%%%%
+SOLVE:
+Number of elements: 48. Total DOFs: 180 
+Solved in 3  iteration, residual= 1.045407e-09  
+ESTIMATE:
+Computed error estimate: 1.239972e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+2 elements marked for coarsening 
+MARK COARSENING:
+2 elements marked for coarsening 
+----------------------------------------------------- Load step 9 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 42. Total DOFs: 166 
+Solved in 5  iteration, residual= 2.843735e-11  
+ESTIMATE:
+Computed error estimate: 1.539093e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+2 elements marked for coarsening 
+MARK COARSENING:
+2 elements marked for coarsening 
+----------------------------------------------------- Load step 10 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 36. Total DOFs: 162 
+Solved in 5  iteration, residual= 2.468817e-10  
+ESTIMATE:
+Computed error estimate: 1.837216e+04 
+MARK:
+8 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 2 %%%%%%%%%%
+SOLVE:
+Number of elements: 60. Total DOFs: 188 
+Solved in 5  iteration, residual= 7.523900e-10  
+ESTIMATE:
+Computed error estimate: 1.599961e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+3 elements marked for coarsening 
+MARK COARSENING:
+3 elements marked for coarsening 
+  ndof_final = 174   nel_final = 54   nlevels = 3
+  wall = 6.89 s   CPU = 17.88 s
+  err_u   max=1.113e-03  avg=1.972e-04   sigma_r max=1.798e+00 avg=2.764e-01   sigma_t max=5.997e+00 avg=5.844e-01
+
+========================================================
+  QI       max_level = 1   (sweep 4 / 9)
+========================================================
+----------------------------------------------------- Load step 1 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 1  iteration, residual= 7.108133e-12  
+ESTIMATE:
+Computed error estimate: 3.418869e+03 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+0 elements marked for coarsening 
+MARK COARSENING:
+0 elements marked for coarsening 
+----------------------------------------------------- Load step 2 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 1  iteration, residual= 7.339001e-12  
+ESTIMATE:
+Computed error estimate: 6.837737e+03 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+0 elements marked for coarsening 
+MARK COARSENING:
+0 elements marked for coarsening 
+----------------------------------------------------- Load step 3 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 1  iteration, residual= 9.145688e-12  
+ESTIMATE:
+Computed error estimate: 1.025661e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+0 elements marked for coarsening 
+MARK COARSENING:
+0 elements marked for coarsening 
+----------------------------------------------------- Load step 4 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 1  iteration, residual= 9.360944e-12  
+ESTIMATE:
+Computed error estimate: 1.367547e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+0 elements marked for coarsening 
+MARK COARSENING:
+0 elements marked for coarsening 
+----------------------------------------------------- Load step 5 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 1  iteration, residual= 1.248602e-11  
+ESTIMATE:
+Computed error estimate: 1.709434e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+0 elements marked for coarsening 
+MARK COARSENING:
+0 elements marked for coarsening 
+----------------------------------------------------- Load step 6 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 3  iteration, residual= 3.525777e-09  
+ESTIMATE:
+Computed error estimate: 2.029821e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+0 elements marked for coarsening 
+MARK COARSENING:
+0 elements marked for coarsening 
+----------------------------------------------------- Load step 7 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 5  iteration, residual= 1.026856e-11  
+ESTIMATE:
+Computed error estimate: 2.277100e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+0 elements marked for coarsening 
+MARK COARSENING:
+0 elements marked for coarsening 
+----------------------------------------------------- Load step 8 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 4  iteration, residual= 4.133178e-06  
+ESTIMATE:
+Computed error estimate: 2.797779e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+0 elements marked for coarsening 
+MARK COARSENING:
+0 elements marked for coarsening 
+----------------------------------------------------- Load step 9 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 4  iteration, residual= 2.505568e-10  
+ESTIMATE:
+Computed error estimate: 3.270219e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+0 elements marked for coarsening 
+MARK COARSENING:
+0 elements marked for coarsening 
+----------------------------------------------------- Load step 10 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 5  iteration, residual= 5.183812e-08  
+ESTIMATE:
+Computed error estimate: 3.607073e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+0 elements marked for coarsening 
+MARK COARSENING:
+0 elements marked for coarsening 
+  ndof_final = 72   nel_final = 9   nlevels = 1
+  wall = 1.55 s   CPU = 12.22 s
+  err_u   max=4.935e-04  avg=1.414e-04   sigma_r max=6.874e+00 avg=9.680e-01   sigma_t max=8.694e+00 avg=8.613e-01
+
+========================================================
+  QI       max_level = 2   (sweep 5 / 9)
+========================================================
+----------------------------------------------------- Load step 1 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 1  iteration, residual= 7.108133e-12  
+ESTIMATE:
+Computed error estimate: 3.418869e+03 
+MARK:
+3 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 2 %%%%%%%%%%
+SOLVE:
+Number of elements: 18. Total DOFs: 96 
+Solved in 1  iteration, residual= 1.881615e-12  
+ESTIMATE:
+Computed error estimate: 2.417595e+03 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+1 elements marked for coarsening 
+MARK COARSENING:
+1 elements marked for coarsening 
+----------------------------------------------------- Load step 2 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 15. Total DOFs: 84 
+Solved in 1  iteration, residual= 8.413833e-12  
+ESTIMATE:
+Computed error estimate: 5.553462e+03 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+1 elements marked for coarsening 
+MARK COARSENING:
+1 elements marked for coarsening 
+----------------------------------------------------- Load step 3 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 12. Total DOFs: 72 
+Solved in 1  iteration, residual= 7.595699e-12  
+ESTIMATE:
+Computed error estimate: 9.282592e+03 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+1 elements marked for coarsening 
+MARK COARSENING:
+1 elements marked for coarsening 
+----------------------------------------------------- Load step 4 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 1  iteration, residual= 8.598396e-12  
+ESTIMATE:
+Computed error estimate: 1.367221e+04 
+MARK:
+3 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 2 %%%%%%%%%%
+SOLVE:
+Number of elements: 18. Total DOFs: 96 
+Solved in 1  iteration, residual= 6.682272e-12  
+ESTIMATE:
+Computed error estimate: 9.669868e+03 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+1 elements marked for coarsening 
+MARK COARSENING:
+1 elements marked for coarsening 
+----------------------------------------------------- Load step 5 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 15. Total DOFs: 84 
+Solved in 1  iteration, residual= 1.161061e-11  
+ESTIMATE:
+Computed error estimate: 1.388104e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+1 elements marked for coarsening 
+MARK COARSENING:
+1 elements marked for coarsening 
+----------------------------------------------------- Load step 6 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 12. Total DOFs: 72 
+Solved in 3  iteration, residual= 2.228944e-08  
+ESTIMATE:
+Computed error estimate: 1.836292e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+1 elements marked for coarsening 
+MARK COARSENING:
+1 elements marked for coarsening 
+----------------------------------------------------- Load step 7 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 4  iteration, residual= 1.036164e-05  
+ESTIMATE:
+Computed error estimate: 2.278195e+04 
+MARK:
+1 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 2 %%%%%%%%%%
+SOLVE:
+Number of elements: 12. Total DOFs: 72 
+Solved in 2  iteration, residual= 6.052837e-10  
+ESTIMATE:
+Computed error estimate: 2.088133e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+1 elements marked for coarsening 
+MARK COARSENING:
+1 elements marked for coarsening 
+----------------------------------------------------- Load step 8 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 4  iteration, residual= 4.125585e-06  
+ESTIMATE:
+Computed error estimate: 2.796888e+04 
+MARK:
+1 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 2 %%%%%%%%%%
+SOLVE:
+Number of elements: 12. Total DOFs: 72 
+Solved in 3  iteration, residual= 2.535947e-10  
+ESTIMATE:
+Computed error estimate: 2.523017e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+1 elements marked for coarsening 
+MARK COARSENING:
+1 elements marked for coarsening 
+----------------------------------------------------- Load step 9 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 4  iteration, residual= 2.111672e-10  
+ESTIMATE:
+Computed error estimate: 3.288093e+04 
+MARK:
+1 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 2 %%%%%%%%%%
+SOLVE:
+Number of elements: 12. Total DOFs: 72 
+Solved in 2  iteration, residual= 1.369010e-08  
+ESTIMATE:
+Computed error estimate: 2.966695e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+1 elements marked for coarsening 
+MARK COARSENING:
+1 elements marked for coarsening 
+----------------------------------------------------- Load step 10 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 5  iteration, residual= 4.833923e-08  
+ESTIMATE:
+Computed error estimate: 3.614138e+04 
+MARK:
+2 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 2 %%%%%%%%%%
+SOLVE:
+Number of elements: 15. Total DOFs: 72 
+Solved in 5  iteration, residual= 1.571595e-11  
+ESTIMATE:
+Computed error estimate: 3.162097e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+1 elements marked for coarsening 
+MARK COARSENING:
+1 elements marked for coarsening 
+  ndof_final = 72   nel_final = 12   nlevels = 2
+  wall = 3.79 s   CPU = 23.33 s
+  err_u   max=1.101e-03  avg=3.033e-04   sigma_r max=6.363e+00 avg=8.987e-01   sigma_t max=9.549e+00 avg=9.010e-01
+
+========================================================
+  QI       max_level = 3   (sweep 6 / 9)
+========================================================
+----------------------------------------------------- Load step 1 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 1  iteration, residual= 7.108133e-12  
+ESTIMATE:
+Computed error estimate: 3.418869e+03 
+MARK:
+3 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 2 %%%%%%%%%%
+SOLVE:
+Number of elements: 18. Total DOFs: 96 
+Solved in 1  iteration, residual= 1.881615e-12  
+ESTIMATE:
+Computed error estimate: 2.417595e+03 
+MARK:
+3 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 3 %%%%%%%%%%
+SOLVE:
+Number of elements: 27. Total DOFs: 120 
+Solved in 1  iteration, residual= 1.974543e-12  
+ESTIMATE:
+Computed error estimate: 1.942354e+03 
+MARK:
+3 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 4 %%%%%%%%%%
+SOLVE:
+Number of elements: 36. Total DOFs: 162 
+Solved in 1  iteration, residual= 2.104264e-12  
+ESTIMATE:
+Computed error estimate: 1.692789e+03 
+MARK:
+4 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 5 %%%%%%%%%%
+SOLVE:
+Number of elements: 48. Total DOFs: 180 
+Solved in 1  iteration, residual= 2.254410e-12  
+skip refinement
+MARK COARSENING:
+2 elements marked for coarsening 
+MARK COARSENING:
+2 elements marked for coarsening 
+----------------------------------------------------- Load step 2 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 42. Total DOFs: 156 
+Solved in 1  iteration, residual= 1.407589e-11  
+ESTIMATE:
+Computed error estimate: 3.265836e+03 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+2 elements marked for coarsening 
+MARK COARSENING:
+2 elements marked for coarsening 
+----------------------------------------------------- Load step 3 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 39. Total DOFs: 148 
+Solved in 1  iteration, residual= 1.452230e-11  
+ESTIMATE:
+Computed error estimate: 5.038920e+03 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+2 elements marked for coarsening 
+MARK COARSENING:
+2 elements marked for coarsening 
+----------------------------------------------------- Load step 4 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 33. Total DOFs: 144 
+Solved in 1  iteration, residual= 1.496682e-11  
+ESTIMATE:
+Computed error estimate: 7.104458e+03 
+MARK:
+1 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 2 %%%%%%%%%%
+SOLVE:
+Number of elements: 36. Total DOFs: 162 
+Solved in 1  iteration, residual= 8.673767e-12  
+ESTIMATE:
+Computed error estimate: 6.771214e+03 
+MARK:
+4 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 3 %%%%%%%%%%
+SOLVE:
+Number of elements: 48. Total DOFs: 180 
+Solved in 1  iteration, residual= 1.327153e-11  
+ESTIMATE:
+Computed error estimate: 5.963331e+03 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+2 elements marked for coarsening 
+MARK COARSENING:
+2 elements marked for coarsening 
+----------------------------------------------------- Load step 5 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 42. Total DOFs: 166 
+Solved in 1  iteration, residual= 1.402350e-11  
+ESTIMATE:
+Computed error estimate: 7.956497e+03 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+2 elements marked for coarsening 
+MARK COARSENING:
+2 elements marked for coarsening 
+----------------------------------------------------- Load step 6 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 36. Total DOFs: 162 
+Solved in 3  iteration, residual= 4.721676e-07  
+ESTIMATE:
+Computed error estimate: 9.854728e+03 
+MARK:
+4 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 2 %%%%%%%%%%
+SOLVE:
+Number of elements: 48. Total DOFs: 180 
+Solved in 3  iteration, residual= 3.906813e-10  
+ESTIMATE:
+Computed error estimate: 8.799715e+03 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+2 elements marked for coarsening 
+MARK COARSENING:
+2 elements marked for coarsening 
+----------------------------------------------------- Load step 7 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 42. Total DOFs: 166 
+Solved in 4  iteration, residual= 5.240613e-10  
+ESTIMATE:
+Computed error estimate: 1.152374e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+2 elements marked for coarsening 
+MARK COARSENING:
+2 elements marked for coarsening 
+----------------------------------------------------- Load step 8 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 36. Total DOFs: 162 
+Solved in 4  iteration, residual= 8.629000e-11  
+ESTIMATE:
+Computed error estimate: 1.386042e+04 
+MARK:
+4 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 2 %%%%%%%%%%
+SOLVE:
+Number of elements: 48. Total DOFs: 180 
+Solved in 2  iteration, residual= 1.862393e-06  
+ESTIMATE:
+Computed error estimate: 1.233303e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+2 elements marked for coarsening 
+MARK COARSENING:
+2 elements marked for coarsening 
+----------------------------------------------------- Load step 9 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 42. Total DOFs: 166 
+Solved in 5  iteration, residual= 2.737182e-11  
+ESTIMATE:
+Computed error estimate: 1.523170e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+2 elements marked for coarsening 
+MARK COARSENING:
+2 elements marked for coarsening 
+----------------------------------------------------- Load step 10 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 36. Total DOFs: 162 
+Solved in 5  iteration, residual= 1.128261e-08  
+ESTIMATE:
+Computed error estimate: 1.836650e+04 
+MARK:
+8 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 2 %%%%%%%%%%
+SOLVE:
+Number of elements: 60. Total DOFs: 188 
+Solved in 5  iteration, residual= 1.062526e-08  
+ESTIMATE:
+Computed error estimate: 1.606487e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+3 elements marked for coarsening 
+MARK COARSENING:
+3 elements marked for coarsening 
+  ndof_final = 174   nel_final = 54   nlevels = 3
+  wall = 10.35 s   CPU = 55.84 s
+  err_u   max=1.358e-03  avg=1.807e-04   sigma_r max=1.723e+00 avg=2.828e-01   sigma_t max=5.074e+00 avg=5.454e-01
+
+========================================================
+  QI_C0    max_level = 1   (sweep 7 / 9)
+========================================================
+----------------------------------------------------- Load step 1 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 1  iteration, residual= 7.108133e-12  
+ESTIMATE:
+Computed error estimate: 3.415651e+03 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+0 elements marked for coarsening 
+MARK COARSENING:
+0 elements marked for coarsening 
+----------------------------------------------------- Load step 2 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 1  iteration, residual= 7.339001e-12  
+ESTIMATE:
+Computed error estimate: 6.831301e+03 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+0 elements marked for coarsening 
+MARK COARSENING:
+0 elements marked for coarsening 
+----------------------------------------------------- Load step 3 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 1  iteration, residual= 9.145688e-12  
+ESTIMATE:
+Computed error estimate: 1.024695e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+0 elements marked for coarsening 
+MARK COARSENING:
+0 elements marked for coarsening 
+----------------------------------------------------- Load step 4 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 1  iteration, residual= 9.360944e-12  
+ESTIMATE:
+Computed error estimate: 1.366260e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+0 elements marked for coarsening 
+MARK COARSENING:
+0 elements marked for coarsening 
+----------------------------------------------------- Load step 5 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 1  iteration, residual= 1.248602e-11  
+ESTIMATE:
+Computed error estimate: 1.707825e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+0 elements marked for coarsening 
+MARK COARSENING:
+0 elements marked for coarsening 
+----------------------------------------------------- Load step 6 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 3  iteration, residual= 3.525777e-09  
+ESTIMATE:
+Computed error estimate: 2.028465e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+0 elements marked for coarsening 
+MARK COARSENING:
+0 elements marked for coarsening 
+----------------------------------------------------- Load step 7 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 4  iteration, residual= 2.034624e-10  
+ESTIMATE:
+Computed error estimate: 2.303694e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+0 elements marked for coarsening 
+MARK COARSENING:
+0 elements marked for coarsening 
+----------------------------------------------------- Load step 8 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 4  iteration, residual= 6.227360e-06  
+ESTIMATE:
+Computed error estimate: 2.851186e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+0 elements marked for coarsening 
+MARK COARSENING:
+0 elements marked for coarsening 
+----------------------------------------------------- Load step 9 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 5  iteration, residual= 1.413758e-11  
+ESTIMATE:
+Computed error estimate: 3.254241e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+0 elements marked for coarsening 
+MARK COARSENING:
+0 elements marked for coarsening 
+----------------------------------------------------- Load step 10 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 5  iteration, residual= 3.517415e-08  
+ESTIMATE:
+Computed error estimate: 3.650911e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+0 elements marked for coarsening 
+MARK COARSENING:
+0 elements marked for coarsening 
+  ndof_final = 72   nel_final = 9   nlevels = 1
+  wall = 1.57 s   CPU = 11.69 s
+  err_u   max=8.304e-04  avg=1.399e-04   sigma_r max=6.811e+00 avg=9.273e-01   sigma_t max=6.719e+00 avg=8.675e-01
+
+========================================================
+  QI_C0    max_level = 2   (sweep 8 / 9)
+========================================================
+----------------------------------------------------- Load step 1 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 1  iteration, residual= 7.108133e-12  
+ESTIMATE:
+Computed error estimate: 3.415651e+03 
+MARK:
+3 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 2 %%%%%%%%%%
+SOLVE:
+Number of elements: 18. Total DOFs: 96 
+Solved in 1  iteration, residual= 1.881615e-12  
+ESTIMATE:
+Computed error estimate: 2.414902e+03 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+1 elements marked for coarsening 
+MARK COARSENING:
+1 elements marked for coarsening 
+----------------------------------------------------- Load step 2 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 15. Total DOFs: 84 
+Solved in 1  iteration, residual= 8.413833e-12  
+ESTIMATE:
+Computed error estimate: 5.541725e+03 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+1 elements marked for coarsening 
+MARK COARSENING:
+1 elements marked for coarsening 
+----------------------------------------------------- Load step 3 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 12. Total DOFs: 72 
+Solved in 1  iteration, residual= 7.595699e-12  
+ESTIMATE:
+Computed error estimate: 9.258591e+03 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+1 elements marked for coarsening 
+MARK COARSENING:
+1 elements marked for coarsening 
+----------------------------------------------------- Load step 4 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 1  iteration, residual= 8.598396e-12  
+ESTIMATE:
+Computed error estimate: 1.365932e+04 
+MARK:
+3 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 2 %%%%%%%%%%
+SOLVE:
+Number of elements: 18. Total DOFs: 96 
+Solved in 1  iteration, residual= 6.682272e-12  
+ESTIMATE:
+Computed error estimate: 9.659117e+03 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+1 elements marked for coarsening 
+MARK COARSENING:
+1 elements marked for coarsening 
+----------------------------------------------------- Load step 5 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 15. Total DOFs: 84 
+Solved in 1  iteration, residual= 1.161061e-11  
+ESTIMATE:
+Computed error estimate: 1.385172e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+1 elements marked for coarsening 
+MARK COARSENING:
+1 elements marked for coarsening 
+----------------------------------------------------- Load step 6 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 12. Total DOFs: 72 
+Solved in 3  iteration, residual= 2.228944e-08  
+ESTIMATE:
+Computed error estimate: 1.830187e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+1 elements marked for coarsening 
+MARK COARSENING:
+1 elements marked for coarsening 
+----------------------------------------------------- Load step 7 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 5  iteration, residual= 1.267767e-11  
+ESTIMATE:
+Computed error estimate: 2.304489e+04 
+MARK:
+1 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 2 %%%%%%%%%%
+SOLVE:
+Number of elements: 12. Total DOFs: 72 
+Solved in 4  iteration, residual= 9.284495e-12  
+ESTIMATE:
+Computed error estimate: 2.084802e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+1 elements marked for coarsening 
+MARK COARSENING:
+1 elements marked for coarsening 
+----------------------------------------------------- Load step 8 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 4  iteration, residual= 2.106227e-06  
+ESTIMATE:
+Computed error estimate: 2.850892e+04 
+MARK:
+1 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 2 %%%%%%%%%%
+SOLVE:
+Number of elements: 12. Total DOFs: 72 
+Solved in 3  iteration, residual= 7.353183e-08  
+ESTIMATE:
+Computed error estimate: 2.569849e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+1 elements marked for coarsening 
+MARK COARSENING:
+1 elements marked for coarsening 
+----------------------------------------------------- Load step 9 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 4  iteration, residual= 9.412558e-06  
+ESTIMATE:
+Computed error estimate: 3.255617e+04 
+MARK:
+1 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 2 %%%%%%%%%%
+SOLVE:
+Number of elements: 12. Total DOFs: 72 
+Solved in 3  iteration, residual= 1.059851e-08  
+ESTIMATE:
+Computed error estimate: 2.987614e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+1 elements marked for coarsening 
+MARK COARSENING:
+1 elements marked for coarsening 
+----------------------------------------------------- Load step 10 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 5  iteration, residual= 6.411857e-08  
+ESTIMATE:
+Computed error estimate: 3.651330e+04 
+MARK:
+2 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 2 %%%%%%%%%%
+SOLVE:
+Number of elements: 15. Total DOFs: 72 
+Solved in 4  iteration, residual= 2.130021e-11  
+ESTIMATE:
+Computed error estimate: 3.201269e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+1 elements marked for coarsening 
+MARK COARSENING:
+1 elements marked for coarsening 
+  ndof_final = 72   nel_final = 12   nlevels = 2
+  wall = 4.74 s   CPU = 25.83 s
+  err_u   max=8.362e-04  avg=1.495e-04   sigma_r max=6.782e+00 avg=9.241e-01   sigma_t max=6.688e+00 avg=8.588e-01
+
+========================================================
+  QI_C0    max_level = 3   (sweep 9 / 9)
+========================================================
+----------------------------------------------------- Load step 1 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 9. Total DOFs: 72 
+Solved in 1  iteration, residual= 7.108133e-12  
+ESTIMATE:
+Computed error estimate: 3.415651e+03 
+MARK:
+3 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 2 %%%%%%%%%%
+SOLVE:
+Number of elements: 18. Total DOFs: 96 
+Solved in 1  iteration, residual= 1.881615e-12  
+ESTIMATE:
+Computed error estimate: 2.414902e+03 
+MARK:
+3 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 3 %%%%%%%%%%
+SOLVE:
+Number of elements: 27. Total DOFs: 120 
+Solved in 1  iteration, residual= 1.974543e-12  
+ESTIMATE:
+Computed error estimate: 1.940981e+03 
+MARK:
+3 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 4 %%%%%%%%%%
+SOLVE:
+Number of elements: 36. Total DOFs: 162 
+Solved in 1  iteration, residual= 2.104264e-12  
+ESTIMATE:
+Computed error estimate: 1.692702e+03 
+MARK:
+4 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 5 %%%%%%%%%%
+SOLVE:
+Number of elements: 48. Total DOFs: 180 
+Solved in 1  iteration, residual= 2.254410e-12  
+skip refinement
+MARK COARSENING:
+2 elements marked for coarsening 
+MARK COARSENING:
+2 elements marked for coarsening 
+----------------------------------------------------- Load step 2 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 42. Total DOFs: 156 
+Solved in 1  iteration, residual= 1.407589e-11  
+ESTIMATE:
+Computed error estimate: 3.264054e+03 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+2 elements marked for coarsening 
+MARK COARSENING:
+2 elements marked for coarsening 
+----------------------------------------------------- Load step 3 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 39. Total DOFs: 148 
+Solved in 1  iteration, residual= 1.452230e-11  
+ESTIMATE:
+Computed error estimate: 5.036356e+03 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+2 elements marked for coarsening 
+MARK COARSENING:
+2 elements marked for coarsening 
+----------------------------------------------------- Load step 4 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 33. Total DOFs: 144 
+Solved in 1  iteration, residual= 1.496682e-11  
+ESTIMATE:
+Computed error estimate: 7.101621e+03 
+MARK:
+1 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 2 %%%%%%%%%%
+SOLVE:
+Number of elements: 36. Total DOFs: 162 
+Solved in 1  iteration, residual= 8.673767e-12  
+ESTIMATE:
+Computed error estimate: 6.770871e+03 
+MARK:
+4 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 3 %%%%%%%%%%
+SOLVE:
+Number of elements: 48. Total DOFs: 180 
+Solved in 1  iteration, residual= 1.327153e-11  
+ESTIMATE:
+Computed error estimate: 5.962608e+03 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+2 elements marked for coarsening 
+MARK COARSENING:
+2 elements marked for coarsening 
+----------------------------------------------------- Load step 5 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 42. Total DOFs: 166 
+Solved in 1  iteration, residual= 1.402350e-11  
+ESTIMATE:
+Computed error estimate: 7.955516e+03 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+2 elements marked for coarsening 
+MARK COARSENING:
+2 elements marked for coarsening 
+----------------------------------------------------- Load step 6 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 36. Total DOFs: 162 
+Solved in 3  iteration, residual= 4.721676e-07  
+ESTIMATE:
+Computed error estimate: 9.899940e+03 
+MARK:
+4 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 2 %%%%%%%%%%
+SOLVE:
+Number of elements: 48. Total DOFs: 180 
+Solved in 2  iteration, residual= 1.210175e-07  
+ESTIMATE:
+Computed error estimate: 8.825370e+03 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+2 elements marked for coarsening 
+MARK COARSENING:
+2 elements marked for coarsening 
+----------------------------------------------------- Load step 7 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 42. Total DOFs: 166 
+Solved in 4  iteration, residual= 1.016136e-06  
+ESTIMATE:
+Computed error estimate: 1.149428e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+2 elements marked for coarsening 
+MARK COARSENING:
+2 elements marked for coarsening 
+----------------------------------------------------- Load step 8 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 36. Total DOFs: 162 
+Solved in 4  iteration, residual= 6.984208e-06  
+ESTIMATE:
+Computed error estimate: 1.397861e+04 
+MARK:
+4 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 2 %%%%%%%%%%
+SOLVE:
+Number of elements: 48. Total DOFs: 180 
+Solved in 3  iteration, residual= 4.902647e-10  
+ESTIMATE:
+Computed error estimate: 1.255384e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+2 elements marked for coarsening 
+MARK COARSENING:
+2 elements marked for coarsening 
+----------------------------------------------------- Load step 9 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 42. Total DOFs: 166 
+Solved in 4  iteration, residual= 7.684603e-06  
+ESTIMATE:
+Computed error estimate: 1.537551e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+2 elements marked for coarsening 
+MARK COARSENING:
+2 elements marked for coarsening 
+----------------------------------------------------- Load step 10 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 36. Total DOFs: 162 
+Solved in 5  iteration, residual= 4.476058e-09  
+ESTIMATE:
+Computed error estimate: 1.844225e+04 
+MARK:
+8 elements marked for refinement 
+REFINE:
+
+%%%%%%%%%% Iteration 2 %%%%%%%%%%
+SOLVE:
+Number of elements: 60. Total DOFs: 188 
+Solved in 5  iteration, residual= 3.785994e-11  
+ESTIMATE:
+Computed error estimate: 1.605790e+04 
+Warning: reached the maximum number of levels
+MARK COARSENING:
+3 elements marked for coarsening 
+MARK COARSENING:
+3 elements marked for coarsening 
+  ndof_final = 174   nel_final = 54   nlevels = 3
+  wall = 11.08 s   CPU = 55.12 s
+  err_u   max=9.753e-04  avg=1.576e-04   sigma_r max=3.346e+00 avg=2.903e-01   sigma_t max=4.966e+00 avg=5.065e-01
+Wrote adaptivity_study_2D.mat and adaptivity_study_2D_summary.csv
+
+All outputs written.  pgfplots master file: pgfplots_2D\adaptivity_study_2D.tex
+SWEEP DONE

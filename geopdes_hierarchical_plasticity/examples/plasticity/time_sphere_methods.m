@@ -1,5 +1,5 @@
 % TIME_SPHERE_METHODS  Measure wall-clock and CPU time for each projection
-% method (L2, QI, QI_ref), both with the libqi backend enabled and with it
+% method (L2, QI, QI_C0), both with the libqi backend enabled and with it
 % bypassed (MATLAB reference for the local-LS step).
 %
 % Writes sphere_timings.mat and sphere_timings.csv.
@@ -83,7 +83,7 @@ end
 % Verify both modes work by toggling once:
 fprintf('libqi MEX path: %s\n', mex_file);
 
-methods   = {'L2', 'QI', 'QI_ref'};
+methods   = {'L2', 'QI', 'QI_C0'};
 backends  = {'matlab', 'libqi'};
 results   = struct();
 

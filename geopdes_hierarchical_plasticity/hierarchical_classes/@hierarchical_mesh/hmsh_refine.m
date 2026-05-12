@@ -51,9 +51,14 @@ hmsh.msh_lev = update_msh_lev (hmsh, old_elements, new_elements);
 if (boundary)
   if (hmsh.ndim > 1)
     for iside = 1:2*hmsh.ndim
-      M_boundary = cell (size (M));
-      for lev = 1:numel (M)
-        M_boundary{lev} = get_boundary_indices (iside, hmsh.mesh_of_level(lev).nel_dir, M{lev});
+      bnd_lv = hmsh.boundary(iside).nlevels;
+      M_pad = M;
+      if (numel(M_pad) < bnd_lv)
+        M_pad{bnd_lv} = [];
+      end
+      M_boundary = cell (size (M_pad));
+      for lev = 1:numel (M_pad)
+        M_boundary{lev} = get_boundary_indices (iside, hmsh.mesh_of_level(lev).nel_dir, M_pad{lev});
       end
       hmsh.boundary(iside) = hmsh_refine (hmsh.boundary(iside), M_boundary);
     end

@@ -2,6 +2,10 @@
  * qi_linalg.c — small dense linear algebra: Jacobi eig, pinv-via-eig, LU.
  *
  * All routines work on matrices stored in row-major C order.
+ *
+ * v1.1 changes:
+ *   - restrict qualifiers for auto-vectorisation.
+ *   - LU solve uses a stack buffer (no malloc for n*nrhs <= 512).
  */
 #include "qi_linalg.h"
 #include <math.h>
@@ -10,7 +14,9 @@
 
 /* ---------- naive matrix multiplications --------------------------------- */
 void qi_la_gemm_NN(int m, int k, int n,
-                   const double *A, const double *B, double *C)
+                   const double *QI_RESTRICT A,
+                   const double *QI_RESTRICT B,
+                   double *QI_RESTRICT C)
 {
     /* C = A * B  with shapes (m,k)*(k,n) -> (m,n) */
     for (int i = 0; i < m; ++i) {
@@ -23,7 +29,9 @@ void qi_la_gemm_NN(int m, int k, int n,
 }
 
 void qi_la_gemm_TN(int m, int k, int n,
-                   const double *A, const double *B, double *C)
+                   const double *QI_RESTRICT A,
+                   const double *QI_RESTRICT B,
+                   double *QI_RESTRICT C)
 {
     /* C = A^T * B  where A is (k,m), so C = (m,n).  B is (k,n). */
     for (int i = 0; i < m; ++i) {
@@ -116,30 +124,14 @@ int qi_la_sym_eig(int n, double *S, double *evals, double *Q)
     return 0;
 }
 
-/* ---------- Pseudo-inverse-times-vector via eigendecomposition ----------- *
- *  x = pinv(A) * b  for tall (m >= n) A.
- *  We form S = A^T A (n x n, symmetric PSD), eigendecompose it,
- *  then x = sum_i (1/lambda_i) v_i (v_i^T A^T b)  for lambda_i above tolerance.
- *
- *  This matches MATLAB's pinv(A)*b for full column rank A and gracefully
- *  handles rank deficiency.
- *
- *  The smallest singular value sigma_min(A) = sqrt(lambda_min) is also
- *  returned (used by the σ-test in the QI algorithm).
- */
+/* ---------- Pseudo-inverse-times-vector via eigendecomposition ----------- */
 int qi_la_pinv_solve(int m, int n, int nrhs,
-                     double *A, const double *b,
-                     double *x, double *sigma_min,
-                     double *work, int lwork)
+                     double *QI_RESTRICT A,
+                     const double *QI_RESTRICT b,
+                     double *QI_RESTRICT x,
+                     double *sigma_min,
+                     double *QI_RESTRICT work, int lwork)
 {
-    /* layout in `work`:
-       S      [n*n]
-       Q      [n*n]
-       evals  [n]
-       AtB    [n*nrhs]
-       Vt_AtB [n*nrhs]
-       Total: 2*n*n + n + 2*n*nrhs
-    */
     int need = 2*n*n + n + 2*n*nrhs;
     if (lwork < need) return -1;
 
@@ -168,31 +160,28 @@ int qi_la_pinv_solve(int m, int n, int nrhs,
 
     qi_la_sym_eig(n, S, evals, Q);
 
-    /* eigenvalues are in ascending order; smallest is evals[0]. */
     double lam_max = evals[n-1];
     double tol     = (lam_max > 0.0 ? lam_max : 1.0) * 1e-13 * (double)n;
-
-    /* sigma_min = sqrt(max(evals[0],0)) */
     double lam_min = evals[0] > 0.0 ? evals[0] : 0.0;
     *sigma_min = sqrt(lam_min);
 
-    /* Vt * (A^T b)  i.e.  Q^T * AtB */
     qi_la_gemm_TN(n, n, nrhs, Q, AtB, VtAtB);
 
-    /* divide by eigenvalues with regularisation (zero out below tol) */
     for (int i = 0; i < n; ++i) {
         double lam = evals[i];
         double inv = (lam > tol) ? 1.0/lam : 0.0;
         for (int j = 0; j < nrhs; ++j) VtAtB[i*nrhs + j] *= inv;
     }
 
-    /* x = Q * (above) */
     qi_la_gemm_NN(n, n, nrhs, Q, VtAtB, x);
     return 0;
 }
 
 /* ---------- LU with partial pivoting ------------------------------------- */
-int qi_la_lu_solve(int n, int nrhs, double *L, double *b, int *piv)
+int qi_la_lu_solve(int n, int nrhs,
+                   double *QI_RESTRICT L,
+                   double *QI_RESTRICT b,
+                   int *QI_RESTRICT piv)
 {
     /* in-place LU factorisation of L; row-major */
     for (int k = 0; k < n; ++k) piv[k] = k;
@@ -220,15 +209,19 @@ int qi_la_lu_solve(int n, int nrhs, double *L, double *b, int *piv)
         }
     }
 
-    /* apply permutation to b: b_perm[i] = b[piv[i]]   (row-major nrhs) */
-    /* do it in a temporary copy */
-    double *bp = (double*)malloc((size_t)n*nrhs*sizeof(double));
+    /* apply permutation to b: b_perm[i] = b[piv[i]]   (row-major nrhs)
+     * Use a stack buffer to avoid malloc in the hot parallel path. */
+    double bp_stack[512];
+    int    heap = (n * nrhs > 512);
+    double *bp = heap ? (double*)malloc((size_t)n * nrhs * sizeof(double)) : bp_stack;
     if (!bp) return -2;
+
     for (int i = 0; i < n; ++i)
         for (int j = 0; j < nrhs; ++j)
             bp[i*nrhs + j] = b[piv[i]*nrhs + j];
-    memcpy(b, bp, (size_t)n*nrhs*sizeof(double));
-    free(bp);
+    memcpy(b, bp, (size_t)n * nrhs * sizeof(double));
+
+    if (heap) free(bp);
 
     /* forward substitution: L y = b   (unit diag) */
     for (int i = 0; i < n; ++i)

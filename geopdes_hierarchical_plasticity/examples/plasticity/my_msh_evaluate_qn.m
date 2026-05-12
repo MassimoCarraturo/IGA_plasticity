@@ -15,7 +15,8 @@ msh_col.nqn  = msh.nqn;
 
 
 indices = cell (msh.ndim, 1);
-[indices{:}] = ind2sub (msh.nel_dir, elem_list);
+% Trailing 1 keeps ind2sub happy for 1D meshes on MATLAB R2024b+
+[indices{:}] = ind2sub ([msh.nel_dir, 1], elem_list);
 indices = cell2mat (indices);
 
 qn_elems = arrayfun(@(ii) {msh.qn{ii}(:,indices(ii,:))}, 1:msh.ndim);

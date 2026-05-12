@@ -1,7 +1,7 @@
 % EX_PLASTIC_SPHERE_HIER  Eighth-sphere J2-plasticity benchmark from
 % "Computational Methods for Plasticity: Theory and Applications"
 % (de Souza Neto, Peric, Owen).  Compares three projection methods for the
-% history variables — L2, QI, QI_ref — against Hill's analytical solution.
+% history variables — L2, QI, QI_C0 — against Hill's analytical solution.
 %
 % Outputs written next to this script:
 %   sphere_results_<method>.mat     numerical curves for each method
@@ -42,15 +42,17 @@ problem_data.h = @(x, y, z, ind) zeros (3, size (x, 1), size (x, 2), size (x, 3)
 problem_data.p = @(x, y, z) P*ones (size (x));
 
 % Hill (analytical) reference
+s_y = problem_data.yield_stress(1);
 [u_ex, P_ex, sigma_r_ex, sigma_t_ex, radius] = ...
-    sphere_solution (E, nu, problem_data.yield_stress(1), 100, 200, P, nload);
+    sphere_solution (E, nu, s_y, 100, 200, P, nload);
 load_step_eval_stress = [2, 5];
 
 % 2) DISCRETIZATION COMMON TO ALL METHODS
 p = 2;
 method_data_template.degree     = [p p p];
 method_data_template.regularity = [p-1 p-1 p-1];
-method_data_template.nsub_coarse = [15, 5, 5];
+method_data_template.nsub_coarse = [2,2,2];
+
 method_data_template.nsub_refine = [2 2 2];
 method_data_template.nquad      = [p+1 p+1 p+1];
 method_data_template.space_type  = 'standard';
@@ -61,13 +63,14 @@ method_data_template.newton_tol_abs = 1e-10;
 method_data_template.newton_iter_max = 100;
 
 adaptivity_data.flag = 'elements';
+adaptivity_data.estimator = 'sphere_front';
 adaptivity_data.C0_est = 1.0;
 adaptivity_data.mark_param = 0.9;
-adaptivity_data.mark_param_coarsening = 0.05;
+adaptivity_data.mark_param_coarsening = 0.1;
 adaptivity_data.mark_strategy = 'MS';
-adaptivity_data.max_level = 1;
+adaptivity_data.max_level = 4;
 adaptivity_data.max_ndof = 15000;
-adaptivity_data.num_max_iter = 1;
+adaptivity_data.num_max_iter = 4;
 adaptivity_data.max_nel = 5000;
 adaptivity_data.tol = 1e-5 * 3.14 * 30000;
 adaptivity_data.adm_strategy = 'admissible';
@@ -75,7 +78,7 @@ adaptivity_data.coarsening_flag = 'any';
 adaptivity_data.adm = p;
 
 % 3) RUN EACH PROJECTION METHOD
-proj_methods = {'L2', 'QI', 'QI_ref'};
+proj_methods = {'L2', 'QI', 'QI_C0'};
 results = struct();
 
 for imethod = 1:numel(proj_methods)
@@ -129,7 +132,17 @@ for imethod = 1:numel(proj_methods)
             sigma_rad(jpoint, jload) = rad_dir' * sigma_matrix * rad_dir;
             sigma_tan(jpoint, jload) = tan_dir' * sigma_matrix * tan_dir;
         end
+
+        sigma_ex = @(x, y, z) eval_Hill_sphere(s_y, x, y, z, 100, 200, P_i(load_step_eval_stress(jload) + 1));
+        
+        [errl2_sigma_rad(jload), errl2_sigma_tan(jload)] = hspace_l2_error_stress (cell_hspace_scalar{load_step_eval_stress(jload)}, ...
+            cell_hmsh{load_step_eval_stress(jload)}, cell_sigma{load_step_eval_stress(jload)}, sigma_ex);
+        [errl2_sigma_rad_ex(jload), errl2_sigma_tan_ex(jload)] = hspace_l2_error_stress (cell_hspace_scalar{load_step_eval_stress(jload)}, ...
+            cell_hmsh{load_step_eval_stress(jload)}, 0*cell_sigma{load_step_eval_stress(jload)}, sigma_ex);
     end
+
+    
+
 
     R = struct();
     R.method      = method_name;
@@ -138,6 +151,10 @@ for imethod = 1:numel(proj_methods)
     R.radius      = radius;
     R.sigma_rad   = sigma_rad;
     R.sigma_tan   = sigma_tan;
+    R.errl2_sigma_rad   = errl2_sigma_rad;
+    R.errl2_sigma_tan   = errl2_sigma_tan;
+    R.errl2_rel_sigma_rad   = errl2_sigma_rad ./ errl2_sigma_rad_ex;
+    R.errl2_rel_sigma_tan   = errl2_sigma_tan ./ errl2_sigma_tan_ex;
     R.load_steps  = load_step_eval_stress;
     R.solution    = solution_data;
     results.(matlab.lang.makeValidName(method_name)) = R;
@@ -146,7 +163,7 @@ for imethod = 1:numel(proj_methods)
 end
 
 % 4) PLOT COMPARISON IN MATLAB
-out_dir = 'pgfplots';
+out_dir = strcat(pwd,'\pgfplots');
 if ~exist(out_dir, 'dir'); mkdir(out_dir); end
 
 method_styles = {'-o', '-s', '-d'};
@@ -359,4 +376,112 @@ end
 
 function s = latex_escape(s)
     s = strrep(s, '_', '\_');
+end
+
+function [errl2_rad, errl2_tan] = hspace_l2_error_stress (hspace, hmsh, sigma, sigma_ex)
+
+errl2_rad = 0;
+errl2_tan = 0;
+last_dof = cumsum (hspace.ndof_per_level);
+
+for ilev = 1:hmsh.nlevels
+  if (hmsh.nel_per_level(ilev) > 0)
+      msh_level = hmsh.msh_lev{ilev};
+      sp_level = sp_evaluate_element_list (hspace.space_of_level(ilev), hmsh.msh_lev{ilev}, 'value', true);
+      
+      [errl2_rad_lev, errl2_tan_lev] = ...
+      sp_l2_error_stress (sp_level, msh_level, hspace.Csub{ilev}*sigma(1:last_dof(ilev),:), sigma_ex);
+
+      errl2_rad = errl2_rad + errl2_rad_lev.^2;
+      errl2_tan = errl2_tan + errl2_tan_lev.^2;
+  end
+end
+errl2_rad  = sqrt (errl2_rad);
+errl2_tan  = sqrt (errl2_tan);
+
+end
+
+function [errl2_rad, errl2_tan] = sp_l2_error_stress (sp, msh, sigma, sigma_ex)
+  
+  voigt   = [1,1; 2,2; 3,3; 1,2; 2,3; 1,3];
+ 
+  for idir = 1:msh.rdim
+    x{idir} = reshape (msh.geo_map(idir,:,:), msh.nqn*msh.nel, 1);
+  end
+  [sigma_rad_ex, sigma_tan_ex] = feval (sigma_ex, x{:});
+  sigma_rad_ex  = reshape (sigma_rad_ex, sp.ncomp, msh.nqn, msh.nel);
+  sigma_tan_ex  = reshape (sigma_tan_ex, sp.ncomp, msh.nqn, msh.nel);
+
+  w = msh.quad_weights .* msh.jacdet;
+
+  sigma_matrix = zeros(3,3,msh.nqn*msh.nel);
+
+  for icomp = 1:6
+      
+      eu = sp_eval_msh (sigma(:,icomp), sp, msh);
+      eu = reshape (eu, sp.ncomp, msh.nqn * msh.nel);
+
+      sigma_matrix(voigt(icomp,1), voigt(icomp,2), :) = eu;
+      if icomp > 3
+          sigma_matrix(voigt(icomp,2), voigt(icomp,1), :) = eu;
+      end
+  end
+  % sigma_matrix = permute(sigma_matrix,[1 3 2]);
+
+  for iGP = 1:msh.nqn*msh.nel
+    
+    coordX = x{1}(iGP);
+    coordY = x{2}(iGP);
+    coordZ = x{3}(iGP);
+
+    rad_dir = [coordX; coordY; coordZ] ./ norm([coordX; coordY; coordZ]);
+    tan_dir = [coordY; -coordX; 0] ./ norm([coordX; coordY; 0]);
+  
+    sigma_rad(iGP) = rad_dir' * sigma_matrix(:,:,iGP) * rad_dir;
+    sigma_tan(iGP) = tan_dir' * sigma_matrix(:,:,iGP)  * tan_dir;
+  end
+
+  sigma_rad = reshape(sigma_rad, [1, msh.nqn, msh.nel]);
+  sigma_tan = reshape(sigma_tan, [1, msh.nqn, msh.nel]);
+  
+  errl2_rad_elem = sum (reshape (sum ((sigma_rad - sigma_rad_ex).^2, 1), [msh.nqn, msh.nel]) .* w);
+  errl2_tan_elem = sum (reshape (sum ((sigma_tan - sigma_tan_ex).^2, 1), [msh.nqn, msh.nel]) .* w);
+
+  errl2_rad  = sqrt (sum (errl2_rad_elem));
+  errl2_tan  = sqrt (sum (errl2_tan_elem));
+  
+end
+
+function [sigma_r, sigma_t] = eval_Hill_sphere(s_y, x, y, z, a, b, P)
+
+P_0 = 2*s_y/3*(1-(a^3/b^3));
+radius = sqrt(x.^2 + y.^2 + z.^2);
+sigma_r =  zeros(size(radius));
+sigma_t =  zeros(size(radius));
+
+if P < P_0
+    for j = 1:size(radius, 2)
+        for i = 1:size(radius, 1)
+            sigma_r(i,j) = -P*a^3 / (b^3 - a^3) * (b^3 / radius(i,j)^3 - 1);
+            sigma_t(i,j) =  P*a^3 / (b^3 - a^3) * (0.5*b^3 / radius(i,j)^3 + 1);
+        end
+    end
+
+else
+    fun_front = @(x) -P +2*s_y* log(x/a) + 2/3*s_y* (1- x.^3/b^3);
+    c = fsolve(fun_front, 100);
+
+    for j =1:size(radius, 2)
+        for i = 1:size(radius, 1)
+            if radius(i,j)<=c
+                sigma_r(i,j) = -2*s_y*( log(c/radius(i,j)) + 1/3* (1-c^3/b^3));
+                sigma_t(i,j) = 2*s_y*( 0.5- log(c/radius(i,j)) - 1/3* (1-c^3/b^3));
+            else
+                sigma_r(i,j) = -2*s_y*c^3 / ( 3 * b^3) * (b^3 / radius(i,j)^3 -1);
+                sigma_t(i,j) = 2*s_y*c^3 / ( 3 * b^3) * (0.5* b^3 / radius(i,j)^3 +1);
+            end
+        end
+    end
+
+end
 end

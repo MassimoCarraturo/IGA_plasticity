@@ -10,7 +10,7 @@ function eps_pl_control_var = history_variable_projection_hier(hspace, hmsh, eps
         end
     end
 
-    if  strcmpi(type_proj, 'QI_ref')
+    if  strcmpi(type_proj, 'QI_C0')
         n_hist_var = size(eps_pl{end}, 3);
         eps_pl_control_var= zeros(hspace.ndof, n_hist_var);
 

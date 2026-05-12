@@ -1,0 +1,2292 @@
+
+Equation solved.
+
+fsolve completed because the vector of function values is near zero
+as measured by the value of the function tolerance, and
+the problem appears regular as measured by the gradient.
+
+
+Equation solved.
+
+fsolve completed because the vector of function values is near zero
+as measured by the value of the function tolerance, and
+the problem appears regular as measured by the gradient.
+
+
+Equation solved.
+
+fsolve completed because the vector of function values is near zero
+as measured by the value of the function tolerance, and
+the problem appears regular as measured by the gradient.
+
+
+================================================================
+Running ex_plastic_sphere_hier with type_projection = L2
+================================================================
+----------------------------------------------------- Load step 1 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 375. Total DOFs: 2499 
+Solved in 1  iteration, residual= 3.705507e-07  
+skip refinement
+skip coarsening
+----------------------------------------------------- Load step 2 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 375. Total DOFs: 2499 
+Solved in 1  iteration, residual= 4.846044e-07  
+skip refinement
+skip coarsening
+----------------------------------------------------- Load step 3 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 375. Total DOFs: 2499 
+Solved in 4  iteration, residual= 2.804867e-06  
+skip refinement
+skip coarsening
+----------------------------------------------------- Load step 4 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 375. Total DOFs: 2499 
+Solved in 5  iteration, residual= 1.659975e-06  
+skip refinement
+skip coarsening
+----------------------------------------------------- Load step 5 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 375. Total DOFs: 2499 
+Solved in 6  iteration, residual= 4.065986e-06  
+skip refinement
+skip coarsening
+
+================================================================
+Running ex_plastic_sphere_hier with type_projection = QI
+================================================================
+----------------------------------------------------- Load step 1 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 375. Total DOFs: 2499 
+Solved in 1  iteration, residual= 3.705507e-07  
+skip refinement
+skip coarsening
+----------------------------------------------------- Load step 2 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 375. Total DOFs: 2499 
+Solved in 1  iteration, residual= 4.846044e-07  
+skip refinement
+skip coarsening
+----------------------------------------------------- Load step 3 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 375. Total DOFs: 2499 
+Solved in 4  iteration, residual= 2.804867e-06  
+skip refinement
+skip coarsening
+----------------------------------------------------- Load step 4 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 375. Total DOFs: 2499 
+Solved in 5  iteration, residual= 1.659975e-06  
+skip refinement
+skip coarsening
+----------------------------------------------------- Load step 5 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 375. Total DOFs: 2499 
+Solved in 6  iteration, residual= 4.065986e-06  
+skip refinement
+skip coarsening
+
+================================================================
+Running ex_plastic_sphere_hier with type_projection = QI_ref
+================================================================
+----------------------------------------------------- Load step 1 -----------------------------------------------------
+%%%%%%%%%% Iteration 1 %%%%%%%%%%
+SOLVE:
+Number of elements: 375. Total DOFs: 2499 
+Solved in 1  iteration, residual= 3.705507e-07  
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.167101e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.167101e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.167101e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.167101e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.167101e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.167101e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.167101e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.167101e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.167101e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.167101e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.167101e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.167101e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.170553e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.170553e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.170553e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.170553e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.170553e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.170553e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.170553e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.170553e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.170553e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.170553e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.170553e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.170553e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.174463e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.174463e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.174463e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.174463e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.174463e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.174463e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.174463e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.174463e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.174463e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.174463e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.174463e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.174463e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.174386e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.174386e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.174386e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.174386e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.174386e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.174386e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.174386e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.174386e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.174386e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.174386e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.174386e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.174386e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.180525e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.180525e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.180525e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.180525e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.180525e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.180525e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.180225e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.180225e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.180225e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.180225e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.180225e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.180225e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.182763e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.182763e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.182763e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.182763e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.182763e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.182763e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.182763e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.182763e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.182763e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.182763e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.182763e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.182763e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.186642e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.186642e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.186642e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.186642e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.186642e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.186642e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.185942e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.185942e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.185942e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.185942e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.185942e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.185942e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.185881e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.185881e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.185881e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.185881e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.185881e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.185881e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.185609e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.185609e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.185609e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.185609e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.185609e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.185609e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.189574e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.189574e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.189574e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.189574e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.189574e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.189574e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.188902e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.188902e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.188902e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.188902e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.188902e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.188902e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.191334e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.191334e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.191334e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.191334e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.191334e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.191334e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.191334e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.191334e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.191334e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.191334e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.191334e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.191334e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.193564e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.193564e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.193564e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.193564e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.193564e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.193564e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.192654e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.192654e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.192654e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.192654e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.192654e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.192654e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.192601e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.192601e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.192601e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.192601e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.192601e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.192601e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.192323e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.192323e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.192323e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.192323e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.192323e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.192323e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.196244e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.196244e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.196244e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.196244e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.196244e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.196244e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.194908e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.194908e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.194908e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.194908e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.194908e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.194908e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.196368e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.196368e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.196368e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.196368e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.196368e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.196368e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.196368e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.196368e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.196368e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.196368e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.196368e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.196368e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.198343e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.198343e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.198343e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.198343e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.198343e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.198343e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.197674e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.197674e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.197674e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.197674e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.197674e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.197674e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.197626e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.197626e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.197626e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.197626e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.197626e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.197626e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.197108e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.197108e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.197108e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.197108e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.197108e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.197108e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200171e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200171e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200171e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200171e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200171e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200171e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.198451e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.198451e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.198451e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.198451e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.198451e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.198451e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200272e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200272e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200272e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200272e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200272e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200272e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200272e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200272e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200272e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200272e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200272e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200272e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.201696e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.201696e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.201696e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.201696e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.201696e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.201696e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200694e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200694e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200694e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200694e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200694e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200694e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200650e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200650e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200650e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200650e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200650e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200650e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200100e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200100e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200100e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200100e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200100e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.200100e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203193e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203193e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203193e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203193e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203193e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203193e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.201747e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.201747e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.201747e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.201747e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.201747e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.201747e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203050e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203050e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203050e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203050e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203050e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203050e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203050e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203050e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203050e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203050e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203050e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203050e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.204669e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.204669e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.204669e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.204669e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.204669e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.204669e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203353e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203353e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203353e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203353e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203353e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203353e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203313e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203313e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203313e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203313e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203313e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203313e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.202982e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.202982e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.202982e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.202982e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.202982e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.202982e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.205197e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.205197e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.205197e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.205197e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.205197e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.205197e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203518e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203518e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203518e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203518e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203518e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203518e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203644e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203644e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203644e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203644e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203644e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203644e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203644e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203644e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203644e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203644e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203644e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 
+[Warning: Matrix is close to singular or badly scaled. Results may be inaccurate. RCOND =  8.203644e-17.] 
+[> In getcoeff_localLS_Bspl (line 110)
+In history_variable_projection_hier (line 33)
+In adaptivity_J2_plasticity (line 137)
+In ex_plastic_sphere_hier (line 92)
+In run_sphere_comparison (line 17)
+] 

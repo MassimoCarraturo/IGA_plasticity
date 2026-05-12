@@ -61,7 +61,7 @@ hmsh_scalar = hmsh;
 % store initial scalar space
 degree_projection = method_data.degree;
 regularity_projection = method_data.regularity;
-if strcmpi(method_data.type_projection, 'QI_ref')
+if strcmpi(method_data.type_projection, 'QI_C0')
     % degree_projection  = ones(size(method_data.degree));
     regularity_projection = degree_projection-degree_projection;
 end
@@ -78,11 +78,11 @@ hspace_dummy = hspace_scalar;
 % refine the scalar space/mesh
 % num_bisections=2 (original) explodes the projection space at full primal-mesh
 % resolution (~30k scalar DOFs in 3D, hours per load step).
-% Use 0 here so QI_ref projects on the primal scalar mesh — keeps the
-% Tikhonov-regularised local-LS character of QI_ref vs the unregularised QI,
+% Use 0 here so QI_C0 projects on the primal scalar mesh — keeps the
+% Tikhonov-regularised local-LS character of QI_C0 vs the unregularised QI,
 % at a tractable cost.
 num_bisections =0;
-if strcmpi(method_data.type_projection, 'QI_ref')
+if strcmpi(method_data.type_projection, 'QI_C0')
      [hmsh_scalar, hspace_scalar] = refine_projection_space(hmsh_scalar, hspace_scalar, adaptivity_data, num_bisections);
 end
 
@@ -135,8 +135,8 @@ for iLoad = 1: method_data.nload
 
         [u, eps_pl, sigma] = solve_J2_plasticity_hier (problem_data, method_data, adaptivity_data, hspace, hmsh, iLoad, u, eps_pl, sigma);
 
-
-
+        % PROJECTION
+        if (plot_data.print_info); disp('PROJECT STATE VARIABLES:'); end
         % interpolate sigma
         sigma_store = zeros(hspace_scalar.ndof, 6); % control variables
         sigma_store(:,:) = history_variable_projection_hier(hspace_scalar, hmsh_scalar, sigma,  method_data.type_projection, hmsh);
@@ -145,12 +145,8 @@ for iLoad = 1: method_data.nload
         eps_pl_store = zeros(hspace_scalar.ndof, 6); % control variables
         eps_pl_store(:,:) = history_variable_projection_hier(hspace_scalar, hmsh_scalar, eps_pl,  method_data.type_projection, hmsh);
 
-
-
         nel(iter) = hmsh.nel; ndof(iter) = hspace.ndof;
-
-       
-
+        
         % ESTIMATE
         if (iter == adaptivity_data.num_max_iter)
             disp('skip refinement')
@@ -159,8 +155,25 @@ for iLoad = 1: method_data.nload
 
 
         if (plot_data.print_info); disp('ESTIMATE:'); end
-        %est = ones(hmsh.nel,1);% adaptivity_estimate_linear_el (u, hmsh, hspace, problem_data, adaptivity_data);
-        est =  adaptivity_estimate_div_sigma_el (sigma_store, geometry, hmsh, hspace, hmsh_scalar, hspace_scalar, problem_data, adaptivity_data);
+        % Estimator dispatch: adaptivity_data.estimator selects between
+        %   'div_sigma'      - residual-type ||f + div sigma|| indicator (legacy)
+        %   'stress_gradient'- ||grad sigma||_F seminorm (default; concentrates
+        %                       refinement around stress-gradient hot spots,
+        %                       e.g. the elastic-plastic front)
+        if (~isfield(adaptivity_data, 'estimator'))
+            adaptivity_data.estimator = 'stress_gradient';
+        end
+        switch lower(adaptivity_data.estimator)
+            case {'div_sigma', 'residual'}
+                est = adaptivity_estimate_div_sigma_el (sigma_store, geometry, hmsh, hspace, hmsh_scalar, hspace_scalar, problem_data, adaptivity_data);
+            case {'stress_gradient', 'jump'}
+                est = adaptivity_estimate_stress_gradient_el (sigma_store, geometry, hmsh, hspace, hmsh_scalar, hspace_scalar, problem_data, adaptivity_data);
+            case {'plastic_front_spere', 'sphere_front'}
+                est = adaptivity_estimate_stress_gradient_el (sigma_store, geometry, hmsh, hspace, hmsh_scalar, hspace_scalar, problem_data, adaptivity_data);
+            otherwise
+                error('adaptivity_J2_plasticity:estimator', ...
+                      'Unknown adaptivity_data.estimator = %s', adaptivity_data.estimator);
+        end
         est_elem{iter} = est.';
         gest(iter) = norm (est);
         if (plot_data.print_info); fprintf('Computed error estimate: %e \n', gest(iter)); end
@@ -188,12 +201,18 @@ for iLoad = 1: method_data.nload
         [marked, num_marked] = adaptivity_mark (est, hmsh, hspace, adaptivity_data);
 
 
-        if numel(marked) >= adaptivity_data.max_level -1            
-            marked{adaptivity_data.max_level-1} = double.empty(0,1);
-            num_marked =0;
-            for ilev_mark =1:numel(marked)
+        % marked{lv} is the list of elements at level lv that should be
+        % refined; refining them produces level-(lv+1) cells.  To enforce
+        % hmsh.nlevels <= max_level, we drop marks at levels >= max_level
+        % (refining those would create cells at level > max_level).
+        if numel(marked) >= adaptivity_data.max_level
+            for k = adaptivity_data.max_level:numel(marked)
+                marked{k} = double.empty(0,1);
+            end
+            num_marked = 0;
+            for ilev_mark = 1:numel(marked)
                 num_marked = num_marked + numel(marked{ilev_mark});
-            end            
+            end
         end
         if num_marked == 0
             disp('Warning: no element refined')
@@ -213,7 +232,7 @@ for iLoad = 1: method_data.nload
         [hmsh, hspace, Cref] = adaptivity_refine (hmsh_coarse, hspace_coarse, marked, adaptivity_data);
         
         
-        if strcmpi(method_data.type_projection, 'QI_ref')
+        if strcmpi(method_data.type_projection, 'QI_C0')
             [~, hspace_dummy] = adaptivity_refine (hmsh_coarse, hspace_dummy, marked, adaptivity_data);
             % marked = mark_bisect_mesh(hmsh);
             % [hmsh_scalar, hspace_scalar] = adaptivity_refine (hmsh, hspace_dummy, marked, adaptivity_data);
@@ -257,7 +276,7 @@ for iLoad = 1: method_data.nload
         hmsh_fine = hmsh;
         [hmsh, hspace, u] =coarsening( hspace, hmsh_fine, u, est, adaptivity_data);
         
-        if strcmpi(method_data.type_projection, 'QI_ref')
+        if strcmpi(method_data.type_projection, 'QI_C0')
         [~, hspace_dummy] =coarsening( hspace_dummy, hmsh_fine, zeros(hspace_dummy.ndof,1), est, adaptivity_data);
         
         hmsh_scalar_fine = hmsh_scalar;

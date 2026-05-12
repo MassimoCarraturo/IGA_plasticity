@@ -25,8 +25,8 @@ for i =1:length(P)
         if P(i) < P_0
             ub(i) = 3*P(i) *b / ( 2*E* (b^3/a^3-1))*(1-v);
             for j =1:length(radius)
-                sigma_r(i,j) = -2*s_y*a^3 / ( 3 * b^3) * (b^3 / radius(j)^3 -1);
-                sigma_t(i,j) = 2*s_y*a^3 / ( 3 * b^3) * (0.5* b^3 / radius(j)^3 +1);
+                sigma_r(i,j) = -P(i)*a^3 / (b^3 - a^3) * (b^3 / radius(j)^3 - 1);
+                sigma_t(i,j) =  P(i)*a^3 / (b^3 - a^3) * (0.5*b^3 / radius(j)^3 + 1);
             end
 
         else

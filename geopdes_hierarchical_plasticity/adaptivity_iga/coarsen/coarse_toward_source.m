@@ -15,7 +15,9 @@ for lev=1:hmsh.nlevels
     % LOOP OVER ACTIVE DOFS OF THE LEVEL
     for el = 1:hmsh.nel_per_level(lev)
         isMarked=0;
-        [el_dir(1), el_dir(2), el_dir(3)] = ind2sub(hmsh.mesh_of_level(lev).nel_dir, hmsh.active{lev}(el));
+        el_dir_cell = cell(1, hmsh.rdim);
+        [el_dir_cell{:}] = ind2sub([hmsh.mesh_of_level(lev).nel_dir, 1], hmsh.active{lev}(el));
+        el_dir = cell2mat(el_dir_cell);
         % LOOP OVER DIRECTIONS
         for idir = 1:hmsh.rdim
             knots_dir = unique(hspace.space_of_level(lev).knots{idir});

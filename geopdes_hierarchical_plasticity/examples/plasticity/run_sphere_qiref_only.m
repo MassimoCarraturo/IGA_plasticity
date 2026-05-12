@@ -1,4 +1,4 @@
-% RUN_SPHERE_QIREF_ONLY  Re-run only the QI_ref pass for the eighth-sphere
+% RUN_SPHERE_QIREF_ONLY  Re-run only the QI_C0 pass for the eighth-sphere
 % benchmark (with reduced num_bisections inside adaptivity_J2_plasticity).
 % L2 and QI results are loaded from previously-saved .mat files.
 
@@ -16,7 +16,7 @@ addpath (fullfile(project_root, 'geopdes_hierarchical_plasticity', 'quasi_interp
 
 cd (here);
 
-% Suppress the "Matrix is close to singular" warnings that QI_ref emits a lot of
+% Suppress the "Matrix is close to singular" warnings that QI_C0 emits a lot of
 warning ('off', 'MATLAB:nearlySingularMatrix');
 
 problem_data.geo_name = 'geo_eighth_sphere.txt';
@@ -51,7 +51,7 @@ method_data.nload      = nload;
 method_data.newton_tol = 1e-8;
 method_data.newton_tol_abs = 1e-10;
 method_data.newton_iter_max = 100;
-method_data.type_projection = 'QI_ref';
+method_data.type_projection = 'QI_C0';
 
 adaptivity_data.flag = 'elements';
 adaptivity_data.C0_est = 1.0;
@@ -71,12 +71,12 @@ adaptivity_data.adm = p;
     sphere_solution (E, nu, problem_data.yield_stress(1), 100, 200, P, nload);
 load_step_eval_stress = [2, 5];
 
-fprintf('Running QI_ref...\n');
+fprintf('Running QI_C0...\n');
 tic;
 [geometry, cell_hmsh, cell_hspace, cell_hspace_scalar, ...
  cell_u, cell_eps_pl, cell_sigma, solution_data] = ...
     adaptivity_J2_plasticity (problem_data, method_data, adaptivity_data);
-fprintf('QI_ref solver done in %.1f s\n', toc);
+fprintf('QI_C0 solver done in %.1f s\n', toc);
 
 % Post-process
 u_r = zeros(1, method_data.nload+1);
@@ -115,7 +115,7 @@ for jload = 1:length(load_step_eval_stress)
 end
 
 R = struct();
-R.method      = 'QI_ref';
+R.method      = 'QI_C0';
 R.u_r         = u_r;
 R.P_i         = P_i;
 R.radius      = radius;
@@ -123,6 +123,6 @@ R.sigma_rad   = sigma_rad;
 R.sigma_tan   = sigma_tan;
 R.load_steps  = load_step_eval_stress;
 R.solution    = solution_data;
-save (fullfile(here, 'sphere_results_QI_ref.mat'), '-struct', 'R');
+save (fullfile(here, 'sphere_results_QI_C0.mat'), '-struct', 'R');
 
 fprintf('QI_REF DONE\n');

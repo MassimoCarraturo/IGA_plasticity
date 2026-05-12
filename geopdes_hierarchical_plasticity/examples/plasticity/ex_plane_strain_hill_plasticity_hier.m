@@ -41,7 +41,7 @@ load_step_eval_stress = [1, 10]; %[nload, int64(nload/2)]*int64(100/nload);
 
 % 2) CHOICE OF THE DISCRETIZATION PARAMETERS
 clear method_data
-p = 3;
+p = 2;
 method_data.degree      = [p p];                          % Degree of the splines
 method_data.regularity  = method_data.degree - 1;         % Regularity of the splines
 method_data.nsub_coarse = [5 5];                          % Number of subdivisions of the coarsest mesh, with respect to the mesh in geometry
@@ -53,7 +53,7 @@ method_data.nload      = nload;                              % Number of load st
 method_data.newton_tol = 1e-8;                            % Newton tolerance
 method_data.newton_tol_abs = 1e-10;                            % Newton tolerance
 method_data.newton_iter_max = 100;                        % Newton max number of iterations
-method_data.type_projection = 'QI_ref';                         % 'QI' / 'L2' / 'QI_ref'
+method_data.type_projection = 'QI_C0';                         % 'QI' / 'L2' / 'QI_C0'
 
 adaptivity_data.flag = 'elements';
 % adaptivity_data.flag = 'functions';

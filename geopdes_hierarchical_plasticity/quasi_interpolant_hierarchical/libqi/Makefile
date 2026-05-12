@@ -27,7 +27,7 @@ SRC_DIR := src
 BUILD   := build
 TEST    := test
 
-LIB_SRCS := $(SRC_DIR)/qi.c $(SRC_DIR)/qi_linalg.c $(SRC_DIR)/qi_bspline.c
+LIB_SRCS := $(SRC_DIR)/qi.c $(SRC_DIR)/qi_linalg.c $(SRC_DIR)/qi_bspline.c $(SRC_DIR)/qi_spatial.c
 LIB_OBJS := $(patsubst $(SRC_DIR)/%.c,$(BUILD)/%.o,$(LIB_SRCS))
 
 STATIC_LIB := $(BUILD)/libqi.a

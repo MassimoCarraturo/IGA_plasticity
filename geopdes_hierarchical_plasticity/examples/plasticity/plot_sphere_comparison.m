@@ -1,5 +1,5 @@
 % PLOT_SPHERE_COMPARISON  Load saved sphere_results_<method>.mat files,
-% plot the L2/QI/QI_ref comparison vs Hill's analytical solution, write
+% plot the L2/QI/QI_C0 comparison vs Hill's analytical solution, write
 % pgfplots .dat tables, and emit a standalone pgfplots LaTeX script.
 %
 % Run this AFTER all three sphere_results_<method>.mat files exist
@@ -8,7 +8,7 @@
 here = fileparts(mfilename('fullpath'));
 cd (here);
 
-proj_methods = {'L2', 'QI', 'QI_ref'};
+proj_methods = {'L2', 'QI', 'QI_C0'};
 
 % Hill (analytical) reference — reuse the same constants the runs used
 E  = 210000; nu = 0.3; sy = 240; nload = 5; P = 332*.99;
