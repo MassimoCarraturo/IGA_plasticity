@@ -1,5 +1,13 @@
 name: MATLAB CI
 
+# ============================================================================
+# SETUP (for private repos):
+#   1. Go to https://github.com/matlab-actions/setup-matlab for licensing info
+#   2. Request a MATLAB batch licensing token from MathWorks
+#   3. Add it as a repository secret named MATLAB_TOKEN
+#   For public repos, MATLAB is licensed automatically — no token needed.
+# ============================================================================
+
 on:
   push:
     branches: [main, development]
@@ -20,6 +28,11 @@ on:
           - benchmark
           - all
 
+env:
+  # If the repo is private, set the MATLAB_TOKEN secret in repo settings.
+  # For public repos this is ignored and MATLAB is licensed automatically.
+  MLM_LICENSE_TOKEN: ${{ secrets.MATLAB_TOKEN }}
+
 jobs:
   # ---------------------------------------------------------------
   #  Job 1: Build MEX binaries
@@ -33,8 +46,6 @@ jobs:
 
       - name: Set up MATLAB
         uses: matlab-actions/setup-matlab@v2
-        with:
-          products: MATLAB
 
       - name: Build MEX binaries
         uses: matlab-actions/run-command@v2
@@ -66,8 +77,6 @@ jobs:
 
       - name: Set up MATLAB
         uses: matlab-actions/setup-matlab@v2
-        with:
-          products: MATLAB
 
       - name: Download MEX artifacts
         uses: actions/download-artifact@v4
@@ -95,8 +104,6 @@ jobs:
 
       - name: Set up MATLAB
         uses: matlab-actions/setup-matlab@v2
-        with:
-          products: MATLAB
 
       - name: Download MEX artifacts
         uses: actions/download-artifact@v4
@@ -128,8 +135,6 @@ jobs:
 
       - name: Set up MATLAB
         uses: matlab-actions/setup-matlab@v2
-        with:
-          products: MATLAB
 
       - name: Download MEX artifacts
         uses: actions/download-artifact@v4
