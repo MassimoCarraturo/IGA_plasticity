@@ -136,9 +136,11 @@ for iside = symm_sides
 end
 
 % Apply Dirichlet boundary conditions
-[u_drchlt, drchlt_dofs] = sp_drchlt_l2_proj (hspace, hmsh, h, drchlt_sides);
+h_step = @(x,y,ind) h(x, y, ind, load_multiplier/nload);
+[u_drchlt, drchlt_dofs] = sp_drchlt_l2_proj (hspace, hmsh, h_step, drchlt_sides);
 int_dofs = setdiff (1:hspace.ndof, union (drchlt_dofs, symm_dofs));
-
+disp(length(int_dofs))
+disp(hspace.ndof)
 %% Solve linear system
 rhs = rhs_shape./nload .* load_multiplier;
 iter = 0;
@@ -146,22 +148,23 @@ u(drchlt_dofs) = u_drchlt;
 
 % Assemble tangent matrix
 [K, internal_energy, eps_pl_new, sigma_new] = op_plsu_ev_hier (hspace, hspace, hmsh, u, eps_pl, sigma, mu_lame, kappa_lame, yield_stress);
-external_energy = rhs(int_dofs) - K(int_dofs, drchlt_dofs) * u_drchlt;
-res = internal_energy(int_dofs) - external_energy;
+external_energy = rhs;
+res = internal_energy - external_energy;
 if numel(slider_sides)>0
-    res = res + matrix_BC(int_dofs, :)*u;
+    res(int_dofs) = res(int_dofs) + matrix_BC(int_dofs, :)*u;
 end
-res_norm_0 = norm(res);
+res_norm_0 = norm(res(int_dofs));
 res_norm =res_norm_0;
+
 
 % Newton-Raphson while loop
 while res_norm/res_norm_0 > method_data.newton_tol && res_norm > method_data.newton_tol_abs && iter < method_data.newton_iter_max 
 
     % Solve the nonlinear system
     if numel(slider_sides)>0
-        u_inc = - (K(int_dofs, int_dofs)+ matrix_BC(int_dofs, int_dofs)) \ res;
+        u_inc = - (K(int_dofs, int_dofs)+ matrix_BC(int_dofs, int_dofs)) \ res(int_dofs);
     else
-        u_inc = - K(int_dofs, int_dofs) \ res;
+        u_inc = - K(int_dofs, int_dofs) \ res(int_dofs);
     end
 
     % Update solution vector
@@ -169,17 +172,54 @@ while res_norm/res_norm_0 > method_data.newton_tol && res_norm > method_data.new
 
     % Evaluate residuum
     [K, internal_energy, eps_pl_new, sigma_new] = op_plsu_ev_hier (hspace, hspace, hmsh, u, eps_pl, sigma, mu_lame, kappa_lame, yield_stress);
-    external_energy = rhs(int_dofs) - K(int_dofs, drchlt_dofs) * u_drchlt;
-    res = internal_energy(int_dofs) - external_energy;
+    external_energy = rhs;
+    res = internal_energy - external_energy;
     if numel(slider_sides)>0
-        res = res + matrix_BC(int_dofs, :)*u;
+        res(int_dofs) = res(int_dofs) + matrix_BC(int_dofs, :)*u;
     end
-    res_norm = norm(res);
+    res_norm = norm(res(int_dofs));
     iter = iter+1;
 
 end % end N-R while loop
 eps_pl = eps_pl_new;
 sigma = sigma_new;
+
+% [K, internal_energy, eps_pl_new, sigma_new] = op_plsu_ev_hier (hspace, hspace, hmsh, u, eps_pl, sigma, mu_lame, kappa_lame, yield_stress);
+% external_energy = rhs(int_dofs) - K(int_dofs, drchlt_dofs) * u_drchlt;
+% res = internal_energy(int_dofs) - external_energy;
+% if numel(slider_sides)>0
+%     res = res + matrix_BC(int_dofs, :)*u;
+% end
+% res_norm_0 = norm(res);
+% res_norm =res_norm_0;
+% 
+% % Newton-Raphson while loop
+% while res_norm/res_norm_0 > method_data.newton_tol && res_norm > method_data.newton_tol_abs && iter < method_data.newton_iter_max 
+% 
+%     % Solve the nonlinear system
+%     if numel(slider_sides)>0
+%         u_inc = - (K(int_dofs, int_dofs)+ matrix_BC(int_dofs, int_dofs)) \ res;
+%     else
+%         u_inc = - K(int_dofs, int_dofs) \ res;
+%     end
+% 
+%     % Update solution vector
+%     u(int_dofs) = u(int_dofs) + u_inc;
+% 
+%     % Evaluate residuum
+%     [K, internal_energy, eps_pl_new, sigma_new] = op_plsu_ev_hier (hspace, hspace, hmsh, u, eps_pl, sigma, mu_lame, kappa_lame, yield_stress);
+%     external_energy = rhs(int_dofs) - K(int_dofs, drchlt_dofs) * u_drchlt;
+%     res = internal_energy(int_dofs) - external_energy;
+%     if numel(slider_sides)>0
+%         res = res + matrix_BC(int_dofs, :)*u;
+%     end
+%     res_norm = norm(res);
+%     iter = iter+1;
+% 
+% end % end N-R while loop
+% eps_pl = eps_pl_new;
+% sigma = sigma_new;
+
 
 
 fprintf('Solved in %d  iteration, residual= %d  \n',  iter , res_norm);

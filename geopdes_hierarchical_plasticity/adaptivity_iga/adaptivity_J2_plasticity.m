@@ -65,6 +65,10 @@ if strcmpi(method_data.type_projection, 'QI_C0')
     % degree_projection  = ones(size(method_data.degree));
     regularity_projection = degree_projection-degree_projection;
 end
+% if strcmpi(method_data.type_projection, 'QI_ref')
+%     % degree_projection  = ones(size(method_data.degree));
+%     % regularity_projection = degree_projection*0;
+% end
 
 [knots, zeta] = kntrefine (geometry.nurbs.knots, method_data.nsub_coarse-1, degree_projection, regularity_projection);
 rule     = msh_gauss_nodes (method_data.nquad);
@@ -83,6 +87,8 @@ hspace_dummy = hspace_scalar;
 % at a tractable cost.
 num_bisections =0;
 if strcmpi(method_data.type_projection, 'QI_C0')
+num_bisections =1;
+if strcmpi(method_data.type_projection, 'QI_ref')
      [hmsh_scalar, hspace_scalar] = refine_projection_space(hmsh_scalar, hspace_scalar, adaptivity_data, num_bisections);
 end
 
@@ -148,7 +154,7 @@ for iLoad = 1: method_data.nload
         nel(iter) = hmsh.nel; ndof(iter) = hspace.ndof;
         
         % ESTIMATE
-        if (iter == adaptivity_data.num_max_iter)
+        if (iter > adaptivity_data.num_max_iter)
             disp('skip refinement')
             solution_data.flag = 2; break
         end
