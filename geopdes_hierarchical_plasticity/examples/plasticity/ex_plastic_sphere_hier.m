@@ -29,7 +29,8 @@ problem_data.penalty_slider = @(x, y, z) 1e8 * ones (size (x));
 % Physical parameters
 E  =  210000;                                  % MPa
 nu = 0.3;                                      % -
-problem_data.yield_stress = @(x, y, z) 240 * ones (size (x));  % MPa
+sigma_y = 240;
+problem_data.yield_stress = @(x, y, z) sigma_y * ones (size (x));  % MPa
 problem_data.kappa_lame = @(x, y, z) E/(3*(1-2*nu)) * ones (size (x));
 problem_data.mu_lame = @(x, y, z) (E/(2*(1+nu)) * ones (size (x)));
 

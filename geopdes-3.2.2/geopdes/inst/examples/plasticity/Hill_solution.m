@@ -33,11 +33,12 @@ for i =1:length(P)
         else
             fun_front = @(x) -P(i)/Y + log(x/a) + .5* (1- x.^2/b^2);
             c = fsolve(fun_front, 100);
+
             ub(i) = Y*c^2/(E*b) * (1-v^2);
 
             for j =1:length(radius)
 
-                if radius(j)<=c
+                if radius(j)<c
                     sigma_r(i,j) = Y*(-.5 - log(c/radius(j) ) + c^2/(2*b^2));
                     sigma_t(i,j) = Y*(.5 - log(c/radius(j) ) + c^2/(2*b^2));
                 else
