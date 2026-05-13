@@ -87,7 +87,8 @@ hspace_dummy = hspace_scalar;
 % at a tractable cost.
 num_bisections =0;
 if strcmpi(method_data.type_projection, 'QI_C0')
-num_bisections =1;
+    num_bisections =1;
+end
 if strcmpi(method_data.type_projection, 'QI_ref')
      [hmsh_scalar, hspace_scalar] = refine_projection_space(hmsh_scalar, hspace_scalar, adaptivity_data, num_bisections);
 end
@@ -103,11 +104,6 @@ eps_pl = cell(hmsh.nlevels,1);
 for ilev = 1:hmsh.nlevels
     eps_pl{ilev} = zeros(hmsh.nel_per_level(ilev),hmsh.mesh_of_level(ilev).nqn,6);
 end
-
-
-
-
-
 
 %% Analysis
 
