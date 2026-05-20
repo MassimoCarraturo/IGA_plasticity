@@ -4,6 +4,10 @@
 clear all
 clc
 close all
+
+here = fileparts(mfilename('fullpath'));
+results_dir = fullfile(here, 'results');
+if ~exist(results_dir, 'dir'); mkdir(results_dir); end
 % Physical domain, defined as NURBS map given in a text file
 problem_data.geo_name = 'geo_ring_SouzaNeto.txt';
 
@@ -222,7 +226,7 @@ end
 
 
 %% 4.2) Export to Paraview
-output_file = strcat('plane_strain_ring_hier_',method_data.type_projection,'_',num2str(method_data.nload));
+output_file = fullfile(results_dir, strcat('plane_strain_ring_hier_',method_data.type_projection,'_',num2str(method_data.nload)));
 vtk_pts = {linspace(0, 1, 41), linspace(0, 1, 41)};
 
 fprintf ('results being saved in: %s \n \n', output_file)
@@ -232,11 +236,11 @@ sp_to_vtk (cell_u{method_data.nload}, cell_hspace{method_data.nload}, geometry, 
 
 hspace_scalar = cell_hspace_scalar{method_data.nload};
 for comp =1:6
-    output_file = strcat('plane_strain_ring_hier_',method_data.type_projection,'_',num2str(method_data.nload),'_eps_pl_',num2str(comp) );    
+    output_file = fullfile(results_dir, strcat('plane_strain_ring_hier_',method_data.type_projection,'_',num2str(method_data.nload),'_eps_pl_',num2str(comp)));
     name_field = strcat('plastic_strain_',num2str(comp));
     sp_to_vtk ( cell_eps_pl{method_data.nload}(:,comp), hspace_scalar, geometry, vtk_pts, output_file, {name_field}, {'value'})
 
-    output_file = strcat('plane_strain_ring_hier_',method_data.type_projection,'_',num2str(method_data.nload),'_sigma_',num2str(comp) );    
+    output_file = fullfile(results_dir, strcat('plane_strain_ring_hier_',method_data.type_projection,'_',num2str(method_data.nload),'_sigma_',num2str(comp)));
     name_field = strcat('sigma_',num2str(comp));
     sp_to_vtk ( cell_sigma{method_data.nload}(:,comp), hspace_scalar, geometry, vtk_pts, output_file, {name_field}, {'value'})
 end

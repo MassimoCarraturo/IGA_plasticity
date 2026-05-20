@@ -3,18 +3,22 @@
 % (de Souza Neto, Peric, Owen).  Compares three projection methods for the
 % history variables — L2, QI, QI_C0 — against Hill's analytical solution.
 %
-% Outputs written next to this script:
-%   sphere_results_<method>.mat     numerical curves for each method
-%   pgfplots/sphere_load_disp.dat   load-displacement table (all methods + Hill)
-%   pgfplots/sphere_sigma_r_<step>.dat   radial stress at chosen load step
-%   pgfplots/sphere_sigma_t_<step>.dat   tangential stress at chosen load step
-%   pgfplots/sphere_comparison.tex  standalone pgfplots document
-%   sphere_comparison.fig / .png    MATLAB comparison figures
+% Outputs written to results/:
+%   results/sphere_results_<method>.mat     numerical curves for each method
+%   results/pgfplots/sphere_load_disp.dat   load-displacement table (all methods + Hill)
+%   results/pgfplots/sphere_sigma_r_<step>.dat   radial stress at chosen load step
+%   results/pgfplots/sphere_sigma_t_<step>.dat   tangential stress at chosen load step
+%   results/pgfplots/sphere_comparison.tex  standalone pgfplots document
+%   results/sphere_sigma_r.png / sphere_sigma_t.png  MATLAB comparison figures
 
 % 1) PHYSICAL DATA OF THE PROBLEM
 clear all
 clc
 close all
+
+here = fileparts(mfilename('fullpath'));
+results_dir = fullfile(here, 'results');
+if ~exist(results_dir, 'dir'); mkdir(results_dir); end
 % Physical domain, defined as NURBS map given in a text file
 problem_data.geo_name = 'geo_eighth_sphere.txt'; % direction 1=radial
 
@@ -160,11 +164,11 @@ for imethod = 1:numel(proj_methods)
     R.solution    = solution_data;
     results.(matlab.lang.makeValidName(method_name)) = R;
 
-    save (sprintf('sphere_results_%s.mat', method_name), '-struct', 'R');
+    save (fullfile(results_dir, sprintf('sphere_results_%s.mat', method_name)), '-struct', 'R');
 end
 
 % 4) PLOT COMPARISON IN MATLAB
-out_dir = strcat(pwd,'\pgfplots');
+out_dir = fullfile(results_dir, 'pgfplots');
 if ~exist(out_dir, 'dir'); mkdir(out_dir); end
 
 method_styles = {'-o', '-s', '-d'};
@@ -233,9 +237,9 @@ title('Eighth-sphere: tangential stress');
 legend('Location', 'best');
 
 % Save MATLAB figures
-saveas(figure(1), 'sphere_load_disp.png');
-saveas(figure(2), 'sphere_sigma_r.png');
-saveas(figure(3), 'sphere_sigma_t.png');
+saveas(figure(1), fullfile(results_dir, 'sphere_load_disp.png'));
+saveas(figure(2), fullfile(results_dir, 'sphere_sigma_r.png'));
+saveas(figure(3), fullfile(results_dir, 'sphere_sigma_t.png'));
 
 % 5) EXPORT DATA TABLES FOR pgfplots
 % Load–displacement table (one column per method + Hill)

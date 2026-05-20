@@ -3,6 +3,8 @@
 % L2 and QI results are loaded from previously-saved .mat files.
 
 here = fileparts(mfilename('fullpath'));
+results_dir = fullfile(here, 'results');
+if ~exist(results_dir, 'dir'); mkdir(results_dir); end
 project_root = fullfile(here, '..', '..', '..');
 
 addpath (genpath(fullfile(project_root, 'nurbs-1.4.3', 'nurbs-1.4.3', 'inst')));
@@ -123,6 +125,6 @@ R.sigma_rad   = sigma_rad;
 R.sigma_tan   = sigma_tan;
 R.load_steps  = load_step_eval_stress;
 R.solution    = solution_data;
-save (fullfile(here, 'sphere_results_QI_C0.mat'), '-struct', 'R');
+save (fullfile(results_dir, 'sphere_results_QI_C0.mat'), '-struct', 'R');
 
 fprintf('QI_REF DONE\n');

@@ -10,6 +10,8 @@
 %     - benchmark_results.mat saved to the current directory
 
 here = fileparts(mfilename('fullpath'));
+results_dir = fullfile(here, 'results');
+if ~exist(results_dir, 'dir'); mkdir(results_dir); end
 project_root = fullfile(here, '..', '..', '..');
 
 addpath(genpath(fullfile(project_root, 'nurbs-1.4.3', 'nurbs-1.4.3', 'inst')));
@@ -200,9 +202,9 @@ fprintf('\n');
 % ========================================================================
 % Save
 % ========================================================================
-save('benchmark_results.mat', 'bench', 'proj_methods', ...
+save(fullfile(results_dir, 'benchmark_results.mat'), 'bench', 'proj_methods', ...
      'u_ex', 'P_ex', 'sigma_r_ex', 'sigma_t_ex', 'radius');
-fprintf('Results saved to benchmark_results.mat\n');
+fprintf('Results saved to %s\n', fullfile(results_dir, 'benchmark_results.mat'));
 
 % ========================================================================
 % Local functions (duplicated from ex_plastic_sphere_hier.m for standalone use)

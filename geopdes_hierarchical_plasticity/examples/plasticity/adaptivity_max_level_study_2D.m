@@ -20,6 +20,8 @@
 %   pgfplots_2D/adaptivity_study_2D.tex      standalone pgfplots document
 
 here = fileparts(mfilename('fullpath'));
+results_dir = fullfile(here, 'results');
+if ~exist(results_dir, 'dir'); mkdir(results_dir); end
 project_root = fullfile(here, '..', '..', '..');
 
 % ---- MATLAB path setup --------------------------------------------------
@@ -139,7 +141,7 @@ for im = 1:nM
             fprintf('  FAILED: %s\n', e.message);
             R.wallclock_s(im, il) = toc(wall0);
             R.cpu_s(im, il)       = cputime() - cpu0;
-            save (fullfile(here, 'adaptivity_study_2D.mat'), '-struct', 'R');
+            save (fullfile(results_dir, 'adaptivity_study_2D.mat'), '-struct', 'R');
             continue;
         end
         R.wallclock_s(im, il) = toc(wall0);
@@ -231,12 +233,12 @@ for im = 1:nM
                 R.err_sigma_r_inf(im, il), R.err_sigma_r_avg(im, il), ...
                 R.err_sigma_t_inf(im, il), R.err_sigma_t_avg(im, il));
 
-        save (fullfile(here, 'adaptivity_study_2D.mat'), '-struct', 'R');
+        save (fullfile(results_dir, 'adaptivity_study_2D.mat'), '-struct', 'R');
     end
 end
 
 % ---- CSV summary --------------------------------------------------------
-fid = fopen (fullfile(here, 'adaptivity_study_2D_summary.csv'), 'w');
+fid = fopen (fullfile(results_dir, 'adaptivity_study_2D_summary.csv'), 'w');
 cleanup_csv = onCleanup(@() fclose(fid));
 fprintf (fid, 'method,max_level,ndof_final,nel_final,nlevels_final,wallclock_s,cpu_s,err_u_max,err_u_avg,err_sigma_r_max,err_sigma_r_avg,err_sigma_t_max,err_sigma_t_avg\n');
 for im = 1:nM
@@ -254,7 +256,7 @@ clear cleanup_csv;
 fprintf('Wrote adaptivity_study_2D.mat and adaptivity_study_2D_summary.csv\n');
 
 % ---- pgfplots .dat tables -----------------------------------------------
-out_dir = 'pgfplots_2D';
+out_dir = fullfile(results_dir, 'pgfplots_2D');
 if ~exist(out_dir, 'dir'); mkdir(out_dir); end
 
 % Master summary, one .dat per method, with one row per max_level
@@ -302,7 +304,7 @@ fprintf('\nAll outputs written.  pgfplots master file: %s\n', ...
         fullfile(out_dir, 'adaptivity_study_2D.tex'));
 
 % ---- MATLAB plots --------------------------------------------------------
-plot_adaptivity_results (R, methods, max_levels, u_ex, P_ex, sigma_r_ex, sigma_t_ex, radius, last_step);
+plot_adaptivity_results (R, methods, max_levels, u_ex, P_ex, sigma_r_ex, sigma_t_ex, radius, last_step, results_dir);
 
 % =========================================================================
 % Local helpers
@@ -454,7 +456,7 @@ function write_pgfplots_tex (filename, methods, max_levels, last_step)
     fprintf (fid, '\\end{document}\n');
 end
 
-function plot_adaptivity_results (R, methods, max_levels, u_ex, P_ex, sigma_r_ex, sigma_t_ex, radius, last_step)
+function plot_adaptivity_results (R, methods, max_levels, u_ex, P_ex, sigma_r_ex, sigma_t_ex, radius, last_step, results_dir)
     figure(1); clf;
     cmap = lines(numel(methods));
     metrics = {'err_u_inf','err_u_avg','err_sigma_r_inf','err_sigma_r_avg','err_sigma_t_inf','err_sigma_t_avg'};
@@ -470,5 +472,5 @@ function plot_adaptivity_results (R, methods, max_levels, u_ex, P_ex, sigma_r_ex
         legend('Location', 'best');
         title('2D ring');
     end
-    saveas(figure(1), 'adaptivity_errors_2D.png');
+    saveas(figure(1), fullfile(results_dir, 'adaptivity_errors_2D.png'));
 end

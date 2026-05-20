@@ -12,6 +12,8 @@
 %   qi_mex_old.mexw64 / qi_local_ls_mex_old.mexw64 alongside the current ones.
 
 here = fileparts(mfilename('fullpath'));
+results_dir = fullfile(here, 'results');
+if ~exist(results_dir, 'dir'); mkdir(results_dir); end
 project_root = fullfile(here, '..', '..', '..');
 
 addpath(genpath(fullfile(project_root, 'nurbs-1.4.3', 'nurbs-1.4.3', 'inst')));
@@ -193,8 +195,8 @@ fprintf('  QI_new vs L2      : %.2f s vs %.2f s  = %.2fx\n', t_qi_new, t_l2, t_l
 fprintf('  QI_C0_new vs L2   : %.2f s vs %.2f s  = %.2fx\n', t_c0_new, t_l2, t_l2/t_c0_new);
 fprintf('\n');
 
-save('benchmark_large.mat', 'results', 'runs');
-fprintf('Results saved to benchmark_large.mat\n');
+save(fullfile(results_dir, 'benchmark_large.mat'), 'results', 'runs');
+fprintf('Results saved to %s\n', fullfile(results_dir, 'benchmark_large.mat'));
 
 % ========================================================================
 % Local functions

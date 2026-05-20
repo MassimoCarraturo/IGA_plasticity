@@ -11,6 +11,8 @@
 %   pgfplots/compare_estimators.tex
 
 here = fileparts(mfilename('fullpath'));
+results_dir = fullfile(here, 'results');
+if ~exist(results_dir, 'dir'); mkdir(results_dir); end
 project_root = fullfile(here, '..', '..', '..');
 addpath (genpath(fullfile(project_root, 'nurbs-1.4.3', 'nurbs-1.4.3', 'inst')));
 addpath (genpath(fullfile(project_root, 'geopdes-3.2.2', 'geopdes', 'inst')));
@@ -107,7 +109,7 @@ for ie = 1:numel(estimators)
             fprintf('  FAILED: %s\n', e.message);
             R.wall(im, ie) = toc(wall0);
             R.cpu(im, ie)  = cputime() - cpu0;
-            save (fullfile(here, 'compare_estimators.mat'), '-struct', 'R');
+            save (fullfile(results_dir, 'compare_estimators.mat'), '-struct', 'R');
             continue;
         end
         R.wall(im, ie) = toc(wall0);
@@ -172,12 +174,12 @@ for ie = 1:numel(estimators)
         fprintf('  sigma_r max=%.3e  avg=%.3e\n', R.err_sigma_r_max(im,ie), R.err_sigma_r_avg(im,ie));
         fprintf('  sigma_t max=%.3e  avg=%.3e\n', R.err_sigma_t_max(im,ie), R.err_sigma_t_avg(im,ie));
 
-        save (fullfile(here, 'compare_estimators.mat'), '-struct', 'R');
+        save (fullfile(results_dir, 'compare_estimators.mat'), '-struct', 'R');
     end
 end
 
 % CSV summary
-fid = fopen (fullfile(here, 'compare_estimators.csv'), 'w');
+fid = fopen (fullfile(results_dir, 'compare_estimators.csv'), 'w');
 cleanup = onCleanup(@() fclose(fid));
 fprintf (fid, 'estimator,method,ndof,nel,nlevels,wall_s,cpu_s,err_u_max,err_u_avg,err_sr_max,err_sr_avg,err_st_max,err_st_avg\n');
 for ie = 1:numel(estimators)
@@ -194,7 +196,7 @@ end
 clear cleanup;
 
 % pgfplots: a bar-chart-like table per estimator
-out_dir = 'pgfplots';
+out_dir = fullfile(results_dir, 'pgfplots');
 if ~exist(out_dir, 'dir'); mkdir(out_dir); end
 for ie = 1:numel(estimators)
     method_idx = (1:numel(methods)).';

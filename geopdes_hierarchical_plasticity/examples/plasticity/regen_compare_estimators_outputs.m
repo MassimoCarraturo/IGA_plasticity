@@ -2,14 +2,16 @@
 % tables and .tex from the saved compare_estimators.mat (no resimulation).
 
 here = fileparts(mfilename('fullpath'));
+results_dir = fullfile(here, 'results');
+if ~exist(results_dir, 'dir'); mkdir(results_dir); end
 addpath(here);
 cd(here);
 
-R = load(fullfile(here, 'compare_estimators.mat'));
+R = load(fullfile(results_dir, 'compare_estimators.mat'));
 methods    = R.methods;
 estimators = R.estimators;
 
-out_dir = 'pgfplots';
+out_dir = fullfile(results_dir, 'pgfplots');
 if ~exist(out_dir, 'dir'); mkdir(out_dir); end
 
 for ie = 1:numel(estimators)

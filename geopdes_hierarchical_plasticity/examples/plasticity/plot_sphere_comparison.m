@@ -7,6 +7,8 @@
 
 here = fileparts(mfilename('fullpath'));
 cd (here);
+results_dir = fullfile(here, 'results');
+if ~exist(results_dir, 'dir'); mkdir(results_dir); end
 
 proj_methods = {'L2', 'QI', 'QI_C0'};
 
@@ -21,7 +23,7 @@ load_step_eval_stress = [2, 5];
 % Load all method results
 results = struct();
 for k = 1:numel(proj_methods)
-    fname = sprintf('sphere_results_%s.mat', proj_methods{k});
+    fname = fullfile(results_dir, sprintf('sphere_results_%s.mat', proj_methods{k}));
     if ~isfile(fname)
         error('Missing %s — run the corresponding solver first', fname);
     end
@@ -90,12 +92,12 @@ ylabel('\sigma_t [MPa]');
 title('Eighth-sphere: tangential stress');
 legend('Location', 'best');
 
-saveas(figure(1), 'sphere_load_disp.png');
-saveas(figure(2), 'sphere_sigma_r.png');
-saveas(figure(3), 'sphere_sigma_t.png');
+saveas(figure(1), fullfile(results_dir, 'sphere_load_disp.png'));
+saveas(figure(2), fullfile(results_dir, 'sphere_sigma_r.png'));
+saveas(figure(3), fullfile(results_dir, 'sphere_sigma_t.png'));
 
 % pgfplots .dat tables
-out_dir = 'pgfplots';
+out_dir = fullfile(results_dir, 'pgfplots');
 if ~exist(out_dir, 'dir'); mkdir(out_dir); end
 
 write_dat (fullfile(out_dir, 'sphere_load_disp_hill.dat'), ...

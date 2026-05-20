@@ -5,6 +5,8 @@
 % Writes sphere_timings.mat and sphere_timings.csv.
 
 here = fileparts(mfilename('fullpath'));
+results_dir = fullfile(here, 'results');
+if ~exist(results_dir, 'dir'); mkdir(results_dir); end
 project_root = fullfile(here, '..', '..', '..');
 
 % Path setup
@@ -134,10 +136,10 @@ if exist(mex_off, 'file')
     movefile(mex_off, mex_file);
 end
 
-save (fullfile(here, 'sphere_timings.mat'), '-struct', 'results');
+save (fullfile(results_dir, 'sphere_timings.mat'), '-struct', 'results');
 
 % --- write CSV table -----------------------------------------------------
-fid = fopen (fullfile(here, 'sphere_timings.csv'), 'w');
+fid = fopen (fullfile(results_dir, 'sphere_timings.csv'), 'w');
 cleanup = onCleanup(@() fclose(fid));
 fprintf(fid, 'method,backend,wallclock_s,cpu_s,cpu_per_wall\n');
 fields = fieldnames(results);

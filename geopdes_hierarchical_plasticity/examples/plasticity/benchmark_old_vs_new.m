@@ -7,6 +7,8 @@
 %   Output: console table + benchmark_old_vs_new.mat
 
 here = fileparts(mfilename('fullpath'));
+results_dir = fullfile(here, 'results');
+if ~exist(results_dir, 'dir'); mkdir(results_dir); end
 project_root = fullfile(here, '..', '..', '..');
 
 addpath(genpath(fullfile(project_root, 'nurbs-1.4.3', 'nurbs-1.4.3', 'inst')));
@@ -187,8 +189,8 @@ for imethod = 1:numel(proj_methods)
 end
 fprintf('\n');
 
-save('benchmark_old_vs_new.mat', 'results', 'proj_methods', 'versions');
-fprintf('Results saved to benchmark_old_vs_new.mat\n');
+save(fullfile(results_dir, 'benchmark_old_vs_new.mat'), 'results', 'proj_methods', 'versions');
+fprintf('Results saved to %s\n', fullfile(results_dir, 'benchmark_old_vs_new.mat'));
 
 % ========================================================================
 % Local function: swap MEX files
