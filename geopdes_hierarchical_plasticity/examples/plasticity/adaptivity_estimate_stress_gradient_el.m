@@ -8,23 +8,6 @@ function est = adaptivity_estimate_stress_gradient_el(sigma_store, geometry, hms
 % where ||grad sigma||_F is the Frobenius norm of the gradient tensor of
 % the projected stress field (summed over all 6 Voigt components).
 %
-% Rationale: for a smooth basis the projected stress is C^0 (or higher),
-% so true inter-element jumps are zero.  The stress *gradient* is the
-% natural proxy: where ||grad sigma|| is large the field is changing
-% rapidly within the element, and any piecewise-constant reconstruction
-% would produce large face jumps there.  In the eighth-sphere benchmark
-% the elastic-plastic front is exactly such a region; this indicator
-% concentrates refinement there and leaves the (nearly affine) elastic
-% interior coarse, matching the user's intent.
-%
-% Same input/output convention as adaptivity_estimate_div_sigma_el:
-%   est is a vector of size [hmsh.nel x 1] when adaptivity_data.flag is
-%   'elements', or [hspace.ndof x 1] when 'functions'.
-%
-% This estimator uses the bulk-evaluation routine hspace_eval_hmsh, which
-% is several orders of magnitude faster than the point-by-point
-% sp_eval_phys loop used by the original residual-divergence estimator.
-%
 % Caveat: hspace_eval_hmsh requires hspace_scalar to live on the same
 % hierarchical mesh as hmsh.  This holds for the L2 / QI / QI_C0
 % (num_bisections == 0) configurations used in the sphere benchmark.
