@@ -91,6 +91,9 @@ typedef struct {
     double *rhs;               int rhs_cap;          /* n_active x ncomp              */
     double *rhs_bak;           int rhs_bak_cap;      /* backup of rhs before LU       */
     int    *piv;               int piv_cap;          /* [n_active]                    */
+    /* Diagnostics */
+    int     n_active_last;                           /* local system size of last solve */
+    int     pinv_used_last;                          /* 1 if last solve used pinv fallback */
 } scratch_t;
 
 static void scratch_init(scratch_t *s) { memset(s, 0, sizeof(*s)); }
@@ -359,12 +362,17 @@ static qi_status_t solve_one(int                          k_global,
         memcpy(SC->rhs_bak, SC->rhs, rhs_bytes);
     }
 
+    /* Diagnostics: record system size */
+    SC->n_active_last = n_active;
+    SC->pinv_used_last = 0;
+
     /* Solve S * X = rhs in place (rhs is overwritten with X) */
     {
         int rc = qi_la_lu_solve(n_active, ncomp, SC->S, SC->rhs, SC->piv);
         if (rc != 0) {
             /* Singular: fall back to pinv (A^T A eigendecomposition).
              * Restore S and rhs from backup instead of recomputing. */
+            SC->pinv_used_last = 1;
             size_t s_bytes   = (size_t)n_active * n_active * sizeof(double);
             size_t rhs_bytes = (size_t)n_active * ncomp    * sizeof(double);
             memcpy(SC->S,   SC->S_bak,   s_bytes);
@@ -458,8 +466,10 @@ qi_status_t qi_localLS_compute(const qi_ls_hspace_t        *hs,
 
     /* Pre-compute level offsets for binary search in locate_level */
     int err_count = 0;
+    int pinv_count = 0;       /* diagnostic: DOFs that fell back to pinv */
+    int max_n_active = 0;     /* diagnostic: largest local system size */
 
-    #pragma omp parallel reduction(+:err_count)
+    #pragma omp parallel reduction(+:err_count) reduction(+:pinv_count)
     {
         scratch_t SC;
         scratch_init(&SC);
@@ -473,11 +483,21 @@ qi_status_t qi_localLS_compute(const qi_ls_hspace_t        *hs,
                 int lev  = locate_level(hs->active_offset, hs->nlevels, k, &kloc);
                 int kl   = hs->active_indices[hs->active_offset[lev] + kloc];
 
+                /* Track local system size before solve */
+                int n_active_before = SC.n_active_last;
+
                 qi_status_t st = solve_one(k, lev, kl, hs, dat,
                                            &level_pre[lev],
                                            &spatial, soa_ptrs,
                                            local_opts.lambda,
                                            &SC, coeffs + (size_t)k * dat->ncomp);
+                if (SC.n_active_last > max_n_active) {
+                    #pragma omp critical
+                    if (SC.n_active_last > max_n_active)
+                        max_n_active = SC.n_active_last;
+                }
+                if (SC.pinv_used_last)
+                    pinv_count += 1;
                 if (st != QI_OK) {
                     err_count += 1;
                     /* Fill with zeros on failure */
@@ -493,10 +513,18 @@ qi_status_t qi_localLS_compute(const qi_ls_hspace_t        *hs,
     free((void*)soa_ptrs);
     free(soa_buf);
 
-    if (err_count > 0) {
-        if (local_opts.verbose) {
-            fprintf(stderr, "qi_localLS_compute: %d basis functions failed\n", err_count);
-        }
+    /* Diagnostic output: always print summary when pinv fallback used */
+    if (pinv_count > 0 || err_count > 0) {
+        fprintf(stderr, "qi_localLS_compute: ndof=%d, lambda=%.2e, "
+                "pinv_fallback=%d/%d (%.1f%%), errors=%d, max_sys_size=%d\n",
+                hs->ndof, local_opts.lambda,
+                pinv_count, hs->ndof,
+                100.0 * pinv_count / (hs->ndof > 0 ? hs->ndof : 1),
+                err_count, max_n_active);
+    } else {
+        fprintf(stderr, "qi_localLS_compute: ndof=%d, lambda=%.2e, "
+                "all LU ok, max_sys_size=%d\n",
+                hs->ndof, local_opts.lambda, max_n_active);
     }
     return QI_OK;
 }

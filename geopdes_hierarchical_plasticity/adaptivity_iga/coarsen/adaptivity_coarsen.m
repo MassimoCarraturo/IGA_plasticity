@@ -2,6 +2,7 @@
 %  The refinement can be done marking either elements or basis functions.
 %
 %   [hmsh, hspace] = adaptivity_coarsen (hmsh, hspace, marked, adaptivity_data)
+%   [hmsh, hspace, Ccoar, reactivated_elements] = adaptivity_coarsen (hmsh, hspace, marked, adaptivity_data, reactivated_elements)
 %
 % INPUT:
 %
@@ -12,11 +13,16 @@
 %   adaptivity_data: a structure with the data for the adaptivity method.
 %                    In particular, it contains the field 'flag', that can take the value
 %                    'elements' or 'functions', depending on the coarsening strategy.
+%   reactivated_elements: (optional) pre-computed cell array of elements to reactivate.
+%                         When provided, the internal marking/admissibility check is skipped.
+%                         Use this to synchronize coarsening across spaces that share the same mesh.
 %
 % OUTPUT:
 %
 %   hmsh:   object representing the coarsened hierarchical mesh (see hierarchical_mesh)
 %   hspace: object representing the coarsened space of hierarchical splines (see hierarchical_space)
+%   Ccoar:  (optional) coarsening operator matrix
+%   reactivated_elements: (optional) cell array of elements that were reactivated
 %
 % Copyright (C) 2016 Eduardo M. Garau, Rafael Vazquez
 %
@@ -33,22 +39,24 @@
 %    You should have received a copy of the GNU General Public License
 %    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [hmsh, hspace, Ccoar] = adaptivity_coarsen (hmsh, hspace, marked, adaptivity_data)
+function [hmsh, hspace, Ccoar, reactivated_elements] = adaptivity_coarsen (hmsh, hspace, marked, adaptivity_data, reactivated_elements)
 
-switch (adaptivity_data.flag)
-  case 'functions'
-    marked_elements = compute_cells_to_coarsen (hspace, hmsh, marked);
-  case 'elements'
-    marked_elements = marked;
+if nargin < 5
+  switch (adaptivity_data.flag)
+    case 'functions'
+      marked_elements = compute_cells_to_coarsen (hspace, hmsh, marked);
+    case 'elements'
+      marked_elements = marked;
+  end
+  [reactivated_elements, ~] = mark_elements_to_reactivate_from_active (marked_elements, hmsh, hspace, adaptivity_data);
 end
-[reactivated_elements, ~] = mark_elements_to_reactivate_from_active (marked_elements, hmsh, hspace, adaptivity_data);
 
 hmsh_fine = hmsh;
 [hmsh, removed_cells] = hmsh_coarsen (hmsh, reactivated_elements);
 
 reactivated_fun = functions_to_reactivate_from_cells (hmsh, hspace, reactivated_elements);
 
-if (nargout == 3)
+if (nargout >= 3)
   hspace_fine = hspace;
   hspace = hspace_coarsen (hspace, hmsh, reactivated_fun, removed_cells);
   M = op_u_v_hier (hspace, hspace, hmsh);

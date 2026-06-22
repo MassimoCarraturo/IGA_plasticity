@@ -177,6 +177,10 @@ else
 end
 
 hspace.regularity = regularity;
+hspace.regularity_per_level = {};   % empty = use hspace.regularity for all levels
+                                     % cell array: regularity_per_level{lev} overrides
+                                     % regularity when adding level lev.
+                                     % If lev > numel(cell), the last entry is reused.
 
 hspace = class (hspace, 'hierarchical_space');
 

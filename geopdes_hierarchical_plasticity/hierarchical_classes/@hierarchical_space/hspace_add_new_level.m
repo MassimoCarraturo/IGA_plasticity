@@ -40,7 +40,17 @@ end
 % Computation of a tensor product space if a new level is activated,
 %  and the 1D projectors between the previous level and the new one.
 if (numel(hspace.space_of_level) == hmsh.nlevels-1)
-  regularity = hspace.regularity;
+  % Per-level regularity: if regularity_per_level is populated, use
+  % the entry for the new level (or the last entry if the array is shorter).
+  if ~isempty(hspace.regularity_per_level)
+      if numel(hspace.regularity_per_level) >= hmsh.nlevels
+          regularity = hspace.regularity_per_level{hmsh.nlevels};
+      else
+          regularity = hspace.regularity_per_level{end};
+      end
+  else
+      regularity = hspace.regularity;
+  end
   if (is_scalar)
     degree = hspace.space_of_level(hmsh.nlevels-1).degree;
   else

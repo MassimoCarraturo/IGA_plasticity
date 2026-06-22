@@ -46,81 +46,67 @@ function eps_pl_control_var = history_variable_projection_hier(hspace, hmsh, eps
         eps_pl_control_var(:,:) = QI_coeff;
 
     
-    else % case hmsh (displacements) = hmsh_scalar (history variable projection)
-        n_levels = hmsh.nlevels;
-        n_hist_var = size(eps_pl{n_levels}, 3);
+    else % QI or L2 projection
+        % When num_bisections > 0, hmsh (scalar mesh) may have more levels
+        % than hmsh_displ (primal mesh).  The quadrature data (eps_pl) lives
+        % on hmsh_displ, so we use hmsh_displ for the data assembly loop.
+        % The scalar space/mesh is used for the projection itself.
+        hmsh_data = hmsh_displ;              % mesh that owns the data
+        n_levels_data = hmsh_data.nlevels;
+        n_hist_var = size(eps_pl{n_levels_data}, 3);
         eps_pl_control_var= zeros(hspace.ndof, n_hist_var);
-        
+
         if  strcmpi(type_proj, 'L2')
-            
-            M = op_u_v_hier( hspace, hspace, hmsh);  
+
+            M = op_u_v_hier( hspace, hspace, hmsh);
             rhs = eval_rhs_l2_hier (hspace, hmsh, eps_pl, n_hist_var);
-            for i=1:n_hist_var           
-                eps_pl_control_var(:,i) = M\rhs(:,i);        
+            for i=1:n_hist_var
+                eps_pl_control_var(:,i) = M\rhs(:,i);
             end
-        
+
         elseif  strcmpi(type_proj, 'QI')
-            
-            
-            % compute number of quadrature points
+
+            % compute number of quadrature points (on the data mesh)
             n_quad_nodes = 0;
-            for ilev = 1:n_levels
-                 if (hmsh.nel_per_level(ilev) > 0)
-                    n_quad_nodes = n_quad_nodes + hmsh.mesh_of_level(ilev).nqn * hmsh.nel_per_level(ilev);
+            for ilev = 1:n_levels_data
+                 if (hmsh_data.nel_per_level(ilev) > 0)
+                    n_quad_nodes = n_quad_nodes + hmsh_data.mesh_of_level(ilev).nqn * hmsh_data.nel_per_level(ilev);
                  end
             end
-            
-            % organize plastic variables in data(i,:) = (coord_x, coord_y, plastic_var_1, plastic_var2, ...)
-            % data = zeros(n_quad_nodes, n_hist_var+ hmsh.ndim);
-            % counter = 0;
-            % for ilev = 1:n_levels
-            %      if (hmsh.nel_per_level(ilev) > 0)
-            %         tot_nqn_lev =  hmsh.mesh_of_level(ilev).nqn * hmsh.nel_per_level(ilev);
-            % 
-            %         % msh_lev = msh_evaluate_element_list (hmsh.mesh_of_level(ilev), hmsh.active{ilev});
-            %         quad_nodes = my_msh_evaluate_qn (hmsh.mesh_of_level(ilev), hmsh.active{ilev});
-            %         for idim = 1:hmsh.rdim                
-            %             % data(counter+1: counter+tot_nqn_lev, idim) = reshape (hmsh.msh_lev{ilev}.geo_map(idim,:,:), [tot_nqn_lev,1]);                  
-            %             data(counter+1: counter+tot_nqn_lev, idim) =  reshape (quad_nodes(idim,:,:), [tot_nqn_lev,1]);
-            %         end
-            %         data(counter+1: counter+tot_nqn_lev,idim+1:end) =  reshape (permute(eps_pl{ilev},[3,2,1]), [n_hist_var, tot_nqn_lev])';
-            %         counter = counter+tot_nqn_lev;
-            %      end         
-            % end
-    
-            % compute spline coefficients (libqi backend; old MATLAB impl removed)
-            % QI_coeff = get_QI_coeffs_c(hspace, hmsh, ...
-            %                            struct('x', data(:,1), ...
-            %                                   'y', data(:,2), ...
-            %                                   'f', data(:,3:end)));
-            
+
             % organize point coordinates in data(i,:) = (coord_x, coord_y, ...)
             % organize plastic variables in f(i,:) = (plastic_var_1, plastic_var2, ...)
-            data = zeros(n_quad_nodes, hmsh.ndim);
+            data = zeros(n_quad_nodes, hmsh_data.ndim);
             f = zeros(n_quad_nodes, n_hist_var);
             counter = 0;
-            for ilev = 1:n_levels
-                 if (hmsh.nel_per_level(ilev) > 0)
-                    tot_nqn_lev =  hmsh.mesh_of_level(ilev).nqn * hmsh.nel_per_level(ilev);
-    
-                    % msh_lev = msh_evaluate_element_list (hmsh.mesh_of_level(ilev), hmsh.active{ilev});
-                    quad_nodes = my_msh_evaluate_qn (hmsh.mesh_of_level(ilev), hmsh.active{ilev});
-                    for idim = 1:hmsh.rdim                
-                        % data(counter+1: counter+tot_nqn_lev, idim) = reshape (hmsh.msh_lev{ilev}.geo_map(idim,:,:), [tot_nqn_lev,1]);                  
+            for ilev = 1:n_levels_data
+                 if (hmsh_data.nel_per_level(ilev) > 0)
+                    tot_nqn_lev =  hmsh_data.mesh_of_level(ilev).nqn * hmsh_data.nel_per_level(ilev);
+
+                    quad_nodes = my_msh_evaluate_qn (hmsh_data.mesh_of_level(ilev), hmsh_data.active{ilev});
+                    for idim = 1:hmsh_data.rdim
                         data(counter+1: counter+tot_nqn_lev, idim) =  reshape (quad_nodes(idim,:,:), [tot_nqn_lev,1]);
                     end
                     f(counter+1: counter+tot_nqn_lev,:) =  reshape (permute(eps_pl{ilev},[3,2,1]), [n_hist_var, tot_nqn_lev])';
                     counter = counter+tot_nqn_lev;
-                 end         
+                 end
             end
-        
-            % compute spline coefficients
-            QI_coeff = localLS(hspace,hmsh,data,f,0);
-    
+
+            % compute spline coefficients (project onto scalar space).
+            % Regularize the per-DOF local LS only when the projection
+            % (scalar) mesh is finer than the data mesh — i.e. num_bisections>0,
+            % detected via extra hierarchical levels.  There the local systems
+            % are under-determined (sparse/one-sided support coverage), so a
+            % small Tikhonov term (matching the QI_C0 path) stabilizes them.
+            % For num_bisections==0 the meshes coincide and lambda stays 0,
+            % leaving plain QI / QI_p3 / QI_graded results unchanged.
+            lambda_qi = (hmsh.nlevels > hmsh_displ.nlevels) * 1e-9;
+            QI_coeff = localLS(hspace,hmsh,data,f,lambda_qi);
+
             % store in output
             eps_pl_control_var(:,:) = QI_coeff;
-        
-        
+
+
         end
     end
 end

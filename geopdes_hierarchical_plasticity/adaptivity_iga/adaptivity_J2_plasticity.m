@@ -20,7 +20,7 @@
 %    You should have received a copy of the GNU General Public License
 %    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-function [geometry, cell_hmsh, cell_hspace,  cell_hspace_scalar,  cell_u, cell_eps_pl, cell_sigma, solution_data] = adaptivity_J2_plasticity (problem_data, method_data, adaptivity_data, plot_data)
+function [geometry, cell_hmsh, cell_hspace,  cell_hspace_scalar,  cell_u, cell_eps_pl, cell_sigma, solution_data, cell_hmsh_scalar] = adaptivity_J2_plasticity (problem_data, method_data, adaptivity_data, plot_data)
 
 if (nargin == 3)
     plot_data = struct ('print_info', true, 'plot_hmesh', false, 'plot_discrete_sol', false);
@@ -59,16 +59,20 @@ hmsh_scalar = hmsh;
 
 
 % store initial scalar space
-degree_projection = method_data.degree;
-regularity_projection = method_data.regularity;
-if strcmpi(method_data.type_projection, 'QI_C0')
-    % degree_projection  = ones(size(method_data.degree));
-    regularity_projection = degree_projection-degree_projection;
+% Optional: method_data.degree_projection overrides the scalar-space degree
+%           (e.g. [3 3 3] for cubic QI while displacement stays quadratic).
+if isfield(method_data, 'degree_projection')
+    degree_projection = method_data.degree_projection;
+    regularity_projection = degree_projection - 1;        % max regularity (C^{p-1})
+else
+    degree_projection = method_data.degree;
+    regularity_projection = method_data.regularity;
 end
-% if strcmpi(method_data.type_projection, 'QI_ref')
-%     % degree_projection  = ones(size(method_data.degree));
-%     % regularity_projection = degree_projection*0;
-% end
+if strcmpi(method_data.type_projection, 'QI_C0')
+    regularity_projection = zeros(size(degree_projection)); % C^0
+elseif strcmpi(method_data.type_projection, 'QI_graded')
+    % Level 1 uses C^{p-1} — regularity_projection stays at default
+end
 
 [knots, zeta] = kntrefine (geometry.nurbs.knots, method_data.nsub_coarse-1, degree_projection, regularity_projection);
 rule     = msh_gauss_nodes (method_data.nquad);
@@ -77,20 +81,75 @@ msh   = msh_cartesian (zeta, qn, qw, geometry);
 space_scalar =sp_bspline (knots, degree_projection, msh);
 clear knots zeta rule qn  qw msh
 hspace_scalar   = hierarchical_space (hmsh_scalar, space_scalar, method_data.space_type, method_data.truncated, regularity_projection);
-hspace_dummy = hspace_scalar; 
+hspace_dummy = hspace_scalar;
 
-% refine the scalar space/mesh
-% num_bisections=2 (original) explodes the projection space at full primal-mesh
-% resolution (~30k scalar DOFs in 3D, hours per load step).
-% Use 0 here so QI_C0 projects on the primal scalar mesh — keeps the
-% Tikhonov-regularised local-LS character of QI_C0 vs the unregularised QI,
-% at a tractable cost.
-num_bisections =0;
-if strcmpi(method_data.type_projection, 'QI_C0')
-    num_bisections =1;
+% QI_graded: set up per-level regularity schedule.
+% Coarse levels (1..graded_transition) use C^{p-1}, finer levels use C^0.
+% This concentrates low continuity around the adaptively refined front.
+if strcmpi(method_data.type_projection, 'QI_graded')
+    if isfield(method_data, 'graded_transition_level')
+        graded_trans = method_data.graded_transition_level;
+    else
+        graded_trans = 2;   % default: levels 1-2 smooth, 3+ are C^0
+    end
+    max_reg = degree_projection - 1;
+    min_reg = zeros(size(degree_projection));
+    n_alloc = max(adaptivity_data.max_level + 2, 10);
+    reg_per_level = cell(1, n_alloc);
+    for lev = 1:n_alloc
+        if lev <= graded_trans
+            reg_per_level{lev} = max_reg;
+        else
+            reg_per_level{lev} = min_reg;
+        end
+    end
+    hspace_scalar.regularity_per_level = reg_per_level;
+
+    % Propagate per-level regularity to boundary spaces so that
+    % hspace_add_new_level uses the correct regularity at each boundary.
+    ndim = numel(degree_projection);
+    if ~isempty(hspace_scalar.boundary)
+        for iside = 1:numel(hspace_scalar.boundary)
+            ind = setdiff(1:ndim, ceil(iside/2));
+            bnd_reg_per_level = cell(1, n_alloc);
+            for lev = 1:n_alloc
+                if lev <= graded_trans
+                    bnd_reg_per_level{lev} = max_reg(ind);
+                else
+                    bnd_reg_per_level{lev} = min_reg(ind);
+                end
+            end
+            hspace_scalar.boundary(iside).regularity_per_level = bnd_reg_per_level;
+        end
+    end
+
+    fprintf('  QI_graded: levels 1-%d use C^%d, levels %d+ use C^0\n', ...
+        graded_trans, max_reg(1), graded_trans+1);
 end
-if strcmpi(method_data.type_projection, 'QI_ref')
-     [hmsh_scalar, hspace_scalar] = refine_projection_space(hmsh_scalar, hspace_scalar, adaptivity_data, num_bisections);
+
+% For the projection call, QI_graded uses the QI algorithm on the
+% graded scalar space (C^{p-1} coarse levels, C^0 fine levels).
+if strcmpi(method_data.type_projection, 'QI_graded')
+    projection_type = 'QI';
+else
+    projection_type = method_data.type_projection;
+end
+
+% NOTE: The separate C1 estimator space (hspace_scalar_C1) that was
+% previously built here for QI_C0 has been removed.  The div_sigma
+% estimator now computes div(sigma) directly from the displacement
+% Hessian and eps_pl gradient, bypassing any C1 re-projection.
+
+% Optionally refine the scalar (projection) mesh beyond the primal mesh.
+% method_data.num_bisections controls how many uniform bisection cycles
+% are applied.  Default is 0 (projection mesh == primal mesh).
+if isfield(method_data, 'num_bisections')
+    num_bisections = method_data.num_bisections;
+else
+    num_bisections = 0;
+end
+if num_bisections > 0
+    [hmsh_scalar, hspace_scalar] = refine_projection_space(hmsh_scalar, hspace_scalar, adaptivity_data, num_bisections);
 end
 
 % plot hierarchical mesh
@@ -141,11 +200,11 @@ for iLoad = 1: method_data.nload
         if (plot_data.print_info); disp('PROJECT STATE VARIABLES:'); end
         % interpolate sigma
         sigma_store = zeros(hspace_scalar.ndof, 6); % control variables
-        sigma_store(:,:) = history_variable_projection_hier(hspace_scalar, hmsh_scalar, sigma,  method_data.type_projection, hmsh);
+        sigma_store(:,:) = history_variable_projection_hier(hspace_scalar, hmsh_scalar, sigma,  projection_type, hmsh);
 
-        % QI or L2 for eps_pl projection      
+        % QI or L2 for eps_pl projection
         eps_pl_store = zeros(hspace_scalar.ndof, 6); % control variables
-        eps_pl_store(:,:) = history_variable_projection_hier(hspace_scalar, hmsh_scalar, eps_pl,  method_data.type_projection, hmsh);
+        eps_pl_store(:,:) = history_variable_projection_hier(hspace_scalar, hmsh_scalar, eps_pl,  projection_type, hmsh);
 
         nel(iter) = hmsh.nel; ndof(iter) = hspace.ndof;
         
@@ -163,15 +222,47 @@ for iLoad = 1: method_data.nload
         %                       refinement around stress-gradient hot spots,
         %                       e.g. the elastic-plastic front)
         if (~isfield(adaptivity_data, 'estimator'))
-            adaptivity_data.estimator = 'stress_gradient';
+            adaptivity_data.estimator = 'div_sigma_direct';
         end
+
+        % Estimator dispatch.
+        % For 'div_sigma_direct', the estimator computes div(sigma)
+        % analytically from u and eps_pl — no sigma re-projection needed,
+        % works with any scalar-space continuity (including C0).
+        % For legacy estimators, sigma must live on a scalar space on the
+        % primal mesh:
+        %   num_bisections>0  → L2-project onto hspace_dummy
+        %   otherwise         → use sigma_store directly
         switch lower(adaptivity_data.estimator)
-            case {'div_sigma', 'residual'}
-                est = adaptivity_estimate_div_sigma_el (sigma_store, geometry, hmsh, hspace, hmsh_scalar, hspace_scalar, problem_data, adaptivity_data);
-            case {'stress_gradient', 'jump'}
-                est = adaptivity_estimate_stress_gradient_el (sigma_store, geometry, hmsh, hspace, hmsh_scalar, hspace_scalar, problem_data, adaptivity_data);
-            case {'plastic_front_spere', 'sphere_front'}
-                est = adaptivity_estimate_stress_gradient_el (sigma_store, geometry, hmsh, hspace, hmsh_scalar, hspace_scalar, problem_data, adaptivity_data);
+            case {'div_sigma_direct'}
+                % Direct estimator: second derivatives of u, first of eps_pl
+                est = adaptivity_estimate_div_sigma_direct_el (u, eps_pl_store, ...
+                    sigma_store, geometry, hmsh, hspace, hspace_scalar, ...
+                    problem_data, adaptivity_data);
+
+            case {'div_sigma', 'residual', 'stress_gradient', 'jump', ...
+                   'plastic_front_spere', 'sphere_front'}
+                % Legacy estimators that need sigma on a primal-mesh space
+                if num_bisections > 0
+                    sigma_store_est = zeros(hspace_dummy.ndof, 6);
+                    sigma_store_est(:,:) = history_variable_projection_hier(hspace_dummy, hmsh, sigma, 'L2', hmsh);
+                    hspace_est = hspace_dummy;
+                    hmsh_est   = hmsh;
+                else
+                    sigma_store_est = sigma_store;
+                    hspace_est = hspace_scalar;
+                    hmsh_est   = hmsh;
+                end
+
+                switch lower(adaptivity_data.estimator)
+                    case {'div_sigma', 'residual'}
+                        est = adaptivity_estimate_div_sigma_el (sigma_store_est, geometry, hmsh, hspace, hmsh_est, hspace_est, problem_data, adaptivity_data);
+                    case {'stress_gradient', 'jump'}
+                        est = adaptivity_estimate_stress_gradient_el (sigma_store_est, geometry, hmsh, hspace, hmsh_est, hspace_est, problem_data, adaptivity_data);
+                    case {'plastic_front_spere', 'sphere_front'}
+                        est = adaptivity_estimate_stress_gradient_el (sigma_store_est, geometry, hmsh, hspace, hmsh_est, hspace_est, problem_data, adaptivity_data);
+                end
+
             otherwise
                 error('adaptivity_J2_plasticity:estimator', ...
                       'Unknown adaptivity_data.estimator = %s', adaptivity_data.estimator);
@@ -234,12 +325,10 @@ for iLoad = 1: method_data.nload
         [hmsh, hspace, Cref] = adaptivity_refine (hmsh_coarse, hspace_coarse, marked, adaptivity_data);
         
         
-        if strcmpi(method_data.type_projection, 'QI_C0')
+        if num_bisections > 0
+            % Finer projection mesh: L2 mass-matrix transfer
             [~, hspace_dummy] = adaptivity_refine (hmsh_coarse, hspace_dummy, marked, adaptivity_data);
-            % marked = mark_bisect_mesh(hmsh);
-            % [hmsh_scalar, hspace_scalar] = adaptivity_refine (hmsh, hspace_dummy, marked, adaptivity_data);
              [hmsh_scalar, hspace_scalar] = refine_projection_space(hmsh, hspace_dummy, adaptivity_data, num_bisections);
-
 
              tmp_M = op_u_v_hier(hspace_scalar,hspace_scalar,hmsh_scalar);
              hspace_scalar_in_finer_mesh = hspace_in_finer_mesh(hspace_scalar_coarse, hmsh_scalar_coarse, hmsh_scalar);
@@ -254,10 +343,13 @@ for iLoad = 1: method_data.nload
              sigma_store =tmp_lhs_s;
 
         else
+            % L2, QI, and QI_C0 with num_bisections==0: exact knot-insertion transfer
             [hmsh_scalar, hspace_scalar, Cref_scalar] = adaptivity_refine (hmsh_scalar_coarse, hspace_scalar_coarse, marked, adaptivity_data);
             eps_pl_store = Cref_scalar*eps_pl_store; % control variables
             sigma_store = Cref_scalar*sigma_store; % control variables
-            
+
+            % (C1 estimator space removed — direct estimator needs no C1 space)
+
         end
 
 
@@ -276,21 +368,19 @@ for iLoad = 1: method_data.nload
             disp('skip coarsening')
     else
         hmsh_fine = hmsh;
-        [hmsh, hspace, u] =coarsening( hspace, hmsh_fine, u, est, adaptivity_data);
-        
-        if strcmpi(method_data.type_projection, 'QI_C0')
+        [hmsh, hspace, u, reactivated_elements] =coarsening( hspace, hmsh_fine, u, est, adaptivity_data);
+
+        if num_bisections > 0
+        % Finer projection mesh: L2 mass-matrix transfer
         [~, hspace_dummy] =coarsening( hspace_dummy, hmsh_fine, zeros(hspace_dummy.ndof,1), est, adaptivity_data);
-        
+
         hmsh_scalar_fine = hmsh_scalar;
         hspace_scalar_fine = hspace_scalar;
-        % marked = mark_bisect_mesh(hmsh); 
-        % [hmsh_scalar, hspace_scalar] = adaptivity_refine (hmsh, hspace_dummy, marked, adaptivity_data);
         [hmsh_scalar, hspace_scalar] = refine_projection_space(hmsh, hspace_dummy, adaptivity_data, num_bisections);
-    
+
         tmp_M = op_u_v_hier(hspace_scalar,hspace_scalar,hmsh_scalar);
         hspace_scalar_in_finer_mesh = hspace_in_finer_mesh(hspace_scalar, hmsh_scalar, hmsh_scalar_fine);
-    
-    
+
         tmp_G = op_u_v_hier(hspace_scalar_fine,hspace_scalar_in_finer_mesh,hmsh_scalar_fine);
         tmp_lhs_e = zeros(hspace_scalar.ndof,6);
         tmp_lhs_s = zeros(hspace_scalar.ndof,6);
@@ -300,11 +390,13 @@ for iLoad = 1: method_data.nload
         end
         eps_pl_store = tmp_lhs_e;
         sigma_store =tmp_lhs_s;
-    
+
         else
-            [hmsh_scalar, hspace_scalar, tmp] =coarsening( hspace_scalar, hmsh_fine, [eps_pl_store, sigma_store] , est, adaptivity_data);
+            [hmsh_scalar, hspace_scalar, tmp] =coarsening( hspace_scalar, hmsh_fine, [eps_pl_store, sigma_store] , est, adaptivity_data, reactivated_elements);
             eps_pl_store = tmp(:,1:size(eps_pl_store,2));
             sigma_store = tmp(:,size(eps_pl_store,2)+1:end);
+
+            % (C1 estimator space removed — direct estimator needs no C1 space)
         end
         eps_pl = evaluate_at_quad_points(hmsh, hspace_scalar, eps_pl_store);
     end
@@ -329,6 +421,7 @@ for iLoad = 1: method_data.nload
     cell_hmsh{iLoad} = hmsh;
     cell_hspace{iLoad} = hspace;
     cell_hspace_scalar{iLoad} = hspace_scalar;
+    cell_hmsh_scalar{iLoad} = hmsh_scalar;
     cell_u{iLoad} = u;
     cell_eps_pl{iLoad} = eps_pl_store;
     cell_sigma{iLoad} = sigma_store;
@@ -428,26 +521,31 @@ function eps_pl = evaluate_at_quad_points(hmsh, hspace, eps_pl_control_var)
 end
 
 
-function [hmsh, hspace, u] =coarsening( hspace, hmsh, u, est, adaptivity_data)
+function [hmsh, hspace, u, reactivated_elements] =coarsening( hspace, hmsh, u, est, adaptivity_data, reactivated_elements_in)
 
  %% COARSENING =============================================================
         % MARK COARSENING
         disp('MARK COARSENING:')
         [marked_coarse, num_marked_coarse] = adaptivity_mark_coarsening (est, hmsh, hspace, adaptivity_data);
 
+        reactivated_elements = {};
+
         % coarse only after the first time step if it also refines
         % COARSE
         if ~isempty(marked_coarse)
-            
+
             fprintf('%d %s marked for coarsening \n', num_marked_coarse, adaptivity_data.flag);
 
-            % Project the previous solution mesh onto the next refined mesh
-            [hmsh_coarse, hspace_coarse, C_coar] = adaptivity_coarsen(hmsh, hspace, marked_coarse, adaptivity_data);
+            if nargin >= 6
+                [hmsh_coarse, hspace_coarse, C_coar, reactivated_elements] = adaptivity_coarsen(hmsh, hspace, marked_coarse, adaptivity_data, reactivated_elements_in);
+            else
+                [hmsh_coarse, hspace_coarse, C_coar, reactivated_elements] = adaptivity_coarsen(hmsh, hspace, marked_coarse, adaptivity_data);
+            end
             u = C_coar * u;
             hmsh = hmsh_coarse;
             hspace = hspace_coarse;
         end
-       
+
 end
 
   
