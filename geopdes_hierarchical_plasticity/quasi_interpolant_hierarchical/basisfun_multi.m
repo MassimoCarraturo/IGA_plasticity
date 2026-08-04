@@ -10,30 +10,57 @@
 % bvalues:  values of the basis functions at the points (one column for each point)
 %
 % Author: Cesare Bracco
+%
+% Assembled from triplets in a single sparse() call.  The previous version
+% built the result one column at a time (bvalues(:,h) = ...), which
+% reallocated and copied the whole sparse array on every one of the npoints
+% assignments; with the level-4 sphere (npoints = 155034, 11560 rows) that
+% dominated the entire QI projection, costing minutes per call against the
+% ~0.7 s the assembly actually needs.  Only the (p+1)^dim locally non-zero
+% entries per point are formed, instead of a full-length kron per point per
+% direction.  The result is bitwise identical to the previous implementation:
+% the same two factors are multiplied per entry (IEEE multiplication is
+% commutative) and sparse() drops structural zeros exactly as sparse(kron(...))
+% did.  Verified with isequal() in 2-D and 3-D, on C^{p-1} and C^0 (interior
+% knots of multiplicity p) spaces, with mixed degrees, non-uniform knots, and
+% evaluation points on knots and at the parametric boundary.
 
 function [bvalues] = basisfun_multi(pl, uu, u_knotl)
 
-dim=length(pl);
-npoints=size(uu,1);
-basis=cell(1,npoints);
-for h=1:npoints
-    basis{h}=1;
+dim     = length(pl);
+npoints = size(uu,1);
+
+nfun  = zeros(1,dim);
+spans = cell(1,dim);
+Bd    = cell(1,dim);
+for j = 1:dim
+    nfun(j)  = length(u_knotl{j}) - pl(j) - 1;   % dimension in direction j
+    sj       = findspan(nfun(j)-1, pl(j), uu(:,j).', u_knotl{j});
+    spans{j} = sj(:);
+    Bd{j}    = basisfun(sj, uu(:,j).', pl(j), u_knotl{j});   % npoints x (pl(j)+1)
 end
 
-for j=1:dim
-    dofj=length(u_knotl{j})-pl(j)-1; %dimension of the tensor-product space in direction j
-    for h=1:npoints
-        ii=findspan(dofj-1,pl(j),uu(h,j),u_knotl{j});
-        basisjj(:,h)=zeros(dofj,1);
-        basisjj(ii-pl(j)+1:ii+1,h)=basisfun (ii, uu(h,j), pl(j), u_knotl{j});
-        basis{h}=sparse(kron(basisjj(:,h),basis{h}));
+% Tensor product over directions, keeping only the locally non-zero entries.
+% Direction 1 varies fastest, matching kron(basisjj_j, basis_previous).
+rows   = spans{1} - pl(1) + (0:pl(1));           % npoints x (pl(1)+1), 0-based
+vals   = Bd{1};
+stride = nfun(1);
+for j = 2:dim
+    base_j  = spans{j} - pl(j);
+    nc      = size(rows,2);
+    newRows = zeros(npoints, nc*(pl(j)+1));
+    newVals = zeros(npoints, nc*(pl(j)+1));
+    for b = 0:pl(j)
+        idx            = b*nc + (1:nc);
+        newRows(:,idx) = rows + (base_j + b) * stride;
+        newVals(:,idx) = Bd{j}(:,b+1) .* vals;
     end
-    clear basisjj
+    rows   = newRows;
+    vals   = newVals;
+    stride = stride * nfun(j);
 end
 
-for h=1:npoints
-    aux=basis{h};
-    bvalues(:,h)=aux(:);
-end
+cols    = repmat((1:npoints).', 1, size(rows,2));
+bvalues = sparse(rows(:)+1, cols(:), vals(:), prod(nfun), npoints);
 
 end

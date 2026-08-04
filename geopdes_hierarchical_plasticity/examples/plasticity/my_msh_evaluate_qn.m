@@ -27,6 +27,7 @@ for idim = 1:msh.ndim
 end
 end
 
+quad_nodes = zeros (msh.ndim, msh.nqn, numel(elem_list));
 for iel = 1:numel(elem_list)
     xx = cell (msh.ndim, 1);
     [xx{:}] = ndgrid (qqn{iel}{:});

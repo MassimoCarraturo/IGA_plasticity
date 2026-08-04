@@ -1,6 +1,14 @@
-function eps_pl_control_var = history_variable_projection_hier(hspace, hmsh, eps_pl, type_proj, hmsh_displ)
+function eps_pl_control_var = history_variable_projection_hier(hspace, hmsh, eps_pl, type_proj, hmsh_displ, lambda_override)
     % libqi backend (C/OpenMP) for the local-LS B-spline projection.
     % Falls back to the MATLAB reference if the MEX is unavailable.
+    %
+    % lambda_override (optional): forces the Tikhonov parameter of the QI
+    % local least-squares systems.  When omitted, lambda is chosen
+    % automatically (1e-9 on a finer projection mesh, 0 otherwise).  Used to
+    % reproduce the unregularised QI-h runs of the article.
+    if nargin < 6
+        lambda_override = [];
+    end
     persistent localLS;
     if isempty(localLS)
         if exist('qi_local_ls_mex', 'file') == 3
@@ -60,9 +68,9 @@ function eps_pl_control_var = history_variable_projection_hier(hspace, hmsh, eps
 
             M = op_u_v_hier( hspace, hspace, hmsh);
             rhs = eval_rhs_l2_hier (hspace, hmsh, eps_pl, n_hist_var);
-            for i=1:n_hist_var
-                eps_pl_control_var(:,i) = M\rhs(:,i);
-            end
+            % one factorisation for all components; column-by-column M\rhs(:,i)
+            % refactorises M every time
+            eps_pl_control_var = M \ rhs;
 
         elseif  strcmpi(type_proj, 'QI')
 
@@ -100,13 +108,60 @@ function eps_pl_control_var = history_variable_projection_hier(hspace, hmsh, eps
             % small Tikhonov term (matching the QI_C0 path) stabilizes them.
             % For num_bisections==0 the meshes coincide and lambda stays 0,
             % leaving plain QI / QI_p3 / QI_graded results unchanged.
-            lambda_qi = (hmsh.nlevels > hmsh_displ.nlevels) * 1e-9;
+            if isempty(lambda_override)
+                lambda_qi = (hmsh.nlevels > hmsh_displ.nlevels) * 1e-9;
+            else
+                lambda_qi = lambda_override;
+            end
             QI_coeff = localLS(hspace,hmsh,data,f,lambda_qi);
 
             % store in output
             eps_pl_control_var(:,:) = QI_coeff;
 
+        elseif  any (strcmpi(type_proj, {'BEZIER', 'BEZIER_C0'}))
 
+            % Bezier projection (element-local L2 + support-weighted averaging,
+            % via the multi-level extraction operator stored in hspace.Csub).
+            % BEZIER_C0 is the identical operator applied to a C^0 scalar space
+            % (interior knots of multiplicity p); the space is selected upstream
+            % in adaptivity_J2_plasticity, so nothing changes here.
+            % The data must live on the same mesh the scalar space is built on:
+            % a bisected projection mesh (num_bisections > 0) is not supported,
+            % and the element ordering of the two meshes must coincide because
+            % eps_pl rows are indexed by the scalar mesh's element list.
+            if (hmsh.nlevels ~= hmsh_displ.nlevels || ...
+                ~isequal (hmsh.nel_per_level, hmsh_displ.nel_per_level))
+                error (['history_variable_projection_hier: BEZIER requires the scalar mesh ' ...
+                        'to coincide with the displacement mesh (no bisected projection mesh)']);
+            end
+            eps_pl_control_var = bezier_projection_levelwise (hspace, hmsh, eps_pl);
+
+        elseif  strcmpi(type_proj, 'DLSQ')
+
+            % Global discrete least-squares projection (Hennig et al. 2018,
+            % Eqs. 41-42): quadrature-weight-free Euclidean fit at the QPs.
+            % Same mesh-coincidence requirement as BEZIER.
+            if (hmsh.nlevels ~= hmsh_displ.nlevels || ...
+                ~isequal (hmsh.nel_per_level, hmsh_displ.nel_per_level))
+                error (['history_variable_projection_hier: DLSQ requires the scalar mesh ' ...
+                        'to coincide with the displacement mesh (no bisected projection mesh)']);
+            end
+            eps_pl_control_var = hennig_dlsq_projection_hier (hspace, hmsh, eps_pl);
+
+        elseif  strcmpi(type_proj, 'DLSQ_W')
+
+            % Element-local discrete least-squares with weighted averaging
+            % (Hennig et al. 2018, LLSQ_w, Eq. 33): the Bezier projector with
+            % the identity (unit) measure instead of the physical L2 measure.
+            if (hmsh.nlevels ~= hmsh_displ.nlevels || ...
+                ~isequal (hmsh.nel_per_level, hmsh_displ.nel_per_level))
+                error (['history_variable_projection_hier: DLSQ_W requires the scalar mesh ' ...
+                        'to coincide with the displacement mesh (no bisected projection mesh)']);
+            end
+            eps_pl_control_var = bezier_projection_levelwise (hspace, hmsh, eps_pl, 'unit');
+
+        else
+            error ('history_variable_projection_hier: unknown type_proj ''%s''', type_proj);
         end
     end
 end

@@ -68,7 +68,7 @@ else
     degree_projection = method_data.degree;
     regularity_projection = method_data.regularity;
 end
-if strcmpi(method_data.type_projection, 'QI_C0')
+if any (strcmpi(method_data.type_projection, {'QI_C0', 'BEZIER_C0'}))
     regularity_projection = zeros(size(degree_projection)); % C^0
 elseif strcmpi(method_data.type_projection, 'QI_graded')
     % Level 1 uses C^{p-1} — regularity_projection stays at default
@@ -148,6 +148,39 @@ if isfield(method_data, 'num_bisections')
 else
     num_bisections = 0;
 end
+
+% Optional override of the Tikhonov parameter of the QI local systems.
+% Empty (default) selects it automatically: 1e-9 on a bisected projection
+% mesh, 0 otherwise.  Set method_data.qi_lambda to force a value (e.g. 0 to
+% reproduce the unregularised QI-h runs).
+if isfield(method_data, 'qi_lambda')
+    qi_lambda = method_data.qi_lambda;
+else
+    qi_lambda = [];
+end
+% BEZIER, DLSQ and DLSQ_W project on the primal mesh by construction: fail
+% fast at setup rather than after the first load step's Newton solve.
+if any (strcmpi (method_data.type_projection, {'BEZIER', 'BEZIER_C0', 'DLSQ', 'DLSQ_W'})) && num_bisections > 0
+    error ('adaptivity_J2_plasticity: type_projection ''%s'' is incompatible with num_bisections > 0', method_data.type_projection);
+end
+
+% Transfer of the quadrature-point plastic history across a mesh change
+% (refine/coarsen).  'PROJECT' (default) round-trips through the spline
+% coefficients (project then re-evaluate) and preserves the pre-existing
+% behaviour exactly.  'CPT' and 'WPLSQ' transfer the quadrature-point data
+% directly (Hennig et al. 2018) and only replace the re-evaluation step; the
+% field representation used by the estimator still comes from type_projection.
+if isfield(method_data, 'type_transfer')
+    type_transfer = method_data.type_transfer;
+else
+    type_transfer = 'PROJECT';
+end
+if ~any (strcmpi (type_transfer, {'PROJECT', 'CPT', 'WPLSQ'}))
+    error ('adaptivity_J2_plasticity: unknown type_transfer ''%s''', type_transfer);
+end
+if any (strcmpi (type_transfer, {'CPT', 'WPLSQ'})) && num_bisections > 0
+    error ('adaptivity_J2_plasticity: type_transfer ''%s'' is incompatible with num_bisections > 0', type_transfer);
+end
 if num_bisections > 0
     [hmsh_scalar, hspace_scalar] = refine_projection_space(hmsh_scalar, hspace_scalar, adaptivity_data, num_bisections);
 end
@@ -198,13 +231,19 @@ for iLoad = 1: method_data.nload
 
         % PROJECTION
         if (plot_data.print_info); disp('PROJECT STATE VARIABLES:'); end
-        % interpolate sigma
-        sigma_store = zeros(hspace_scalar.ndof, 6); % control variables
-        sigma_store(:,:) = history_variable_projection_hier(hspace_scalar, hmsh_scalar, sigma,  projection_type, hmsh);
-
-        % QI or L2 for eps_pl projection
-        eps_pl_store = zeros(hspace_scalar.ndof, 6); % control variables
-        eps_pl_store(:,:) = history_variable_projection_hier(hspace_scalar, hmsh_scalar, eps_pl,  projection_type, hmsh);
+        % sigma and eps_pl share the mesh, the space and the entire per-level
+        % precompute, so project them as one 12-component field and split
+        hist_both = cell(size(sigma));
+        for ilev = 1:numel(sigma)
+            if ~isempty(sigma{ilev})
+                hist_both{ilev} = cat(3, sigma{ilev}, eps_pl{ilev});
+            else
+                hist_both{ilev} = sigma{ilev};
+            end
+        end
+        both_store   = history_variable_projection_hier(hspace_scalar, hmsh_scalar, hist_both, projection_type, hmsh, qi_lambda);
+        sigma_store  = both_store(:, 1:6);
+        eps_pl_store = both_store(:, 7:12);
 
         nel(iter) = hmsh.nel; ndof(iter) = hspace.ndof;
         
@@ -234,11 +273,73 @@ for iLoad = 1: method_data.nload
         %   num_bisections>0  → L2-project onto hspace_dummy
         %   otherwise         → use sigma_store directly
         switch lower(adaptivity_data.estimator)
-            case {'div_sigma_direct'}
-                % Direct estimator: second derivatives of u, first of eps_pl
-                est = adaptivity_estimate_div_sigma_direct_el (u, eps_pl_store, ...
-                    sigma_store, geometry, hmsh, hspace, hspace_scalar, ...
+            case {'div_sigma_direct', 'div_sigma_direct_bdry'}
+                % Direct estimator: second derivatives of u, first of eps_pl.
+                % It integrates on the primal mesh and indexes the scalar
+                % space level-by-level against it, so the history variables
+                % must live on a scalar space sharing the primal mesh.  When
+                % num_bisections > 0 the projection mesh is globally bisected
+                % (refine_projection_space) and the levels no longer match:
+                % transfer the history variables back onto the primal-mesh
+                % scalar space hspace_dummy first, as the legacy path does.
+                if num_bisections > 0
+                    eps_pl_store_est = zeros(hspace_dummy.ndof, 6);
+                    eps_pl_store_est(:,:) = history_variable_projection_hier(hspace_dummy, hmsh, eps_pl, 'L2', hmsh);
+                    sigma_store_est = zeros(hspace_dummy.ndof, 6);
+                    sigma_store_est(:,:) = history_variable_projection_hier(hspace_dummy, hmsh, sigma, 'L2', hmsh);
+                    hspace_est = hspace_dummy;
+                else
+                    eps_pl_store_est = eps_pl_store;
+                    sigma_store_est  = sigma_store;
+                    hspace_est = hspace_scalar;
+                end
+
+                if strcmpi(adaptivity_data.estimator, 'div_sigma_direct_bdry')
+                    % Enrich with the full boundary-traction residual: Neumann
+                    % and pressure sides (prescribed traction scaled by the
+                    % current load fraction) plus the tangential traction on
+                    % symmetry/slider sides.
+                    adaptivity_data.boundary_term_full = true;
+                    adaptivity_data.load_mult = iLoad / method_data.nload;
+                end
+
+                est = adaptivity_estimate_div_sigma_direct_el (u, eps_pl_store_est, ...
+                    sigma_store_est, geometry, hmsh, hspace, hspace_est, ...
                     problem_data, adaptivity_data);
+
+            case {'plastic_front'}
+                % Geometric marker (2D): distance of each element from the
+                % analytic elastic-plastic front position at the current
+                % load fraction.  Solution-independent, so every projection
+                % variant produces the same mesh sequence.
+                est = adaptivity_estimate_distance_plastic_front (hmsh, ...
+                    problem_data, iLoad / method_data.nload);
+
+            case {'plastic_front_sphere'}
+                % Geometric marker (3D sphere): same as 'plastic_front' with
+                % the spherical front equation.
+                est = adaptivity_estimate_distance_plastic_front_sphere (hmsh, ...
+                    problem_data, iLoad / method_data.nload);
+
+            case {'plastic_front_discrete'}
+                % Discrete front marker: locates the front as the boundary of
+                % {sigma_vm >= sigma_y} in the computed stress, instead of
+                % using the analytic front position.  Solution-dependent and
+                % free of any symmetry assumption, so unlike 'plastic_front' it
+                % applies to both benchmarks and to geometries with no closed
+                % form.  It needs sigma on a scalar space sharing the primal
+                % mesh, so the same remapping as 'div_sigma_direct' applies
+                % when the projection mesh has been bisected.
+                if num_bisections > 0
+                    sigma_store_est = zeros(hspace_dummy.ndof, 6);
+                    sigma_store_est(:,:) = history_variable_projection_hier(hspace_dummy, hmsh, sigma, 'L2', hmsh);
+                    hspace_est = hspace_dummy;
+                else
+                    sigma_store_est = sigma_store;
+                    hspace_est = hspace_scalar;
+                end
+                est = adaptivity_estimate_plastic_front_discrete_el (...
+                    sigma_store_est, hmsh, hspace_est, problem_data, adaptivity_data);
 
             case {'div_sigma', 'residual', 'stress_gradient', 'jump', ...
                    'plastic_front_spere', 'sphere_front'}
@@ -278,9 +379,15 @@ for iLoad = 1: method_data.nload
         elseif (iter == adaptivity_data.num_max_iter)
             disp('Warning: reached the maximum number of iterations')
             solution_data.flag = 2; break
-        elseif (hmsh.nlevels >= adaptivity_data.max_level)
-            disp('Warning: reached the maximum number of levels')
-            solution_data.flag = 3; break
+        % NOTE: there is deliberately NO global 'hmsh.nlevels >= max_level'
+        % stop here.  That check conflates "the hierarchy already contains
+        % max_level levels" with "no element may be refined any further": once
+        % any single region reached max_level it aborted the adaptive loop for
+        % the whole mesh and every later load step, freezing the discretisation
+        % after the first steps and preventing the refinement from following a
+        % moving elastic-plastic front.  The per-level cap below drops marks at
+        % levels >= max_level and breaks when nothing remains markable, which
+        % enforces hmsh.nlevels <= max_level element-wise instead.
         elseif (hspace.ndof > adaptivity_data.max_ndof)
             disp('Warning: reached the maximum number of DOFs')
             solution_data.flag = 4; break
@@ -312,8 +419,30 @@ for iLoad = 1: method_data.nload
             break
         end
 
+        % Enforce mesh admissibility of class adaptivity_data.adm before
+        % refining (Buffa & Giannelli, M3AS 2016).  hrefine only ever adds
+        % marks at levels <= the level of an already-marked cell, so it cannot
+        % re-introduce marks above the max_level cap applied just above.
+        %
+        % The expansion is computed ONCE, here, on the displacement hierarchy,
+        % and the resulting set is reused by every adaptivity_refine call
+        % below.  Calling adaptivity_refine_adm at each of those sites instead
+        % (as the poisson/thermomech solvers do, which carry a single
+        % hierarchy) would re-run hrefine against a different hspace --
+        % displacement, dummy, or scalar -- and those could diverge; the
+        % same-mesh study of Section 5.2 requires the projection variants to
+        % share an identical mesh sequence.
+        num_marked_in = num_marked;
+        marked = mark_admissible (hmsh, hspace, marked, adaptivity_data);
+        num_marked = sum (cellfun (@numel, marked));
+
         if (plot_data.print_info)
-            fprintf('%d %s marked for refinement \n', num_marked, adaptivity_data.flag);
+            if (num_marked > num_marked_in)
+                fprintf('%d %s marked for refinement (%d after admissibility class %d) \n', ...
+                        num_marked_in, adaptivity_data.flag, num_marked, adaptivity_data.adm);
+            else
+                fprintf('%d %s marked for refinement \n', num_marked, adaptivity_data.flag);
+            end
             disp('REFINE:')
         end
 
@@ -355,7 +484,17 @@ for iLoad = 1: method_data.nload
 
         % refine variables
         u = Cref * u;
-        eps_pl = evaluate_at_quad_points(hmsh, hspace_scalar, eps_pl_store);
+        % Transfer the quadrature-point plastic history onto the refined mesh.
+        % PROJECT re-evaluates the just-transferred spline coefficients; CPT and
+        % WPLSQ transfer the pre-refine quadrature data (eps_pl) directly.
+        switch upper(type_transfer)
+            case 'PROJECT'
+                eps_pl = evaluate_at_quad_points(hmsh, hspace_scalar, eps_pl_store);
+            case 'CPT'
+                eps_pl = cpt_transfer_hier(hmsh_coarse, eps_pl, hmsh);
+            case 'WPLSQ'
+                eps_pl = wplsq_transfer_hier(hmsh_coarse, hspace_scalar_coarse, eps_pl, hmsh);
+        end
 
 
 
@@ -368,11 +507,33 @@ for iLoad = 1: method_data.nload
             disp('skip coarsening')
     else
         hmsh_fine = hmsh;
+        % Fine (pre-coarsen) scalar space, kept for CPT/WPLSQ direct transfer
+        % below before it is overwritten by the coarsening call at the else
+        % branch (num_bisections == 0, which CPT/WPLSQ require).
+        hspace_scalar_fine_pre = hspace_scalar;
         [hmsh, hspace, u, reactivated_elements] =coarsening( hspace, hmsh_fine, u, est, adaptivity_data);
 
-        if num_bisections > 0
-        % Finer projection mesh: L2 mass-matrix transfer
-        [~, hspace_dummy] =coarsening( hspace_dummy, hmsh_fine, zeros(hspace_dummy.ndof,1), est, adaptivity_data);
+        if (hmsh.nel == hmsh_fine.nel)
+        % Coarsening reactivated nothing, so the mesh, the spaces and the
+        % stored history are all unchanged and there is nothing to transfer.
+        %
+        % Skipping is not just an optimisation.  The transfer below ends by
+        % re-deriving eps_pl from eps_pl_store, i.e. it round-trips the plastic
+        % history through the projection (quadrature points -> control
+        % variables -> quadrature points).  That round-trip is lossy by
+        % construction, and running it when nothing was coarsened injects the
+        % loss for no reason.  Measured on a mesh frozen at 2x2 by max_level=1,
+        % where no cell can be refined or coarsened, merely enabling coarsening
+        % used to change sigma by 2.1% and the reported sigma_r error by 10%
+        % (see test_coarsening_roundtrip.m).
+        elseif num_bisections > 0
+        % Finer projection mesh: L2 mass-matrix transfer.
+        % Reuse the elements the primal coarsening actually reactivated, so that
+        % hspace_dummy cannot drift away from hmsh: re-marking from scratch may
+        % pick a different set whenever the scalar space differs from the primal
+        % one (degree_projection, QI_C0), and the projection mesh is rebuilt from
+        % hmsh and hspace_dummy together just below.
+        [~, hspace_dummy] =coarsening( hspace_dummy, hmsh_fine, zeros(hspace_dummy.ndof,1), est, adaptivity_data, reactivated_elements);
 
         hmsh_scalar_fine = hmsh_scalar;
         hspace_scalar_fine = hspace_scalar;
@@ -398,7 +559,21 @@ for iLoad = 1: method_data.nload
 
             % (C1 estimator space removed — direct estimator needs no C1 space)
         end
-        eps_pl = evaluate_at_quad_points(hmsh, hspace_scalar, eps_pl_store);
+        if (hmsh.nel ~= hmsh_fine.nel)
+            % Only when coarsening actually changed the mesh: transfer the
+            % quadrature-point history onto the coarsened mesh.  PROJECT
+            % re-derives it from the just-transferred coefficients; CPT and
+            % WPLSQ transfer the pre-coarsen quadrature data (eps_pl) directly
+            % from the fine mesh.
+            switch upper(type_transfer)
+                case 'PROJECT'
+                    eps_pl = evaluate_at_quad_points(hmsh, hspace_scalar, eps_pl_store);
+                case 'CPT'
+                    eps_pl = cpt_transfer_hier(hmsh_fine, eps_pl, hmsh);
+                case 'WPLSQ'
+                    eps_pl = wplsq_transfer_hier(hmsh_fine, hspace_scalar_fine_pre, eps_pl, hmsh);
+            end
+        end
     end
 
     
@@ -443,7 +618,58 @@ end
 
 
 %--------------------------------------------------------------------------
-% subroutines   
+% subroutines
+%--------------------------------------------------------------------------
+
+function marked = mark_admissible (hmsh, hspace, marked, adaptivity_data)
+% MARK_ADMISSIBLE: expand a marked-element set so that refining it yields a
+% mesh admissible of class adaptivity_data.adm.
+%
+% hrefine returns a SUPERSET of the input marks (hrefine_rec re-adds each
+% active Q_ind alongside the coarser neighbours it pulls in), so the caller
+% can hand the result straight to adaptivity_refine.
+%
+% Returns the marked set unchanged when no admissibility constraint applies.
+% An unrecognised strategy is an error rather than a silent fall-through to
+% unconstrained refinement: adm_strategy was previously accepted and ignored,
+% so every mesh in the study was ungraded despite requesting 'admissible'.
+
+    if (~isfield (adaptivity_data, 'adm_strategy') || isempty (adaptivity_data.adm_strategy))
+        return
+    end
+
+    switch (lower (adaptivity_data.adm_strategy))
+        case {'none', 'off'}
+            % refinement is left unconstrained on purpose
+
+        case 'admissible'
+            if (~isfield (adaptivity_data, 'adm') || isempty (adaptivity_data.adm))
+                error ('adaptivity_J2_plasticity:adm_missing', ...
+                       ['adm_strategy = ''admissible'' requires the admissibility ' ...
+                        'class in adaptivity_data.adm']);
+            end
+            % hrefine errors for m < 2; class 1 imposes no constraint anyway.
+            if (adaptivity_data.adm > 1)
+                shape_in = size (marked);
+                marked = hrefine (hmsh, hspace, marked, adaptivity_data.adm);
+                % adaptivity_mark returns a column cell, hrefine a row one;
+                % restore the caller's orientation.
+                if (shape_in(1) >= shape_in(2))
+                    marked = marked(:);
+                else
+                    marked = marked(:).';
+                end
+            end
+
+        otherwise
+            error ('adaptivity_J2_plasticity:adm_strategy_unknown', ...
+                   ['unknown adm_strategy ''%s'' (supported: ''admissible'', ' ...
+                    '''none''). Note adaptivity_refine_fsb, which the poisson ' ...
+                    'and thermomech solvers dispatch to for ''balancing'', is ' ...
+                    'not present in this tree.'], adaptivity_data.adm_strategy);
+    end
+end
+
 %--------------------------------------------------------------------------
 
 function  [hmsh_scalar, hspace_scalar] = refine_projection_space(hmsh_scalar, hspace_scalar, adaptivity_data, num_bisections)
@@ -492,8 +718,23 @@ end
 
 
 function eps_pl = evaluate_at_quad_points(hmsh, hspace, eps_pl_control_var)
+    % Evaluates the projected history variables at the quadrature points of
+    % hmsh.  The direct path below indexes hspace level-by-level against hmsh,
+    % which is only meaningful when the two share the same hierarchy.  With a
+    % bisected projection mesh (num_bisections > 0) the scalar hierarchy carries
+    % extra levels and that pairing silently returns zeros -- ndof_per_level(1)
+    % is 0, so Csub{1}*eps_pl_control_var(1:0,:) is an all-zero block -- which
+    % used to wipe the plastic history on every refine/coarsen.  Hand those
+    % cases to the inter-hierarchy evaluator, which pairs each primal level with
+    % the matching level of the finer scalar hierarchy and checks the pairing
+    % against the partition of unity.
+    if (hspace.nlevels ~= hmsh.nlevels)
+        eps_pl = hspace_eval_hmsh_nested (eps_pl_control_var, hspace, hmsh);
+        return
+    end
+
     eps_pl = cell(hmsh.nlevels,1);
-    
+
     ndofs_u = 0;
     last_dof = cumsum (hspace.ndof_per_level);
 
