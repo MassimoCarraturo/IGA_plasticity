@@ -162,7 +162,14 @@ function sp = sp_scalar (knots, degree, weights, msh, transform, periodic_dir)
       
         bnd_ndof_dir = sp.ndof_dir(ind);
         bnd_ndof = prod (bnd_ndof_dir);
-        [ind_univ{ind}] = ind2sub (bnd_ndof_dir, 1:bnd_ndof);
+        % MATLAB R2023a+ requires the size vector to have at least 2 elements.
+        % For a 1D boundary (recursion from 2D into 1D), bnd_ndof_dir is a scalar:
+        % the inverse mapping is then trivial.
+        if (numel (bnd_ndof_dir) == 1)
+          ind_univ{ind} = 1:bnd_ndof;
+        else
+          [ind_univ{ind}] = ind2sub (bnd_ndof_dir, 1:bnd_ndof);
+        end
         if (rem (iside, 2) == 0)
           ind_univ{ind2} = sp.ndof_dir(ind2) * ones (1, bnd_ndof);
         else

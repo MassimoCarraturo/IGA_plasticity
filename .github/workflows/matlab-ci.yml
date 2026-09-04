@@ -1,0 +1,161 @@
+name: MATLAB CI
+
+# ============================================================================
+# SETUP (for private repos):
+#   1. Go to https://github.com/matlab-actions/setup-matlab for licensing info
+#   2. Request a MATLAB batch licensing token from MathWorks
+#   3. Add it as a repository secret named MATLAB_TOKEN
+#   For public repos, MATLAB is licensed automatically — no token needed.
+# ============================================================================
+
+on:
+  push:
+    branches: [main, development]
+  pull_request:
+    branches: [main, development]
+  workflow_dispatch:
+    inputs:
+      test_suite:
+        description: 'Test suite to run'
+        required: false
+        default: 'default'
+        type: choice
+        options:
+          - default
+          - build
+          - unit
+          - smoke
+          - benchmark
+          - all
+
+env:
+  # If the repo is private, set the MATLAB_TOKEN secret in repo settings.
+  # For public repos this is ignored and MATLAB is licensed automatically.
+  MLM_LICENSE_TOKEN: ${{ secrets.MATLAB_TOKEN }}
+
+jobs:
+  # ---------------------------------------------------------------
+  #  Job 1: Build MEX binaries
+  # ---------------------------------------------------------------
+  build:
+    name: Build MEX
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install GCC (C compiler for MEX)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc g++ libomp-dev
+
+      - name: Set up MATLAB
+        uses: matlab-actions/setup-matlab@v2
+
+      - name: Configure MEX compiler and build
+        uses: matlab-actions/run-command@v2
+        with:
+          command: >-
+            cd(fullfile(pwd, 'geopdes_hierarchical_plasticity',
+            'quasi_interpolant_hierarchical', 'libqi'));
+            build_mex();
+
+      - name: Upload MEX artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: mex-binaries
+          path: geopdes_hierarchical_plasticity/quasi_interpolant_hierarchical/libqi/matlab/
+          retention-days: 7
+
+  # ---------------------------------------------------------------
+  #  Job 2: Unit tests (fast, per-commit)
+  # ---------------------------------------------------------------
+  unit-tests:
+    name: Unit Tests
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up MATLAB
+        uses: matlab-actions/setup-matlab@v2
+
+      - name: Download MEX artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: mex-binaries
+          path: geopdes_hierarchical_plasticity/quasi_interpolant_hierarchical/libqi/matlab/
+
+      - name: Run unit tests
+        uses: matlab-actions/run-command@v2
+        with:
+          command: run_ci_tests('unit')
+          startup-options: -sd ci
+
+  # ---------------------------------------------------------------
+  #  Job 3: Smoke integration test (per-commit)
+  # ---------------------------------------------------------------
+  smoke-tests:
+    name: Smoke Integration Test
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up MATLAB
+        uses: matlab-actions/setup-matlab@v2
+
+      - name: Download MEX artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: mex-binaries
+          path: geopdes_hierarchical_plasticity/quasi_interpolant_hierarchical/libqi/matlab/
+
+      - name: Run smoke tests
+        uses: matlab-actions/run-command@v2
+        with:
+          command: run_ci_tests('smoke')
+          startup-options: -sd ci
+
+  # ---------------------------------------------------------------
+  #  Job 4: Full benchmark (manual / nightly only)
+  # ---------------------------------------------------------------
+  benchmark:
+    name: Performance Benchmark
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    if: >-
+      github.event_name == 'workflow_dispatch' &&
+      (github.event.inputs.test_suite == 'benchmark' ||
+       github.event.inputs.test_suite == 'all')
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up MATLAB
+        uses: matlab-actions/setup-matlab@v2
+
+      - name: Download MEX artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: mex-binaries
+          path: geopdes_hierarchical_plasticity/quasi_interpolant_hierarchical/libqi/matlab/
+
+      - name: Run benchmark
+        uses: matlab-actions/run-command@v2
+        with:
+          command: run_ci_tests('benchmark')
+          startup-options: -sd ci
+
+      - name: Upload benchmark results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results
+          path: |
+            geopdes_hierarchical_plasticity/examples/plasticity/benchmark_results.mat
+          retention-days: 30

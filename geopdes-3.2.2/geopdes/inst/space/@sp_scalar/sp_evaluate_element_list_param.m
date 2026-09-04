@@ -77,7 +77,8 @@ sp_univ = space.sp_univ;
 elem_list = msh.elem_list;
 
 elem_ind = cell (msh.ndim, 1);
-[elem_ind{:}] = ind2sub (msh.nel_dir, elem_list);
+% Trailing 1 keeps ind2sub happy for 1D boundary meshes on MATLAB R2024b+
+[elem_ind{:}] = ind2sub ([msh.nel_dir, 1], elem_list);
 elem_ind = cell2mat (elem_ind);
 
 nsh = 1;

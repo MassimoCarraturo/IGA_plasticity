@@ -42,7 +42,7 @@ function bnd_indices = get_boundary_indices (iside, size_dir, indices)
   end
 
   indsub = cell (1, ndim);
-  [indsub{:}] = ind2sub (size_dir, indices);
+  [indsub{:}] = ind2sub ([size_dir, 1], indices);
   aux = find (indsub{ind2} == boundary_ind);
   ppp = cellfun (@(x) x(aux), indsub(ind), 'UniformOutput', false);
   bnd_indices = sub2ind ([size_dir(ind), 1], ppp{:});

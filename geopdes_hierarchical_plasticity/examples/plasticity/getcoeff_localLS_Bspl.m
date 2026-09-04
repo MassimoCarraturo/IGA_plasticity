@@ -49,10 +49,10 @@ for k=1:hspace.ndof
     kl=hspace.active{lev}(k-ndof_prev_levs); %index of current function in the B-spline basis of its level
      
     k_vec=cell(1,par_dim);
-    [k_vec{:}]=ind2sub (hspace.space_of_level(lev).ndof_dir, kl); 
+    [k_vec{:}]=ind2sub ([hspace.space_of_level(lev).ndof_dir, 1], kl); 
     support=sp_get_cells(hspace.space_of_level(lev),hmsh.mesh_of_level(lev),kl); %indices of the cells of the support of the B-spline
     I_vec=cell(1,par_dim);
-    [I_vec{:}]=ind2sub(hmsh.mesh_of_level(lev).nel_dir, support); 
+    [I_vec{:}]=ind2sub([hmsh.mesh_of_level(lev).nel_dir, 1], support); 
     %Indices of the knots which are the corners of the support (the indices you get are numbered starting from 1)
     mu_vec=cellfun(@min,I_vec);
     nu_vec=cellfun(last,I_vec);

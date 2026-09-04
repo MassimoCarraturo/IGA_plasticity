@@ -153,7 +153,8 @@ elseif (nargin == 3)
     % normal direction (the boundary manifold is not enough).
     element_list = element_list(:)';
     indices = cell (msh_side.ndim, 1);
-    [indices{:}] = ind2sub (msh_side.nel_dir, element_list);
+    % Trailing 1 keeps ind2sub happy for 1D boundary meshes on R2023a+
+    [indices{:}] = ind2sub ([msh_side.nel_dir, 1], element_list);
     indices = cell2mat (indices);
     
     qn_elems = arrayfun(@(ii) {msh.boundary(iside).qn{ii}(:,indices(ii,:))}, 1:msh_side.ndim);

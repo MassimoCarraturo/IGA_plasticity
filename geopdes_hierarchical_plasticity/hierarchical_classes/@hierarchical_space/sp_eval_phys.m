@@ -132,7 +132,7 @@ function [eu, pts_list] = sp_eval_phys (u, hspace, hmsh, geometry, pts, options)
       eu{1}(:,inds_on_F(point)) = eu_aux;
       else
       eu_aux = sp_eval (u_lev, hspace.space_of_level(ilev), hmsh.mesh_of_level(ilev), {[pts_param(1,point)],[pts_param(2,point)],[pts_param(3,point)]}, options);
-      eu{1}(inds_on_F(point)) = eu_aux;
+      eu{1}(:,inds_on_F(point)) = eu_aux;
       end
 
       % for iopt = 1:nopts

@@ -4,14 +4,11 @@ nel = hmsh.nel;
 est = zeros(nel,1);
 
 % position plastic front
-
 a= problem_data.R_i; % inner radius
 b = problem_data.R_o; % outer radius
 s_y = problem_data.s_y; %yielding stress
 P_max = problem_data.Pmax;
 P = P_max*mult;
-
-
 
 P_0 = 2 *s_y/3 * (1- a^3/b^3);
 if P<= P_0

@@ -34,4 +34,16 @@ function hmsh = hmsh_add_new_level (hmsh)
   hmsh.mesh_of_level(hmsh.nlevels) = msh_refine (hmsh.mesh_of_level(hmsh.nlevels-1), hmsh.nsub);
   hmsh.msh_lev{hmsh.nlevels} = [];
 
+  % Keep each boundary's hierarchical_mesh depth in sync with the bulk so
+  % that op_*_hier loops over hmsh.nlevels without dereferencing missing
+  % boundary mesh entries.  The 1D leaf boundary is a plain struct with
+  % only `ndim` set, so we skip it.
+  if (~isempty (hmsh.boundary) && isa (hmsh.boundary, 'hierarchical_mesh'))
+    for iside = 1:numel (hmsh.boundary)
+      if (hmsh.boundary(iside).nlevels < hmsh.nlevels)
+        hmsh.boundary(iside) = hmsh_add_new_level (hmsh.boundary(iside));
+      end
+    end
+  end
+
 end

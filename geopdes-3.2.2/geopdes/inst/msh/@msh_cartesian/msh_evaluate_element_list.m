@@ -62,7 +62,8 @@ function msh_col = msh_evaluate_element_list (msh, elem_list, varargin)
   msh_col.nqn  = msh.nqn;
 
   indices = cell (msh.ndim, 1);
-  [indices{:}] = ind2sub (msh.nel_dir, elem_list);
+  % Trailing 1 keeps ind2sub happy for 1D meshes on MATLAB R2023a+
+  [indices{:}] = ind2sub ([msh.nel_dir, 1], elem_list);
   indices = cell2mat (indices);
 
   if (isempty (elem_list))
