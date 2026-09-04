@@ -10,7 +10,7 @@ This project addresses two key challenges in isogeometric computational plastici
 
 1. **Adaptive mesh refinement and coarsening for elastoplasticity** — the elastic-plastic front introduces sharp gradients that demand local mesh refinement, while regions that unload can benefit from coarsening. The framework implements a full SOLVE &rarr; PROJECT &rarr; ESTIMATE &rarr; MARK &rarr; REFINE/COARSEN adaptive loop on hierarchical THB-spline meshes.
 
-2. **Accurate transfer of history variables across mesh changes** — in plasticity, internal variables (plastic strain, stress) must be projected onto the new mesh after refinement or coarsening without introducing spurious oscillations or violating yield constraints. The project implements and compares three projection strategies with different accuracy/cost trade-offs.
+2. **Accurate transfer of history variables across mesh changes** — in plasticity, internal variables (plastic strain, stress) must be projected onto the new mesh after refinement or coarsening without introducing spurious oscillations or violating yield constraints. The project implements and compares six projection operators, arranged as a target-space by fitting-rule design, together with two choices of transfer scope.
 
 ## Extensions from GeoPDEs
 
@@ -24,11 +24,26 @@ This project extends the [GeoPDEs 3.2.2](http://rafavzqz.github.io/geopdes/) fra
 ### History Variable Projection Methods
 Three strategies for projecting plastic strain and stress onto refined/coarsened meshes:
 
-| Method | Description | Cost |
-|--------|-------------|------|
-| **L2** | Global mass-matrix projection (`M \ rhs`). Smooth but may oscillate near discontinuities. | Sparse linear solve per component |
-| **QI** | Local least-squares quasi-interpolant (`lambda=0`). Purely local, no global solve. | O(N) per component |
-| **QI_C0** | Local LS with Tikhonov regularisation (`lambda=1e-9`) on a C^0 projection space. Best stability at elastic-plastic fronts. | O(N) per component |
+Six operators, differing in the target space (maximal regularity `C^{p-1}` or a `C^0` space obtained by raising interior knots to multiplicity `p`) and in the fitting rule:
+
+| Method | Target space | Description | Cost |
+|--------|--------------|-------------|------|
+| **L2** | `C^{p-1}` | Global mass-matrix projection (`M \ rhs`). Smooth but may oscillate near discontinuities. | Sparse solve per component |
+| **DLSQ** | `C^{p-1}` | Global collocated least squares at the quadrature points, solved once by sparse QR (Hennig et al. 2018). | Sparse QR per component |
+| **QI** | `C^{p-1}` | Local quasi-interpolant. On a hierarchy it uses the construction of Speleers and Manni (2016), with each functional supported on the region where its own level is finest. | O(N) per component |
+| **QI_C0** | `C^0` | The same rule on the `C^0` space. Represents the kink at the elastic-plastic front exactly. | O(N) per component |
+| **Bezier** | `C^{p-1}` | Element-local fit reconciled by a support-weighted average, through multi-level Bezier extraction (Thomas et al. 2015, D'Angella et al. 2018). | Dense solve per element |
+| **Bezier_C0** | `C^0` | The same rule on the `C^0` space, where the average reduces to a single term. | Dense solve per element |
+
+A seventh option, `DLSQ_W`, is the weighted local least squares of Hennig et al. (2018). At the analysis quadrature of `p+1` points per direction the element fit is square, so the measure cancels and it coincides with `Bezier`. It remains available for comparison.
+
+### Scope of the History Transfer
+History variables live at quadrature points and must be recomputed when the mesh changes. Two scopes are implemented, selected with `method_data.type_transfer`:
+
+- **`PROJECT`** (default) — the transferred field is written to every active element.
+- **`PROJECT_NEW`** — only the newly activated elements are filled, and elements surviving the refinement keep the data they already carried (Hennig et al. 2018, Eq. 40).
+
+The distinction is immaterial on a `C^0` space, where an element carries its own functions, and consequential on `C^{p-1}`, where a basis function spans `p+1` elements. Two further options, **`CPT`** (closest point transfer) and **`WPLSQ`** (weighted patch least squares), transfer the quadrature data directly without passing through control values.
 
 ### C/OpenMP Backend (libqi)
 A compiled C library with OpenMP parallelisation for the quasi-interpolant projections:
@@ -79,7 +94,17 @@ Eighth-sphere benchmark (de Souza Neto, Peric & Owen) with steel material proper
 
 Quarter-cylinder plane-strain problem with the same material, 10 load steps. Symmetry boundary conditions and Neumann pressure loading. Validated against Hill's analytical solution.
 
+### Projector Regression Tests
+Fast checks that need no plasticity, no Newton iteration and no load loop. Shared mesh and space construction lives in **`projector_testbed.m`**.
+
+- **`test_projector_reproduction.m`** — projects a spline that already lies in the space and checks it comes back, which is the defining property of a projector.
+- **`test_projector_convergence.m`** — one projection of a smooth function on a uniform family, checking the optimal rate `p+1`.
+- **`test_projector_stability.m`** — repeated application on a refine/coarsen cycle, checking the operator does not drift.
+- **`test_projector_kink.m`** — one projection of a kinked field, reporting each operator's error relative to the best approximation in its own target space. This is the test that separates the operators.
+- **`test_bezier_vs_dlsqw.m`** — measures the gap between `Bezier` and `DLSQ_W` against degree and quadrature order.
+
 ### Comparative Studies
+- **`study_front_metrics_cylinder.m`** / **`study_front_metrics_sphere.m`** — the operator comparison on identical, solution-independent meshes. Degree, Poisson ratio, operator list, refinement depth and transfer scope are overridable through the `FM_DEGREE`, `FM_NU`, `FM_METHODS`, `FM_LEVELS` and `FM_TRANSFER` environment variables.
 - **`benchmark_qi_optimized.m`** — L2 vs QI vs QI_C0 accuracy and timing comparison.
 - **`compare_estimators.m`** — Full factorial study: 2 estimators x 3 projection methods.
 - **`adaptivity_max_level_study.m`** / **`adaptivity_max_level_study_2D.m`** — Convergence studies with increasing refinement levels.

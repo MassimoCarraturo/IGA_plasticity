@@ -1,44 +1,17 @@
 function coeff = bezier_projection_levelwise (hspace, hmsh, eps_pl, measure)
-% BEZIER_PROJECTION_LEVELWISE  Level-wise Bezier projection of quadrature-point
-% history data onto a (truncated) hierarchical B-spline space.
+% BEZIER_PROJECTION_LEVELWISE  Level-wise Bezier projection of quadrature-point history data onto a THB space
 %
 %   coeff = bezier_projection_levelwise (hspace, hmsh, eps_pl)
 %   coeff = bezier_projection_levelwise (hspace, hmsh, eps_pl, measure)
 %
-% Arguments are those of BEZIER_PROJECTION_HIER.
-%
-% WHY THIS EXISTS
-%   BEZIER_PROJECTION_HIER fits, on each element, all active THB functions
-%   overlapping it.  Restricted to one element every such function is a
-%   polynomial of degree <= p per direction, so at most (p+1)^dim of them are
-%   independent; the hierarchy routinely puts more than that on an element, and
-%   the count grows with the degree and with the number of levels meeting there.
-%   The element-local system is then singular by construction.  At p = 2 enough
-%   functions still survive the identifiability test for the support-weighted
-%   average to reconstruct them all, but from p = 3 upward some functions are
-%   identifiable on no element of their support and the operator has no value to
-%   assign them.
-%
-% THE FIX
-%   Fit each function on its OWN level.  On an active element of level l the
-%   level-l tensor-product functions supported on it are exactly (p+1)^dim and
-%   linearly independent, so the element-local L2 projection is a square SPD
-%   solve at any degree.  This is precisely the classical Bezier projection of
-%   Thomas et al. (CMAME 284, 2015), applied on the level where extraction is
-%   square, with the multi-level extraction of D'Angella et al. (CMAME 328,
-%   2018) used only to express the active THB functions of that level in the
-%   level-l tensor-product basis.
-%
-%   The scheme is well posed because of the THB activation rule itself: a
-%   function of level l is active only if its support lies in Omega^l but NOT in
-%   Omega^{l+1}, so part of its support is always covered by active level-l
-%   elements.  Every active function therefore receives data from its own level,
-%   and no function can be left unassigned.
-%
-%   Localized coefficients are averaged with the same support weights as the
-%   element-local operator,
-%       c_A = sum_e w_A^e c_A^e,   w_A^e = int_e T_A / sum_e' int_e' T_A,
-%   the sums running over the active elements of level(A) only.
+% Each active function is fitted on its own level, where the element-local extraction is square,
+% and the localized coefficients are averaged with the support weights of
+% Thomas et al., CMAME 284 (2015), Eq. (61). Multi-level extraction: D'Angella et al., CMAME 328 (2018)
+
+  % Tikhonov weight of the element-local fit. Keep at zero, any positive value destroys the convergence rate
+  LAMBDA_LOC = 0;
+  global BEZ_LAMBDA                                 % calibration override
+  if (~isempty (BEZ_LAMBDA)); LAMBDA_LOC = BEZ_LAMBDA; end
 
   if (nargin < 4 || isempty (measure))
     measure = 'physical';
@@ -62,8 +35,15 @@ function coeff = bezier_projection_levelwise (hspace, hmsh, eps_pl, measure)
   num = zeros (hspace.ndof, ncomp);
   den = zeros (hspace.ndof, 1);
 
-  % global index range of the active functions of each level (they are numbered
-  % level by level, coarsest first)
+  global BEZ_DIAG
+  diag_on = ~isempty (BEZ_DIAG) && BEZ_DIAG;
+  if (diag_on)
+    d_cloc = 0; d_nel = 0; d_mincol = 0;
+    d_ncontrib = zeros (hspace.ndof, 1);
+    d_lev = zeros (hspace.ndof, 1);
+  end
+
+  % active functions are numbered level by level, coarsest first
   last_of_lev  = cumsum (hspace.ndof_per_level(:).');
   first_of_lev = [1, last_of_lev(1:end-1) + 1];
 
@@ -80,11 +60,11 @@ function coeff = bezier_projection_levelwise (hspace, hmsh, eps_pl, measure)
 
     sp_lev = sp_evaluate_element_list (hspace.space_of_level(ilev), msh_lev, 'value', true);
     CsubT  = hspace.Csub{ilev}.';                   % active THB x level-l TP
-    if (unit_measure)
-      w = ones (msh_lev.nqn, msh_lev.nel);
-    else
-      w = msh_lev.quad_weights .* msh_lev.jacdet;
-    end
+    % w weights the element-local fit ('unit' gives the collocation of Hennig et al.), wphys the
+    % support-weighted average, which must always use the physical measure (Thomas et al. Eq. (61))
+    wphys = msh_lev.quad_weights .* msh_lev.jacdet;
+    w = wphys;
+    if (unit_measure); w = ones (msh_lev.nqn, msh_lev.nel); end
     if (any (~isfinite (w(:))))
       error ('bezier_projection_levelwise: non-finite quadrature measure at level %d', ilev);
     end
@@ -100,30 +80,48 @@ function coeff = bezier_projection_levelwise (hspace, hmsh, eps_pl, measure)
       wq  = w(:, iel);
       fq  = reshape (eps_pl{ilev}(iel, :, :), [], ncomp);
 
-      % square, SPD element-local projection on the level-l tensor-product basis
-      Gtp = Ntp.' * (wq .* Ntp);
-      [Rc, flag] = chol ((Gtp + Gtp.') / 2);
-      if (flag ~= 0); continue; end                 % zero-measure element
-      btp = Rc \ (Rc.' \ (Ntp.' * (wq .* fq)));     % localized TP coefficients
+      % Weighted least-squares fit solved directly, never through the normal equations (they square cond(Ntp))
+      sw = sqrt (wq);
+      A  = sw .* Ntp;
+      cn = vecnorm (A);
+      if (max (cn) <= 0); continue; end             % zero-measure element
+      good = cn > max (cn) * 1e-13;                 % functions that live here
+      Ntp = Ntp(:, good); conn = conn(good); A = A(:, good);
 
-      % active THB functions OF THIS LEVEL supported on this element, expressed
-      % in the level-l tensor-product basis
-      CsubT_e = CsubT(:, conn);
-      rows    = find (any (CsubT_e, 2));
-      rows    = rows(rows >= lo & rows <= hi);
-      if (isempty (rows)); continue; end
-      E = full (CsubT_e(rows, :)).';                % (p+1)^dim x n_lev
+      rhs = sw .* fq;
+      if (LAMBDA_LOC > 0)
+        nA = size (A, 2);
+        scal = sqrt (LAMBDA_LOC) * norm (A, 'fro') / sqrt (nA);
+        A = vertcat (A, scal * eye (nA));
+        rhs = vertcat (rhs, zeros (nA, ncomp));
+      end
+      btp = A \ rhs;
+      if (~all (isfinite (btp(:)))); continue; end
 
-      keep = any (abs (E) > 0, 1);                  % truncated away on this element
-      rows = rows(keep(:));
-      E    = E(:, keep);
-      if (isempty (rows)); continue; end
+      % Average over the whole support where the extraction is invertible (Thomas et al. Lemmas 3.1
+      % and 3.2), falling back to the own-level subset, which is square by construction
+      CsubT_e  = CsubT(:, conn);
+      rows_all = find (any (CsubT_e, 2));
+      if (isempty (rows_all)); continue; end
 
-      % E has full column rank (distinct truncated B-splines of one level are
-      % independent on an element), so this is a well-posed least-squares solve
+      [rows, E] = extract_block (CsubT_e, rows_all);
+      use_all = ~isempty (rows) && size (E, 2) <= size (E, 1) && cond (E) < 1e6;
+      if (~use_all)
+        [rows, E] = extract_block (CsubT_e, rows_all(rows_all >= lo & rows_all <= hi));
+        if (isempty (rows)); continue; end
+      end
+
       c_loc = E \ btp;
 
-      intN = (Ntp * E).' * wq;                      % int_e T_A over this element
+      if (diag_on)
+        d_nel = d_nel + 1;
+        d_mincol = max (d_mincol, max (abs (fq(:))));
+        d_cloc = max (d_cloc, max (abs (btp(:))));
+        d_ncontrib(rows) = d_ncontrib(rows) + 1;
+        d_lev(rows) = ilev;
+      end
+
+      intN = (Ntp * E).' * wphys(:, iel);           % int_e T_A over this element
       num(rows, :) = num(rows, :) + intN .* c_loc;
       den(rows)    = den(rows)    + intN;
     end
@@ -132,8 +130,26 @@ function coeff = bezier_projection_levelwise (hspace, hmsh, eps_pl, measure)
   coeff = zeros (hspace.ndof, ncomp);
   pos = den ~= 0;
   coeff(pos, :) = num(pos, :) ./ den(pos);
+
+  if (diag_on)
+    [cmax, iA] = max (max (abs (coeff), [], 2));
+    fprintf (['[BEZ_DIAG] nlev=%d elems=%d  max|data|=%.3e  max|btp|=%.3e  ' ...
+              'max|coeff|=%.3e @dof %d (lev %d, %d elems, den=%.3e, ' ...
+              'den/max_den=%.2e)\n'], ...
+             hmsh.nlevels, d_nel, d_mincol, d_cloc, cmax, iA, d_lev(iA), ...
+             d_ncontrib(iA), den(iA), den(iA) / max (den));
+  end
   if (any (~pos))
     error (['bezier_projection_levelwise: %d of %d functions received no data ' ...
             'from the active elements of their own level'], sum (~pos), hspace.ndof);
   end
+end
+
+function [rows, E] = extract_block (CsubT_e, rows_in)
+% Extraction block of the given active functions on one element, truncated columns dropped
+  if (isempty (rows_in)); rows = []; E = []; return; end
+  E = full (CsubT_e(rows_in, :)).';
+  keep = any (abs (E) > 0, 1);
+  rows = rows_in(keep(:));
+  E = E(:, keep);
 end

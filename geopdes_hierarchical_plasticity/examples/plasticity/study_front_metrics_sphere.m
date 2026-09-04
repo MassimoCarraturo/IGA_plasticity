@@ -1,41 +1,14 @@
-% STUDY_FRONT_METRICS_SPHERE  Front-focused metrics for the projection
-% operators on the internally pressurised eighth-sphere (exact Hill reference).
+% STUDY_FRONT_METRICS_SPHERE  Front kink metrics of the projection operators on the pressurised eighth-sphere
 %
-% Spherical symmetry makes the von Mises condition sigma_t - sigma_r = sigma_y,
-% so the yield constant here is PLAIN sigma_y (no 2/sqrt(3) factor, unlike the
-% plane-strain cylinder).  The exact solution has
-%   plastic (r<c): sigma_t = 2 s_y (1/2 - ln(c/r) - (1-c^3/b^3)/3), d/dr = +2 s_y/r
-%   elastic (r>c): sigma_t = 2 s_y c^3/(3 b^3) (b^3/(2 r^3) + 1),   d/dr = -s_y c^3/r^4
-% so the hoop-stress slope jumps by [d sigma_t/dr] = 3 s_y / c at the front.
-%
-% The mesh is driven by the GEOMETRIC front estimator ('plastic_front_sphere'),
-% which is solution-independent, so all operators share an identical
-% front-refined mesh.  Metric definitions: front_kink_metrics.m.
-%
-% QI-h (num_bisections = 1) is omitted: bisecting the projection mesh in 3-D
-% multiplies its DOFs by eight and is not affordable here.
-%
-% Output: results/front_metrics_sphere/
+% Spherical symmetry gives sigma_t - sigma_r = sigma_y, so the yield constant is plain sigma_y (no 2/sqrt(3)).
+% Hill reference: [d sigma_t/dr] = 3 s_y/c at r = c. The geometric front estimator gives all operators one mesh.
 
 clear; clc; close all;
 here = fileparts(mfilename('fullpath'));
-project_root = fullfile(here, '..', '..', '..');
-results_dir = fullfile(here, 'results', 'front_metrics_sphere');
-if ~exist(results_dir,'dir'); mkdir(results_dir); end
-
-addpath(genpath(fullfile(project_root,'nurbs-1.4.3','nurbs-1.4.3','inst')));
-addpath(genpath(fullfile(project_root,'geopdes-3.2.2','geopdes','inst')));
-addpath(genpath(fullfile(project_root,'geopdes_hierarchical_plasticity','hierarchical_classes')));
-addpath(genpath(fullfile(project_root,'geopdes_hierarchical_plasticity','adaptivity_iga')));
-addpath(genpath(fullfile(project_root,'geopdes_hierarchical_plasticity','initialize')));
-addpath(genpath(fullfile(project_root,'geopdes_hierarchical_plasticity','examples','plasticity')));
-addpath(genpath(fullfile(project_root,'geopdes_hierarchical_plasticity','quasi_interpolant_hierarchical')));
-addpath(fullfile(project_root,'geopdes_hierarchical_plasticity','quasi_interpolant_hierarchical','libqi','matlab'));
+results_dir = fm_setup(here, 'front_metrics_sphere');
 cd(here);
-warning('off','MATLAB:nearlySingularMatrix'); warning('off','MATLAB:singularMatrix');
 
-%% physical data (as in study_sphere_qi_variants.m)
-E=210000; nu=0.49; sigma_y=240; a=100; b=200; nload=5;
+E=210000; nu=fm_env('NU',0.49,@str2double); sigma_y=240; a=100; b=200; nload=5;
 P = 332*0.99;                       % ~ 98.8 % of the limit pressure
 
 pd.geo_name='geo_eighth_sphere.txt';
@@ -49,16 +22,14 @@ pd.f=@(x,y,z) zeros(3,size(x,1),size(x,2),size(x,3));
 pd.g=@(x,y,z,ind) zeros(3,size(x,1),size(x,2),size(x,3));
 pd.h=@(x,y,z,ind) zeros(3,size(x,1),size(x,2),size(x,3));
 pd.p=@(x,y,z) P*ones(size(x));
-% required by the geometric front estimator
 pd.R_i=a; pd.R_o=b; pd.s_y=sigma_y; pd.Pmax=P;
 
 c = fzero(@(x) -P + 2*sigma_y*log(x/a) + (2/3)*sigma_y*(1-x.^3/b^3), [a b]);
 fprintf('front c = %.4f mm ; exact slope jump 3 s_y/c = %.4f MPa/mm\n', c, 3*sigma_y/c);
 
-%% discretization: geometric front marking -> identical mesh for all operators
-p=4;
+p=fm_env('DEGREE',4,@str2double);
 md0.degree=[p p p]; md0.regularity=[p-1 p-1 p-1];
-md0.nsub_coarse=[5 5 5]; md0.nsub_refine=[2 2 2];
+md0.nsub_coarse=[5 5 1]; md0.nsub_refine=[2 2 2];
 md0.nquad=[p+1 p+1 p+1]; md0.space_type='standard'; md0.truncated=1; md0.nload=nload;
 md0.newton_tol=1e-8; md0.newton_tol_abs=1e-10; md0.newton_iter_max=100;
 ad0.flag='elements'; ad0.estimator='plastic_front_sphere'; ad0.C0_est=1.0;
@@ -67,12 +38,11 @@ ad0.max_ndof=1e7; ad0.max_nel=1e6; ad0.num_max_iter=3; ad0.tol=1e-10;   % must n
 ad0.adm_strategy='admissible'; ad0.coarsening_flag='any'; ad0.adm=p;
 
 dband=12; djump=9; nsamp=3001;
-method_tags={'L2','QI','QI_C0','Bezier','Bezier_C0','DLSQ','DLSQ_W'};   % QI_graded dropped from the study
-max_levels=[2 3];
+method_tags=fm_env('METHODS',{'L2','QI','QI_C0','Bezier','Bezier_C0','DLSQ'},@(s) strsplit(s,','));   % DLSQ_W dropped: identical to Bezier at nquad=p+1
+max_levels=fm_env('LEVELS',[1 2],@str2num);
+if (~isempty (getenv ('FM_TRANSFER'))); md0.type_transfer = getenv ('FM_TRANSFER'); end   % nsub_coarse(3) = 1: no polar variation for a spherically symmetric solution
 
-% Resume support.  A level-3 operator costs hours at p = 4, so a machine sleep
-% or a stopped run must not discard finished work: metrics.mat is written after
-% every operator (below) and reloaded here, and completed entries are skipped.
+% Checkpoint: metrics.mat is saved after every operator and finished entries are skipped on rerun
 R=struct();
 ckpt = fullfile(results_dir,'metrics.mat');
 if exist(ckpt,'file')
@@ -83,9 +53,8 @@ end
 for il=1:numel(max_levels)
 for im=1:numel(method_tags)
     md=md0; ad=ad0; ad.max_level=max_levels(il);
+    ad.num_max_iter = max(ad0.num_max_iter, ad.max_level);
     key = sprintf('%s_lev%d', method_tags{im}, max_levels(il));
-    % Skip only when BOTH the metric entry and its profile dump exist, so a rerun
-    % after the profile output was added regenerates the missing profiles.
     pfile = fullfile(results_dir,'profiles',sprintf('%s_lev%d.dat',method_tags{im},max_levels(il)));
     if isfield(R, key) && exist(pfile,'file')
         fprintf('\n==== %s (max_level %d) : cached, skipped ====\n', method_tags{im}, max_levels(il));
@@ -103,7 +72,6 @@ for im=1:numel(method_tags)
     end
     fprintf('\n==== %s (max_level %d) ====\n', method_tags{im}, max_levels(il));
     t0=tic;
-    % One operator failing must not discard the other eight: record and continue.
     try
         [geo,chm,chsp,chs,~,~,csig,~,~]=adaptivity_J2_plasticity(pd,md,ad);
     catch ME
@@ -137,8 +105,6 @@ for im=1:numel(method_tags)
 
     [st_e,dst_e] = hill_sph_t(r,b,c,sigma_y);
     M = front_kink_metrics(r, st_h, dst_h, st_e, dst_e, vm_h, sigma_y, c, dband, djump);
-    % Profile dump for the stress-kink figures: sigma_t and its analytic
-    % counterpart along the sampling ray, subsampled to keep the files small.
     pdir = fullfile(results_dir,'profiles');
     if ~exist(pdir,'dir'); mkdir(pdir); end
     ss = max(1, round(numel(r)/800));
@@ -159,7 +125,6 @@ end
 write_tables(R, method_tags, max_levels, results_dir, 'sphere');
 fprintf('\nAll done. Results in %s\n', results_dir);
 
-%% ---- exact Hill sphere hoop stress and its radial derivative ----
 function [st,dst] = hill_sph_t(r,b,c,sy)
     st=zeros(size(r)); dst=zeros(size(r));
     ip = r <= c;

@@ -1,37 +1,14 @@
-% STUDY_FRONT_METRICS_CYLINDER  Front-focused metrics for the projection
-% operators on the pressurised thick-walled cylinder (exact Hill reference).
+% STUDY_FRONT_METRICS_CYLINDER  Front kink metrics of the projection operators on the pressurised thick-walled cylinder
 %
-% The mesh is driven by the GEOMETRIC front estimator, which is solution
-% independent, so every operator runs on an IDENTICAL front-refined mesh and
-% the metrics measure the projector alone.  Metric definitions: see
-% front_kink_metrics.m.
-%
-% Exact kink: sigma_t is continuous at r = c but its radial derivative jumps,
-%   plastic (r<c): sigma_t = Y(1/2 - ln(c/r) + c^2/(2 b^2)),  d/dr = +Y/r
-%   elastic (r>c): sigma_t = Y c^2/(2 b^2)(b^2/r^2 + 1),      d/dr = -Y c^2/r^3
-% so [d sigma_t/dr] = 2 Y / c.   (sigma_r is C^1 there.)
-%
-% Output: results/front_metrics_cylinder/
+% The geometric front estimator is solution independent, so every operator runs on the same mesh.
+% Hill reference: [d sigma_t/dr] = 2Y/c at r = c, sigma_r is C^1 there. Metrics in front_kink_metrics.m
 
 clear; clc; close all;
 here = fileparts(mfilename('fullpath'));
-project_root = fullfile(here, '..', '..', '..');
-results_dir = fullfile(here, 'results', 'front_metrics_cylinder');
-if ~exist(results_dir,'dir'); mkdir(results_dir); end
-
-addpath(genpath(fullfile(project_root,'nurbs-1.4.3','nurbs-1.4.3','inst')));
-addpath(genpath(fullfile(project_root,'geopdes-3.2.2','geopdes','inst')));
-addpath(genpath(fullfile(project_root,'geopdes_hierarchical_plasticity','hierarchical_classes')));
-addpath(genpath(fullfile(project_root,'geopdes_hierarchical_plasticity','adaptivity_iga')));
-addpath(genpath(fullfile(project_root,'geopdes_hierarchical_plasticity','initialize')));
-addpath(genpath(fullfile(project_root,'geopdes_hierarchical_plasticity','examples','plasticity')));
-addpath(genpath(fullfile(project_root,'geopdes_hierarchical_plasticity','quasi_interpolant_hierarchical')));
-addpath(fullfile(project_root,'geopdes_hierarchical_plasticity','quasi_interpolant_hierarchical','libqi','matlab'));
+results_dir = fm_setup(here, 'front_metrics_cylinder');
 cd(here);
-warning('off','MATLAB:nearlySingularMatrix'); warning('off','MATLAB:singularMatrix');
 
-%% physical data
-E=210000; nu=0.49; sigma_y=240; a=100; b=200; nload=5;
+E=210000; nu=fm_env('NU',0.49,@str2double); sigma_y=240; a=100; b=200; nload=5;
 Y = 2*sigma_y/sqrt(3);
 P = Y*( log(160/a) + 0.5*(1-160^2/b^2) );
 
@@ -50,24 +27,26 @@ pd.R_i=a; pd.R_o=b; pd.s_y=sigma_y; pd.Pmax=P;
 c = fzero(@(x) -P/Y + log(x/a) + .5*(1-x.^2/b^2), [a b]);
 fprintf('front c = %.4f mm ; exact slope jump 2Y/c = %.4f MPa/mm\n', c, 2*Y/c);
 
-%% discretization: geometric front marking -> identical mesh for all operators
-p=4;
+p=fm_env('DEGREE',4,@str2double);
 md0.degree=[p p]; md0.regularity=[p-1 p-1]; md0.nsub_coarse=[5 5]; md0.nsub_refine=[2 2];
 md0.nquad=[p+1 p+1]; md0.space_type='standard'; md0.truncated=1; md0.nload=nload;
 md0.newton_tol=1e-8; md0.newton_tol_abs=1e-10; md0.newton_iter_max=100;
 ad0.flag='elements'; ad0.estimator='plastic_front'; ad0.C0_est=1.0;
-ad0.mark_param=0.8; ad0.mark_param_coarsening=0.1; ad0.mark_strategy='MS';
+ad0.mark_param=0.8; ad0.mark_param_coarsening=0.4; ad0.mark_strategy='MS';
 ad0.max_ndof=1e7; ad0.max_nel=1e6; ad0.num_max_iter=3; ad0.tol=1e-10;   % must not bind: max_level is the control
 ad0.adm_strategy='admissible'; ad0.coarsening_flag='any'; ad0.adm=p;
 
 dband=15; djump=12; nsamp=6001;
-method_tags={'L2','QI','QI_C0','QI_graded','QI_fine','Bezier','Bezier_C0','DLSQ','DLSQ_W'};
-max_levels=[3 4];
+method_tags=fm_env('METHODS',{'L2','QI','QI_C0','Bezier','Bezier_C0','DLSQ'},@(s) strsplit(s,','));   % DLSQ_W dropped: identical to Bezier at nquad=p+1
+max_levels=fm_env('LEVELS',[1 2 3 4],@str2num);   % four mesh sizes: convergence is checked on every metric
+if (~isempty (getenv ('FM_TRANSFER'))); md0.type_transfer = getenv ('FM_TRANSFER'); end
 
 R=struct();
 for il=1:numel(max_levels)
 for im=1:numel(method_tags)
     md=md0; ad=ad0; ad.max_level=max_levels(il);
+    % each refinement pass lifts an element by one level, so max_level needs at least max_level-1 passes
+    ad.num_max_iter = max(ad0.num_max_iter, ad.max_level);
     switch method_tags{im}
         case 'L2';        md.type_projection='L2';
         case 'QI';        md.type_projection='QI';
@@ -81,7 +60,6 @@ for im=1:numel(method_tags)
     end
     fprintf('\n==== %s (max_level %d) ====\n', method_tags{im}, max_levels(il));
     t0=tic;
-    % One operator failing must not discard the other eight: record and continue.
     try
         [geo,chm,chsp,chs,~,~,csig,~,~]=adaptivity_J2_plasticity(pd,md,ad);
     catch ME
@@ -103,8 +81,6 @@ for im=1:numel(method_tags)
 
     [st_e,dst_e] = hill_cyl_t(r,b,c,Y);
     M = front_kink_metrics(r, st_h, dst_h, st_e, dst_e, vm_h, sigma_y, c, dband, djump);
-    % Profile dump for the stress-kink figures: sigma_t and its analytic
-    % counterpart along the sampling ray, subsampled to keep the files small.
     pdir = fullfile(results_dir,'profiles');
     if ~exist(pdir,'dir'); mkdir(pdir); end
     ss = max(1, round(numel(r)/800));
@@ -125,7 +101,6 @@ save(fullfile(results_dir,'metrics.mat'),'R','method_tags','max_levels','c','dba
 write_tables(R, method_tags, max_levels, results_dir, 'cylinder');
 fprintf('\nAll done. Results in %s\n', results_dir);
 
-%% ---- helpers ----
 function d = gr(coefs,hs,geo,uu,vv)
     g = sp_eval(coefs,hs,geo,{uu,vv},'gradient');
     d = (reshape(g(1,:,:),[],1)+reshape(g(2,:,:),[],1))/sqrt(2);
